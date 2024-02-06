@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      dockerfile: images/Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - inner
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - inner
+  postgres:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - inner
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=root
+      - POSTGRES_DB=work
+networks:
+  inner:
+volumes:
+  pgdata:
