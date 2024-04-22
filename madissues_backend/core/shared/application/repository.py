@@ -16,7 +16,7 @@ class GenericRepository(Generic[EntityId, Entity], metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def remove(self, entity: Entity):
+    def remove(self, id: EntityId):
         raise NotImplementedError()
 
     @abc.abstractmethod
