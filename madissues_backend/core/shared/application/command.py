@@ -8,5 +8,5 @@ CommandResponse = TypeVar("CommandResponse")
 
 class Command(Generic[CommandRequest, CommandResponse]):
     @abstractmethod
-    def execute(request : CommandRequest) -> Response[CommandResponse]:
+    def execute(self, request : CommandRequest) -> Response[CommandResponse]:
         pass

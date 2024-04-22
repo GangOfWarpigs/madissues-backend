@@ -6,3 +6,4 @@ EventPayload = TypeVar("EventPayload")
 class DomainEvent(BaseModel, Generic[EventPayload]):
     name : ClassVar[str] = "event_name"
     payload : EventPayload
+

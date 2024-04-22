@@ -24,11 +24,11 @@ class Response(BaseModel, Generic[SuccessResponse]):
         return self.success is not None
 
     @staticmethod
-    def fail(message : str):
+    def fail(message : str) -> 'Response[SuccessResponse]':
         return Response(error=Error.of(message))
 
     @staticmethod
-    def ok(payload : SuccessResponse):
+    def ok(payload : SuccessResponse) -> 'Response[SuccessResponse]':
         return Response(success=payload)
 
     
