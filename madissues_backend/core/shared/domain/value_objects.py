@@ -19,3 +19,10 @@ class GenericUUID(uuid.UUID):
         if not isinstance(value, uuid.UUID):
             raise ValueError('Invalid UUID')
         return cls(value.hex)
+
+
+class Email(str):
+    def __new__(cls, email):
+        if "@" not in email:
+            raise ValueError("Invalid email address")
+        return super().__new__(cls, email)
