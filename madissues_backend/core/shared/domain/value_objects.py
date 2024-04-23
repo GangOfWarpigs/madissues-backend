@@ -1,13 +1,14 @@
 import uuid
-from pydantic import BaseModel, ConfigDict
-from dataclasses import dataclass
+from typing import Annotated
+
+from pydantic import AfterValidator
 
 
 class GenericUUID(uuid.UUID):
     @classmethod
     def next_id(cls):
         return GenericUUID(int=uuid.uuid4().int)
-    
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
@@ -21,8 +22,9 @@ class GenericUUID(uuid.UUID):
         return cls(value.hex)
 
 
-class Email(str):
-    def __new__(cls, email):
-        if "@" not in email:
-            raise ValueError("Invalid email address")
-        return super().__new__(cls, email)
+def email_is_valid(email : str) -> str:
+    assert "@" in email
+    return email
+
+
+Email = Annotated[str, AfterValidator(email_is_valid)]

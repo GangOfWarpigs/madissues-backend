@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 EventPayload = TypeVar("EventPayload")
 
-class DomainEvent(BaseModel, Generic[EventPayload]):
-    name : ClassVar[str] = "event_name"
-    payload : EventPayload
 
+class DomainEvent(BaseModel, Generic[EventPayload]):
+    name: ClassVar[str] = "event_name"
+    payload: EventPayload
