@@ -2,9 +2,11 @@ from operator import gt
 from typing import Annotated
 from pydantic import AfterValidator, BaseModel, field_validator
 
+from madissues_backend.core.shared.domain.value_objects import ValueObject
 
-class Password(BaseModel):
-    value : str
+
+class Password(ValueObject):
+    value: str
 
     @field_validator('value', mode='before')
     @classmethod

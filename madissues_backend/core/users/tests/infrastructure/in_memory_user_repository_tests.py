@@ -3,7 +3,7 @@ import random
 
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.users.domain.user import User
-from madissues_backend.core.users.infrastructure.in_memory_user_repository import InMemoryUserRepository
+from madissues_backend.core.users.infrastructure.mocks.in_memory_user_repository import InMemoryUserRepository
 
 
 class RandomUserGenerator:

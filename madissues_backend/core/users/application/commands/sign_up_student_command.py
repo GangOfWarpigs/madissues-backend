@@ -20,13 +20,15 @@ class SignUpStudentResponse(BaseModel):
 
 
 class SignUpStudentCommand(Command[SignUpStudentRequest, SignUpStudentResponse]):
-    def __init__(self, user_repository: UserRepository, event_bus: EventBus, password_hasher : PasswordHasher) -> None:
+    def __init__(self, user_repository: UserRepository, event_bus: EventBus, password_hasher: PasswordHasher) -> None:
         self.user_repository = user_repository
         self.event_bus = event_bus
         self.password_hasher = password_hasher
 
     def execute(self, request: SignUpStudentRequest) -> Response[SignUpStudentResponse]:
         try:
+            if self.user_repository.exists_user_with_email(request.email):
+                raise ValueError("User with this email already exists")
             user = User(
                 id=GenericUUID.next_id(),
                 email=Email(request.email),

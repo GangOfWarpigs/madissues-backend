@@ -4,10 +4,7 @@ from madissues_backend.core.users.domain.user.user import User
 
 
 class InMemoryUserRepository(UserRepository):
-    def exists_user_with_email(self, email: str) -> bool:
-        pass
-
-    users: list[User] = []
+    users: list[User]
 
     def __init__(self):
         self.users = []
@@ -17,14 +14,14 @@ class InMemoryUserRepository(UserRepository):
             raise Exception("User already exists")
         self.users.append(entity)
 
-    def remove(self, id: GenericUUID):
-        index = self.__index_user_by_id(id)
+    def remove(self, user_id: GenericUUID):
+        index = self.__index_user_by_id(user_id)
         if index is None:
             raise Exception("User does not exist")
         del self.users[index]
 
-    def get_by_id(self, id: GenericUUID) -> User:
-        index = self.__index_user_by_id(id)
+    def get_by_id(self, user_id: GenericUUID) -> User:
+        index = self.__index_user_by_id(user_id)
         if index is None:
             raise Exception("User not found")
         return self.users[index]
@@ -35,8 +32,11 @@ class InMemoryUserRepository(UserRepository):
             raise Exception("User not found")
         self.users[index] = entity
 
-    def __index_user_by_id(self, id) -> int | None:
+    def __index_user_by_id(self, user_id) -> int | None:
         for i in range(len(self.users)):
-            if self.users[i].id == id:
+            if self.users[i].id == user_id:
                 return i
         return None
+
+    def exists_user_with_email(self, email: str) -> bool:
+        raise NotImplementedError()

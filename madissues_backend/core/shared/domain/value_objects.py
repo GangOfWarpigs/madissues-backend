@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from pydantic import AfterValidator
+from pydantic import AfterValidator, BaseModel
 
 
 class GenericUUID(uuid.UUID):
@@ -22,9 +22,13 @@ class GenericUUID(uuid.UUID):
         return cls(value.hex)
 
 
-def email_is_valid(email : str) -> str:
+def email_is_valid(email: str) -> str:
     assert "@" in email
     return email
 
 
 Email = Annotated[str, AfterValidator(email_is_valid)]
+
+
+class ValueObject(BaseModel):
+    pass

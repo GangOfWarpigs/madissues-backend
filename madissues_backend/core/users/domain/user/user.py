@@ -14,6 +14,6 @@ class User(AggregateRoot):
     last_name: Annotated[str, Field(min_length=1)]
     password: str = Field(default="", init=False)
 
-    def set_password(self, password, hasher: PasswordHasher):
-        checked_password = Password(value=password)
-        self.password = hasher.hash(checked_password.value)
+    def set_password(self, raw_password, hasher: PasswordHasher):
+        password = Password(value=raw_password)
+        self.password = hasher.hash(password.value)

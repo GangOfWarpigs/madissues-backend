@@ -2,7 +2,7 @@ import unittest
 
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.users.domain.user.user import User
-from madissues_backend.core.users.infrastructure.mock_password_hasher import MockPasswordHasher
+from madissues_backend.core.users.infrastructure.mocks.mock_password_hasher import MockPasswordHasher
 
 
 class UserTests(unittest.TestCase):
