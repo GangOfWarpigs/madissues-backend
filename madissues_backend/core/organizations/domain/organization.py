@@ -7,7 +7,6 @@ class Organization(AggregateRoot[GenericUUID]):
     logo: str
     description: str
     contact_info: str
-
     primary_color: str
     secondary_color: str
 

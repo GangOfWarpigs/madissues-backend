@@ -5,4 +5,4 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 class OrganizationTeachers(Entity[GenericUUID]):
     first_name: str
     last_name: str
-    avatar : str
+    avatar: str
