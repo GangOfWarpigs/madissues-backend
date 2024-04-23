@@ -1,18 +1,18 @@
 import abc
 from typing import Generic, TypeVar
 
-from madissues_backend.core.shared.domain import entity
+from madissues_backend.core.shared.domain.entity import Entity
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
-Entity = TypeVar("Entity", bound=entity.Entity)
+EntityType = TypeVar("EntityType", bound=Entity)
 EntityId = TypeVar("EntityId", bound=GenericUUID)
 
 
-class GenericRepository(Generic[EntityId, Entity], metaclass=abc.ABCMeta):
+class GenericRepository(Generic[EntityId, EntityType], metaclass=abc.ABCMeta):
     """An interface for a generic repository"""
 
     @abc.abstractmethod
-    def add(self, entity: Entity):
+    def add(self, entity: EntityType):
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -20,9 +20,9 @@ class GenericRepository(Generic[EntityId, Entity], metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_by_id(self, id: EntityId) -> Entity:
+    def get_by_id(self, id: EntityId) -> EntityType:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def save(self, entity: Entity):
+    def save(self, entity: EntityType):
         raise NotImplementedError()
