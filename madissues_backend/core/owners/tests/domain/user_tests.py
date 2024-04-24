@@ -13,6 +13,7 @@ class UserTests(unittest.TestCase):
                 email="emailnovalido",
                 first_name="jose",
                 last_name="pepe",
+                phone_number="1234"
             )
             assert False
         except ValueError as e:
@@ -25,6 +26,7 @@ class UserTests(unittest.TestCase):
                 email="emailnovalido",
                 first_name="jose",
                 last_name="pepe",
+                phone_number="1234"
             )
             assert False
         except ValueError as e:
@@ -36,6 +38,7 @@ class UserTests(unittest.TestCase):
             email="emailnovalido@gmail.com",
             first_name="jose",
             last_name="pepe",
+            phone_number="1234"
         )
         user.set_password("Contrasena112233*", MockPasswordHasher())
         assert user.password == "hashed-password"
@@ -47,6 +50,7 @@ class UserTests(unittest.TestCase):
                 email="emailnovalido@gmail.com",
                 first_name="jose",
                 last_name="pepe",
+                phone_number="1234"
             )
             user.set_password("Pepe", MockPasswordHasher())
             assert  False, "Password is not secure and has been pass"
@@ -60,6 +64,7 @@ class UserTests(unittest.TestCase):
                 email="emailnovalido@gmail.com",
                 first_name="",
                 last_name="pepe",
+                phone_number="1234"
             )
             user.set_password("ContrasenaSegura221133*", MockPasswordHasher())
             assert  False, "First name length must be greater than 0"
@@ -73,6 +78,7 @@ class UserTests(unittest.TestCase):
                 email="emailnovalido@gmail.com",
                 first_name="pepe",
                 last_name="",
+                phone_number="1234"
             )
             user.set_password("ContrasenaSegura221133*", MockPasswordHasher())
             assert  False, "Last name length must be greater than 0"

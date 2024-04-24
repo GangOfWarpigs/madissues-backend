@@ -39,4 +39,7 @@ class InMemoryUserRepository(OwnerRepository):
         return None
 
     def exists_owner_with_email(self, email: str) -> bool:
-        raise NotImplementedError()
+        for user in self.users:
+            if user.email == email:
+                return True
+        return False

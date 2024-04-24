@@ -18,10 +18,11 @@ class Student(AggregateRoot):
     last_name: Annotated[str, Field(min_length=1)]
     password: str = Field(default="", init=False)
     started_studies_date: datetime
-    is_admin: bool
+    is_site_admin: bool
     is_council_member: bool
     is_banned: bool
 
+    token: str
     profile: StudentProfile
     preferences: StudentPreferences
 

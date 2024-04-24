@@ -12,7 +12,6 @@ class Issue(AggregateRoot[GenericUUID]):
     status: str  # Queued, In progress, Solved, Not Solved
     management_id: str
     timestamp: datetime
-
     course: int
     teachers: list[int]
     student: int
