@@ -12,8 +12,8 @@ class Owner(AggregateRoot):
     email: Email
     first_name: Annotated[str, Field(min_length=1)]
     last_name: Annotated[str, Field(min_length=1)]
-    phone_number: str
-    password: str = Field(default="", init=False)
+    phone_number: str | None # Tiene que ser un numero valido
+    password: str = Field(default="", init=False) # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
 
     def __init__(self, **data):
         super().__init__(**data)

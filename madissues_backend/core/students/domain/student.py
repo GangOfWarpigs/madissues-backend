@@ -20,6 +20,7 @@ class Student(AggregateRoot):
     started_studies_date: datetime
     is_admin: bool
     is_council_member: bool
+    is_banned: bool
 
     profile: StudentProfile
     preferences: StudentPreferences

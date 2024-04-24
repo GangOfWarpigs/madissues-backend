@@ -3,5 +3,5 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class StudentProfile(Entity[GenericUUID]):
-    degree: int
-    joined_courses: list[int]
+    degree: GenericUUID
+    joined_courses: list[GenericUUID]

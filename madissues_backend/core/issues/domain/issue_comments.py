@@ -5,7 +5,9 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class IssueComment(Entity[GenericUUID]):
+    issue_id: GenericUUID
     author: int
-    comment: str
+    likes: list[int]
+    content: str
     timestamp: datetime
     response_to: int | None
