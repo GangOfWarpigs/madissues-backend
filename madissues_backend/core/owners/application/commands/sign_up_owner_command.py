@@ -1,5 +1,6 @@
+import json
 from abc import ABC
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
 from madissues_backend.core.owners.domain.owner import Owner
@@ -7,6 +8,7 @@ from madissues_backend.core.shared.application.command import Command, CommandRe
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class SignUpOwnerCommandRequest(BaseModel):
@@ -32,14 +34,15 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
     def execute(self, request: SignUpOwnerCommandRequest) -> Response[SignUpOwnerCommandResponse]:
         try:
             if self.owner_repository.exists_owner_with_email(request.email):
-                raise ValueError("Email is already in use")
+                return Response.fail(message="Email is already in use")
             if self.passwords_does_not_match(request.password, request.verify_password):
-                raise ValueError("Passwords do not match")
+                return Response.fail(message="Passwords do not match")
 
             owner = Owner(
+                id=GenericUUID.next_id(),
                 first_name=request.first_name,
                 last_name=request.last_name,
-                phone_nubmer=request.phone_number,
+                phone_number=request.phone_number,
                 email=request.email
             )
             owner.set_password(raw_password=request.password, hasher=self.password_hasher)
@@ -49,8 +52,11 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
                     token=owner.token
                 )
             )
-        except ValueError as e:
-            return Response.fail(str(e))
+        except ValidationError as e:
+            field: list[str] = json.loads(e.json())[0]["loc"]
+            print(field)
+            return Response.field_fail(message='{} must be valid'.format(" ,".join(field)), field=field)
+
 
     @staticmethod
     def passwords_does_not_match(password, verify_password):
