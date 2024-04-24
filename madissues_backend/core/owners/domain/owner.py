@@ -13,8 +13,8 @@ class Owner(AggregateRoot):
     email: Email
     first_name: Annotated[str, Field(min_length=1)]
     last_name: Annotated[str, Field(min_length=1)]
-    phone_number: str | None # Tiene que ser un numero valido
-    password: str = Field(default="", init=False) # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
+    phone_number: str = Field(min_length=1, pattern=r'^(\+\d{1,3})?(\d{9,15})$')
+    password: str = Field(default="", init=False)  # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
     token: str = Field(default="", init=False)
 
     def __init__(self, **data):
