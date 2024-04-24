@@ -3,10 +3,9 @@ from typing import Annotated
 from pydantic import Field
 
 from madissues_backend.core.shared.domain.entity import Entity
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
+from madissues_backend.core.shared.domain.value_objects import GenericUUID, Email
 
 Name = Annotated[str, Field(min_length=1, max_length=80)]
-Email = Annotated[str, Field(min_length=5, max_length=200, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')]
 LinkToDis = Annotated[str, Field(min_length=1, pattern=r'^https://www.dis.ulpgc.es/.*$')]
 
 

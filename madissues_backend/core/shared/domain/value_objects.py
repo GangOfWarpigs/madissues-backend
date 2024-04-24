@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel
+from pydantic import Field, BaseModel
 
 
 class GenericUUID(uuid.UUID):
@@ -22,13 +22,9 @@ class GenericUUID(uuid.UUID):
         return cls(value.hex)
 
 
-def email_is_valid(email: str) -> str:
-    assert "@" in email
-    return email
-
-
-Email = Annotated[str, AfterValidator(email_is_valid)]
-
-
 class ValueObject(BaseModel):
     pass
+
+
+Email = Annotated[str, Field(min_length=5, max_length=200, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')]
+LinkToImage = Annotated[str, Field(min_length=1, pattern=r'^.*\.(png|jpe?g|gif)$')]
