@@ -53,8 +53,6 @@ class TestOrganization(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Organization(**invalid_organization_data)
 
-    # Agrega más pruebas para otros casos de validez o invalidez según sea necesario
-
 
 if __name__ == '__main__':
     unittest.main()
