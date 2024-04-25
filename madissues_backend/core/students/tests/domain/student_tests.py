@@ -13,7 +13,7 @@ class TestStudent(unittest.TestCase):
     def setUp(self):
         self.valid_student_data = {
             'id': GenericUUID.next_id(),
-            'organization': 1,
+            'organization': GenericUUID.next_id(),
             'email': 'test@example.com',
             'first_name': 'John',
             'last_name': 'Doe',

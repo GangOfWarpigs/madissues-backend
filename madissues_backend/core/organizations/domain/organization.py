@@ -7,7 +7,7 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 Name = Annotated[str, Field(min_length=1, max_length=280)]
 Description = Annotated[str, Field(min_length=1, max_length=280)]
-LinkToImage = Annotated[str, Field(min_length=1, pattern=r'^.*\.(png|jpe?g|gif)$')]
+LinkToImage = Annotated[str, Field(min_length=1, pattern=r'^.*\.(png|jpe?g)$')]
 HexadecimalColor = Annotated[str, Field(min_length=1, pattern=r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')]
 ContactInfo = Annotated[str, Field(min_length=1, max_length=80)]
 
