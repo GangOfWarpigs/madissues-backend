@@ -11,6 +11,10 @@ class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
         pass
 
     @abstractmethod
+    def get_owner_by_email(self, email: str) -> Owner | None:
+        pass
+
+    @abstractmethod
     def add(self, entity: Owner):
         pass
 
@@ -25,5 +29,4 @@ class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
     @abstractmethod
     def save(self, entity: Owner):
         pass
-
 

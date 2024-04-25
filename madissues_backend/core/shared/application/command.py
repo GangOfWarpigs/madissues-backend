@@ -1,8 +1,9 @@
+import json
 from abc import abstractmethod, ABC
 from functools import wraps
 from typing import Generic, TypeVar, Any, Callable
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
 from madissues_backend.core.shared.domain.response import Response
@@ -20,6 +21,7 @@ class Command(Generic[CommandRequest, CommandResponse]):
 
 def AuthenticatedOnly(cls):
     original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
+        # type: ignore
         CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
@@ -86,3 +88,20 @@ def CouncilMembersOnly(cls):
 
     cls.execute = new_execute
     return cls
+
+
+def command_error_handler(func):
+    """ Decorator to handle exceptions in command execution methods """
+    def wrapper(self: Command[CommandRequest, CommandResponse], request: CommandRequest) -> Response[CommandResponse]:
+        try:
+            return func(self, request)
+        except ValidationError as e:
+            field: list[str] = json.loads(e.json())[0]["loc"]
+            return Response.field_fail(message='{} must be valid'.format(", ".join(field)), field=field)
+        except ValueError as e:
+            return Response.fail(message=str(e))
+        except Exception as e:
+            return Response.fail(code=-1, message="An unexpected error occurred")
+    return wrapper
+
+

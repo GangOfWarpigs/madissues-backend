@@ -4,7 +4,8 @@ from pydantic import BaseModel, ValidationError
 
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
 from madissues_backend.core.owners.domain.owner import Owner
-from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse
+from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse, \
+    command_error_handler
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
@@ -31,31 +32,28 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
         self.password_hasher = password_hasher
         self.token_generator = token_generator
 
+    @command_error_handler
     def execute(self, request: SignUpOwnerCommandRequest) -> Response[SignUpOwnerCommandResponse]:
-        try:
-            if self.owner_repository.exists_owner_with_email(request.email):
-                return Response.fail(message="Email is already in use")
-            if self.passwords_does_not_match(request.password, request.verify_password):
-                return Response.fail(message="Passwords do not match")
+        if self.owner_repository.exists_owner_with_email(request.email):
+            return Response.fail(message="Email is already in use")
+        if self.passwords_does_not_match(request.password, request.verify_password):
+            return Response.fail(message="Passwords do not match")
 
-            owner = Owner(
-                id=GenericUUID.next_id(),
-                first_name=request.first_name,
-                last_name=request.last_name,
-                phone_number=request.phone_number,
-                email=request.email
+        owner = Owner(
+            id=GenericUUID.next_id(),
+            first_name=request.first_name,
+            last_name=request.last_name,
+            phone_number=request.phone_number,
+            email=request.email
+        )
+        owner.set_password(raw_password=request.password, hasher=self.password_hasher)
+        owner.generate_auth_token(self.token_generator)
+        return Response.ok(
+            SignUpOwnerCommandResponse(
+                token=owner.token
             )
-            owner.set_password(raw_password=request.password, hasher=self.password_hasher)
-            owner.generate_auth_token(self.token_generator)
-            return Response.ok(
-                SignUpOwnerCommandResponse(
-                    token=owner.token
-                )
-            )
-        except ValidationError as e:
-            field: list[str] = json.loads(e.json())[0]["loc"]
-            print(field)
-            return Response.field_fail(message='{} must be valid'.format(" ,".join(field)), field=field)
+        )
+
 
 
     @staticmethod
