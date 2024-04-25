@@ -7,9 +7,9 @@ from madissues_backend.core.owners.domain.owner import Owner
 
 class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
     @abstractmethod
-    def exists_owner_with_email(self, email : str) -> bool:
-        pass
+    def exists_owner_with_email(self, email: str) -> bool:
+        ...
 
     @abstractmethod
-    def get_owner_by_email(self, email : str) -> Owner:
-        pass
+    def get_owner_by_email(self, email: str) -> Owner | None:
+        ...

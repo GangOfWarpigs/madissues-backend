@@ -18,25 +18,25 @@ class SignInOwnerCommandResponse(BaseModel):
 
 
 class SignInOwnerCommand(Command[SignInOwnerCommandRequest, SignInOwnerCommandResponse]):
-    def __init__(self, authentication_service: AuthenticationService, repository: OwnerRepository, password_hasher: PasswordHasher):
+    def __init__(self, authentication_service: AuthenticationService, repository: OwnerRepository,
+                 password_hasher: PasswordHasher):
         self.authentication_service = authentication_service
         self.repository = repository
-        self.password_hasher=password_hasher
+        self.password_hasher = password_hasher
 
     @command_error_handler
     def execute(self, request: SignInOwnerCommandRequest) -> Response[SignInOwnerCommandResponse]:
-        if not self.repository.exists_owner_with_email(request.email):
-            return Response.fail("Owner with this email does not exist")
-
         owner = self.repository.get_owner_by_email(request.email)
 
-        if self.passwordsDoesNotMatch(request.password, owner.password):
-            return Response.fail("Invalid password")
+        if owner is None:
+            return Response.fail(code=1, message="Owner does not exists")
 
-        return Response.success(SignInOwnerCommandResponse(
+        if self.passwordsDoesNotMatch(request.password, owner.password):
+            return Response.fail(code=2, message="Invalid password")
+
+        return Response.ok(SignInOwnerCommandResponse(
             token=owner.token
         ))
 
-    def passwordsDoesNotMatch(self, password, password1):
-        return self.password_hasher.hash(password) != password1
-
+    def passwordsDoesNotMatch(self, password, real_password):
+        return self.password_hasher.hash(password) != real_password
