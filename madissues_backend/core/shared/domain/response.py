@@ -8,11 +8,11 @@ SuccessResponse = TypeVar("SuccessResponse")
 class Error(BaseModel):
     error_code: int
     error_message: str
-    error_field : list[str] = []
+    error_field: list[str] = []
 
     @staticmethod
-    def of(message: str):
-        return Error(error_code=0, error_message=message, error_field=None)
+    def of(message: str, code: int | None = 0):
+        return Error(error_code=code, error_message=message, error_field=[])
 
     @staticmethod
     def field(message: str, field: list[str]):
@@ -30,8 +30,8 @@ class Response(BaseModel, Generic[SuccessResponse]):
         return self.success is not None
 
     @staticmethod
-    def fail(message: str) -> 'Response[SuccessResponse]':
-        return Response(error=Error.of(message), success=None)
+    def fail(message: str, code : int | None = 0) -> 'Response[SuccessResponse]':
+        return Response(error=Error.of(message, code=code), success=None)
 
     @staticmethod
     def field_fail(message: str, field: list[str]) -> 'Response[SuccessResponse]':

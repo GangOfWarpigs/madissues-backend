@@ -8,6 +8,7 @@ from madissues_backend.core.owners.application.commands.sign_up_owner_command im
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
+from madissues_backend.core.shared.infrastructure.mock_token_generator import MockTokenGenerator
 
 
 # Assuming these classes are defined and imported as before.
@@ -92,6 +93,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.assertTrue(response.is_error())
 
     def test_special_characters_in_email(self):
+        self.token_generator.generate.return_value = "auth_token"
         # Create a request with special characters in the email field
         special_email_request = SignUpOwnerCommandRequest(
             first_name="John",
@@ -104,9 +106,10 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         self.owner_repository.exists_owner_with_email.return_value = False
 
-        # Assuming command handles email validation
         response = self.command.execute(special_email_request)
+        print(response)
         self.assertFalse(response.success, "Signup should fail with invalid email format")
+        self.assertTrue("email" in response.error.error_field, "Signup should fail with invalid email format")
 
     def test_phone_number_validation(self):
         # Assuming phone number validation is added, testing an invalid phone number
@@ -121,7 +124,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         self.owner_repository.exists_owner_with_email.return_value = False
         response = self.command.execute(invalid_phone_request)
-        self.assertEqual(response.error.error_field, "phone_number", "Test must fail because phone number")
+        self.assertTrue("phone_number" in response.error.error_field, "Test must fail because phone number")
 
     def test_password_length_extremes(self):
         # Test with a very short password
@@ -154,7 +157,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         print(short_response)
         self.assertFalse(short_response.success, "Signup should fail with too short password")
         self.assertFalse(long_response.success, "Signup should fail with too long password")
-        self.assertTrue(short_response.error.error_field, "password")
+        self.assertTrue("password" in short_response.error.error_field, "password")
+        self.assertTrue("password" in long_response.error.error_field, "password")
 
     def test_unhandled_exception(self):
         # Simulate an exception in a dependency
@@ -162,8 +166,9 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.side_effect = Exception("Unexpected error")
 
         # Execute the command
-        with self.assertRaises(Exception):
-            self.command.execute(self.valid_request)
+        self.assertEqual(self.command.execute(self.valid_request).error.error_code, -1, "Unexpected erros must throw -1 code error")
+
+
 
 # Uncomment below to run tests
 # if __name__ == "__main__":

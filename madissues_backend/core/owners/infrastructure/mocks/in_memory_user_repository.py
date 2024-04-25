@@ -4,6 +4,9 @@ from madissues_backend.core.owners.domain.owner import Owner
 
 
 class InMemoryUserRepository(OwnerRepository):
+    def get_owner_by_email(self, email: str) -> Owner:
+        raise NotImplemented
+
     users: list[Owner]
 
     def __init__(self):

@@ -9,3 +9,7 @@ class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
     @abstractmethod
     def exists_owner_with_email(self, email : str) -> bool:
         pass
+
+    @abstractmethod
+    def get_owner_by_email(self, email : str) -> Owner:
+        pass

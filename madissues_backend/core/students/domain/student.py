@@ -31,4 +31,4 @@ class Student(AggregateRoot):
 
     def set_password(self, raw_password, hasher: PasswordHasher):
         password = Password(value=raw_password)
-        self.password = hasher.hash(password.value)
+        self.password = hasher.hash(password.password)
