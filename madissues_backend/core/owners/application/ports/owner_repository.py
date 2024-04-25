@@ -9,3 +9,21 @@ class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
     @abstractmethod
     def exists_owner_with_email(self, email : str) -> bool:
         pass
+
+    @abstractmethod
+    def add(self, entity: Owner):
+        pass
+
+    @abstractmethod
+    def remove(self, user_id: GenericUUID):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, user_id: GenericUUID) -> Owner:
+        pass
+
+    @abstractmethod
+    def save(self, entity: Owner):
+        pass
+
+

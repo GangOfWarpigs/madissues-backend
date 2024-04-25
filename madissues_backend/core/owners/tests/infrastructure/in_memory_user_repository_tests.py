@@ -4,28 +4,28 @@ import random
 from madissues_backend.core.owners.tests.object_mothers import OwnerObjectMother
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.owners.domain.owner import Owner
-from madissues_backend.core.owners.infrastructure.mocks.in_memory_user_repository import InMemoryUserRepository
+from madissues_backend.core.owners.infrastructure.mocks.in_memory_owner_repository import InMemoryOwnerRepository
 
 
 class MyTestCase(unittest.TestCase):
     def test_create_user(self):
-        repository = InMemoryUserRepository()
+        repository = InMemoryOwnerRepository()
         user_generator = OwnerObjectMother()
         new_user = user_generator.generate_owner()
         repository.add(new_user)
-        self.assertEqual(len(repository.users), 1)
+        self.assertEqual(len(repository.owners), 1)
 
     def test_remove_user(self):
-        repository = InMemoryUserRepository()
+        repository = InMemoryOwnerRepository()
         user_generator = OwnerObjectMother()
         new_user = user_generator.generate_owner()
         id = new_user.id
         repository.add(new_user)
         repository.remove(id)
-        self.assertEqual(len(repository.users), 0)
+        self.assertEqual(len(repository.owners), 0)
 
     def test_get_user_by_id(self):
-        repository = InMemoryUserRepository()
+        repository = InMemoryOwnerRepository()
         user_generator = OwnerObjectMother()
         new_user = user_generator.generate_owner()
         id = new_user.id
@@ -36,7 +36,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(user, new_user)
 
     def test_save_user(self):
-        repository = InMemoryUserRepository()
+        repository = InMemoryOwnerRepository()
         user_generator = OwnerObjectMother()
         new_user = user_generator.generate_owner()
         id = new_user.id
