@@ -15,19 +15,20 @@ class InMemoryOwnerRepository(OwnerRepository):
                 return i
         return None
 
+
     def add(self, entity: Owner):
         if self.__index_owner_by_id(entity.id) is not None:
             raise Exception("Owner already exists")
         self.owners.append(entity)
 
-    def remove(self, user_id: GenericUUID):
-        index = self.__index_owner_by_id(user_id)
+    def remove(self, owner_id: GenericUUID):
+        index = self.__index_owner_by_id(owner_id)
         if index is None:
             raise Exception("Owner does not exist")
         del self.owners[index]
 
-    def get_by_id(self, user_id: GenericUUID) -> Owner:
-        index = self.__index_owner_by_id(user_id)
+    def get_by_id(self, owner_id: GenericUUID) -> Owner:
+        index = self.__index_owner_by_id(owner_id)
         if index is None:
             raise Exception("Owner not found")
         return self.owners[index]
@@ -38,10 +39,16 @@ class InMemoryOwnerRepository(OwnerRepository):
             raise Exception("Owner not found")
         self.owners[index] = entity
 
-
-
     def exists_owner_with_email(self, email: str) -> bool:
         for user in self.owners:
             if user.email == email:
                 return True
         return False
+
+    def get_owner_by_email(self, email: str) -> Owner | None:
+        for user in self.owners:
+            if user.email == email:
+                return user
+        return None
+
+

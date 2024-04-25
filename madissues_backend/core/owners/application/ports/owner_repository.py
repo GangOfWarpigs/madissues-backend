@@ -19,11 +19,11 @@ class OwnerRepository(GenericRepository[GenericUUID, Owner], ABC):
         pass
 
     @abstractmethod
-    def remove(self, user_id: GenericUUID):
+    def remove(self, owner_id: GenericUUID):
         pass
 
     @abstractmethod
-    def get_by_id(self, user_id: GenericUUID) -> Owner:
+    def get_by_id(self, owner_id: GenericUUID) -> Owner:
         pass
 
     @abstractmethod

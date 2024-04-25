@@ -20,9 +20,5 @@ class Organization(AggregateRoot[GenericUUID]):
     primary_color: HexadecimalColor  # hexadecimal valid
     secondary_color: HexadecimalColor  # hexadecimal valid
     banner: LinkToImage  # Link a una image
-
     trello_id: GenericUUID
-
-
-
 
