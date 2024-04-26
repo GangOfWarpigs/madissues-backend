@@ -23,7 +23,7 @@ class InMemoryOwnerRepository(OwnerRepository):
     def remove(self, owner_id: GenericUUID):
         index = self.__index_owner_by_id(owner_id)
         if index is None:
-            raise ValueError("Owner does not exist")
+            raise ValueError("Owner does not exists")
         del self.owners[index]
 
     def get_by_id(self, owner_id: GenericUUID) -> Owner:
@@ -35,7 +35,7 @@ class InMemoryOwnerRepository(OwnerRepository):
     def save(self, entity: Owner):
         index = self.__index_owner_by_id(entity.id)
         if index is None:
-            raise Exception("Owner not found")
+            raise ValueError("Owner not found")
         self.owners[index] = entity
 
     def exists_owner_with_email(self, email: str) -> bool:

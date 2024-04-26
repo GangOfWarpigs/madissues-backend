@@ -46,5 +46,41 @@ class MyTestCase(unittest.TestCase):
         user = repository.get_by_id(id)
         self.assertEqual(user.first_name, "New Name")
 
+    def test_owner_already_exists_throw_exception(self):
+        try:
+            repository = InMemoryOwnerRepository()
+            user_generator = OwnerObjectMother()
+            new_user = user_generator.generate_owner()
+            repository.add(new_user)
+            repository.add(new_user)
+            assert False, "Adding owner with same ID must throw value error exception"
+        except ValueError as e:
+            assert str(e) == "Owner already exists", "If owner already exists must throw value error"
+
+    def test_owner_already_exists(self):
+        try:
+            repository = InMemoryOwnerRepository()
+            repository.remove(GenericUUID.next_id())
+            assert False, "Remove owner that does not exist should throw exception"
+        except ValueError as e:
+            assert str(e) == "Owner does not exists", "If owner already exists must throw value error"
+    def test_get_owner_by_id(self):
+        try:
+            repository = InMemoryOwnerRepository()
+            repository.get_by_id(GenericUUID.next_id())
+            assert False, "Remove owner that does not exist should throw exception"
+        except ValueError as e:
+            assert str(e) == "Owner not found", "If owner already exists must throw value error"
+
+    def test_save_owner(self):
+        try:
+            repository = InMemoryOwnerRepository()
+            user_generator = OwnerObjectMother()
+            new_user = user_generator.generate_owner()
+            repository.save(new_user)
+            assert False, "Remove owner that does not exist should throw exception"
+        except ValueError as e:
+            assert str(e) == "Owner not found", "If owner already exists must throw value error"
+
 if __name__ == '__main__':
     unittest.main()
