@@ -27,7 +27,8 @@ class SignUpOwnerCommandResponse(BaseModel):
 
 class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandResponse]):
 
-    def __init__(self, owner_repository: OwnerRepository, password_hasher: PasswordHasher, token_generator: TokenGenerator):
+    def __init__(self, owner_repository: OwnerRepository, password_hasher: PasswordHasher,
+                 token_generator: TokenGenerator):
         self.owner_repository = owner_repository
         self.password_hasher = password_hasher
         self.token_generator = token_generator
@@ -53,8 +54,6 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
                 token=owner.token
             )
         )
-
-
 
     @staticmethod
     def passwords_does_not_match(password, verify_password):

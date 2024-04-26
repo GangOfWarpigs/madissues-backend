@@ -13,6 +13,7 @@ ContactInfo = Annotated[str, Field(min_length=1, max_length=80)]
 
 
 class Organization(AggregateRoot[GenericUUID]):
+    owner_id: GenericUUID
     name: Name   # Mayor a 1
     logo: LinkToImage  # Link a una image
     description: Description  # Mayor a 1, maxim 280

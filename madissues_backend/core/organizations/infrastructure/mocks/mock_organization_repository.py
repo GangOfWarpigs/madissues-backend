@@ -3,12 +3,14 @@ from uuid import UUID
 
 from madissues_backend.core.organizations.application.ports.organization_repository import OrganizationRepository
 from madissues_backend.core.organizations.domain.organization import Organization
+from madissues_backend.core.shared.application.mock_repository import GenericMockRepository, EntityTable
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
-class MockOrganizationRepository(OrganizationRepository):
-    def __init__(self):
-        self._organizations: Dict[UUID, Organization] = {}
+class MockOrganizationRepository(OrganizationRepository, GenericMockRepository[UUID, Organization]):
+    def __init__(self, entity_table: EntityTable):
+        super().__init__(entity_table)
+        self._organizations: Dict[UUID, Organization] = self.entity_table.tables["organizations"]
 
     def add(self, organization: Organization) -> Organization:
         self._organizations[organization.id] = organization
@@ -45,3 +47,10 @@ class MockOrganizationRepository(OrganizationRepository):
             if organization.contact_info == contact_info:
                 return organization
         return None
+
+    def set_owner(self, organization_id: GenericUUID, new_owner_id: GenericUUID):
+        if organization_id not in self._organizations:
+            raise ValueError(f"Organization with id {organization_id} does not exist")
+        self._organizations[organization_id].owner_id = new_owner_id
+        return self._organizations[organization_id]
+

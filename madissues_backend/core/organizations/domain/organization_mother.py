@@ -7,42 +7,43 @@ from madissues_backend.core.organizations.domain.organization_teacher import Org
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
-class OrganizationFactory:
+class OrganizationMother:
     @staticmethod
-    def create_organization():
+    def generate_organization():
         organization = Organization(
             id=GenericUUID.next_id(),
-            name=OrganizationFactory.generate_company_name(),
-            logo=OrganizationFactory.generate_image_link(),
-            description=OrganizationFactory.generate_description(),
-            contact_info=OrganizationFactory.generate_phone_number(),
-            primary_color=OrganizationFactory.generate_hex_color(),
-            secondary_color=OrganizationFactory.generate_hex_color(),
-            banner=OrganizationFactory.generate_image_link(),
+            owner_id=GenericUUID.next_id(),
+            name=OrganizationMother.generate_company_name(),
+            logo=OrganizationMother.generate_image_link(),
+            description=OrganizationMother.generate_description(),
+            contact_info=OrganizationMother.generate_phone_number(),
+            primary_color=OrganizationMother.generate_hex_color(),
+            secondary_color=OrganizationMother.generate_hex_color(),
+            banner=OrganizationMother.generate_image_link(),
             trello_id=GenericUUID.next_id()
         )
         return organization
 
     @staticmethod
-    def create_organization_course():
+    def generate_organization_course():
         course = OrganizationCourse(
             id=GenericUUID.next_id(),
-            name=OrganizationFactory.generate_course_name(),
-            code=OrganizationFactory.generate_course_code(),
-            icon=OrganizationFactory.generate_image_link(),
-            primary_color=OrganizationFactory.generate_hex_color(),
-            secondary_color=OrganizationFactory.generate_hex_color()
+            name=OrganizationMother.generate_course_name(),
+            code=OrganizationMother.generate_course_code(),
+            icon=OrganizationMother.generate_image_link(),
+            primary_color=OrganizationMother.generate_hex_color(),
+            secondary_color=OrganizationMother.generate_hex_color()
         )
         return course
 
     @staticmethod
-    def create_organization_teacher():
+    def generate_organization_teacher():
         teacher = OrganizationTeacher(
             id=GenericUUID.next_id(),
-            first_name=OrganizationFactory.generate_first_name(),
-            last_name=OrganizationFactory.generate_last_name(),
-            email=OrganizationFactory.generate_email(),
-            office_link=OrganizationFactory.generate_dis_link(),
+            first_name=OrganizationMother.generate_first_name(),
+            last_name=OrganizationMother.generate_last_name(),
+            email=OrganizationMother.generate_email(),
+            office_link=OrganizationMother.generate_dis_link(),
             courses=[GenericUUID.next_id() for _ in range(random.randint(1, 5))]
         )
         return teacher
@@ -82,7 +83,6 @@ class OrganizationFactory:
     @staticmethod
     def generate_image_link():
         return f"https://www.example.com/{str(uuid4())[:8]}.{'png' if random.random() > 0.5 else 'jpg'}"
-
 
     @staticmethod
     def generate_hex_color():

@@ -1,11 +1,7 @@
 import abc
 from typing import Generic, TypeVar
 
-from madissues_backend.core.shared.domain.entity import Entity
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
-
-EntityType = TypeVar("EntityType", bound=Entity)
-EntityId = TypeVar("EntityId", bound=GenericUUID)
+from madissues_backend.core.shared.domain.entity import Entity, EntityId, EntityType
 
 
 class GenericRepository(Generic[EntityId, EntityType], metaclass=abc.ABCMeta):

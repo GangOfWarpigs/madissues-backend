@@ -12,6 +12,9 @@ class Entity(BaseModel, Generic[EntityId]):
     id: EntityId
 
 
+EntityType = TypeVar("EntityType", bound=Entity)
+
+
 class AggregateRoot(Entity[EntityId]):
     """Consists of 1+ entities. Spans transaction boundaries."""
     events: list = field(default_factory=list)

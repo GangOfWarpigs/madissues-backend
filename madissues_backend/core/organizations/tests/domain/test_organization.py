@@ -9,6 +9,7 @@ class TestOrganization(unittest.TestCase):
     def setUp(self):
         self.valid_organization_data = {
             'id': GenericUUID.next_id(),
+            'owner_id': GenericUUID.next_id(),
             'name': 'Test Organization',
             'logo': 'https://example.com/logo.png',
             'description': 'Test description',
