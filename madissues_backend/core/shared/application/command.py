@@ -4,10 +4,7 @@ from functools import wraps
 from typing import Generic, TypeVar, Any, Callable
 
 from pydantic import BaseModel, ValidationError
-
-from madissues_backend.core.shared.application.authentication_service import AuthenticationService
 from madissues_backend.core.shared.domain.response import Response
-from madissues_backend.core.shared.infrastructure.mock_authentication_service import TokenAuthenticationService
 
 CommandRequest = TypeVar("CommandRequest")
 CommandResponse = TypeVar("CommandResponse")
@@ -90,8 +87,10 @@ def CouncilMembersOnly(cls):
     return cls
 
 
-def command_error_handler(func):
+def command_error_handler(
+        func: Callable[[Command[CommandRequest, CommandResponse], CommandRequest], Response[CommandResponse]]):
     """ Decorator to handle exceptions in command execution methods """
+
     def wrapper(self: Command[CommandRequest, CommandResponse], request: CommandRequest) -> Response[CommandResponse]:
         try:
             return func(self, request)
@@ -102,6 +101,5 @@ def command_error_handler(func):
             return Response.fail(message=str(e))
         except Exception as e:
             return Response.fail(code=-1, message="An unexpected error occurred")
+
     return wrapper
-
-

@@ -23,6 +23,7 @@ class SignUpOwnerCommandRequest(BaseModel):
 
 class SignUpOwnerCommandResponse(BaseModel):
     token: str
+    owner_id: str
 
 
 class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandResponse]):
@@ -49,8 +50,10 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
         )
         owner.set_password(raw_password=request.password, hasher=self.password_hasher)
         owner.generate_auth_token(self.token_generator)
+        self.owner_repository.add(owner)
         return Response.ok(
             SignUpOwnerCommandResponse(
+                owner_id=str(owner.id),
                 token=owner.token
             )
         )

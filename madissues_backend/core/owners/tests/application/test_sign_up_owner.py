@@ -6,8 +6,12 @@ from pydantic import ValidationError
 from madissues_backend.core.owners.application.commands.sign_up_owner_command import SignUpOwnerCommandRequest, \
     SignUpOwnerCommand
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
+from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
+from madissues_backend.core.shared.application.mock_repository import EntityTable
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
+from madissues_backend.core.shared.infrastructure.mock_password_hasher import MockPasswordHasher
 from madissues_backend.core.shared.infrastructure.mock_token_generator import MockTokenGenerator
 
 
@@ -53,7 +57,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         # Assert failure due to existing email
         self.assertFalse(response.success, "Signup should fail when email already exists")
-        self.assertEqual(response.error.error_message, "Email is already in use", "Error message should indicate existing email")
+        self.assertEqual(response.error.error_message, "Email is already in use",
+                         "Error message should indicate existing email")
 
     def test_password_mismatch(self):
         # Prepare a request with mismatched passwords
@@ -73,7 +78,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         # Assert failure due to password mismatch
         self.assertFalse(response.success, "Signup should fail when passwords do not match")
-        self.assertEqual(response.error.error_message, "Passwords do not match", "Error message should indicate mismatched passwords")
+        self.assertEqual(response.error.error_message, "Passwords do not match",
+                         "Error message should indicate mismatched passwords")
 
     def test_empty_field_submission(self):
         # Create a request with all fields empty
@@ -144,8 +150,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
             first_name="John",
             last_name="Doe",
             email="john.doe@example.com",
-            password="long"*50,
-            verify_password="long"*50,
+            password="long" * 50,
+            verify_password="long" * 50,
             phone_number="1234567890"
         )
 
@@ -166,11 +172,26 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.side_effect = Exception("Unexpected error")
 
         # Execute the command
-        self.assertEqual(self.command.execute(self.valid_request).error.error_code, -1, "Unexpected erros must throw -1 code error")
+        self.assertEqual(self.command.execute(self.valid_request).error.error_code, -1,
+                         "Unexpected erros must throw -1 code error")
 
-
+    def test_end_to_end_command_with_mocks(self):
+        db = EntityTable()
+        repository = MockOwnerRepository(db)
+        hasher = MockPasswordHasher()
+        token_generator = MockTokenGenerator()
+        command = SignUpOwnerCommand(repository, hasher, token_generator)
+        response = command.execute(SignUpOwnerCommandRequest(
+            first_name="Pepe",
+            last_name="Peña Seco",
+            email="josericardopenase@gmail.com",
+            password="SecurePassword112233*",
+            verify_password="SecurePassword112233*",
+            phone_number="599200100"
+        ))
+        assert response.is_success() == True, "Must succeed"
+        self.assertIn(GenericUUID(response.success.owner_id), db.tables["owners"])
 
 # Uncomment below to run tests
 # if __name__ == "__main__":
 #     unittest.main()
-
