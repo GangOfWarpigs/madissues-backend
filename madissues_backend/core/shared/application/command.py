@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
 from madissues_backend.core.shared.domain.response import Response
-from madissues_backend.core.shared.infrastructure.token_authentication_service import TokenAuthenticationService
+from madissues_backend.core.shared.infrastructure.mock_authentication_service import TokenAuthenticationService
 
 CommandRequest = TypeVar("CommandRequest")
 CommandResponse = TypeVar("CommandResponse")

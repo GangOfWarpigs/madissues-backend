@@ -1,0 +1,6 @@
+projectKey=madissues-backend
+serverUrl=http://localhost:9000
+serverVersion=10.5.0.89998
+dashboardUrl=http://localhost:9000/dashboard?id=madissues-backend
+ceTaskId=bab3361b-17ce-468c-9f6c-9cab04fbcf4f
+ceTaskUrl=http://localhost:9000/api/ce/task?id=bab3361b-17ce-468c-9f6c-9cab04fbcf4f
