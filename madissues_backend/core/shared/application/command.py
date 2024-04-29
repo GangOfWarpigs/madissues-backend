@@ -2,7 +2,6 @@ import json
 from abc import abstractmethod, ABC
 from functools import wraps
 from typing import Generic, TypeVar, Any, Callable
-
 from pydantic import BaseModel, ValidationError
 from madissues_backend.core.shared.domain.response import Response
 
@@ -16,10 +15,8 @@ class Command(Generic[CommandRequest, CommandResponse]):
         pass
 
 
-def AuthenticatedOnly(cls):
-    original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
-        # type: ignore
-        CommandResponse]] = cls.execute  # type: ignore
+def authenticated_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
@@ -31,9 +28,8 @@ def AuthenticatedOnly(cls):
     return cls
 
 
-def StudentsOnly(cls):
-    original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
-        CommandResponse]] = cls.execute  # type: ignore
+def students_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
@@ -45,9 +41,8 @@ def StudentsOnly(cls):
     return cls
 
 
-def OwnersOnly(cls):
-    original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
-        CommandResponse]] = cls.execute  # type: ignore
+def owners_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
@@ -59,9 +54,8 @@ def OwnersOnly(cls):
     return cls
 
 
-def SiteAdminsOnly(cls):
-    original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
-        CommandResponse]] = cls.execute  # type: ignore
+def site_admins_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
@@ -73,9 +67,8 @@ def SiteAdminsOnly(cls):
     return cls
 
 
-def CouncilMembersOnly(cls):
-    original_execute: Callable[[Command[CommandRequest, Response[CommandResponse]], CommandRequest], Response[
-        CommandResponse]] = cls.execute  # type: ignore
+def council_members_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
 
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
@@ -88,10 +81,10 @@ def CouncilMembersOnly(cls):
 
 
 def command_error_handler(
-        func: Callable[[Command[CommandRequest, CommandResponse], CommandRequest], Response[CommandResponse]]):
+        func: Callable[[Any, CommandRequest], Response[CommandResponse]]) -> Callable[[Any, CommandRequest], Response[CommandResponse]]:
     """ Decorator to handle exceptions in command execution methods """
 
-    def wrapper(self: Command[CommandRequest, CommandResponse], request: CommandRequest) -> Response[CommandResponse]:
+    def wrapper(self: Any, request: CommandRequest) -> Response[CommandResponse]:
         try:
             return func(self, request)
         except ValidationError as e:
@@ -101,5 +94,4 @@ def command_error_handler(
             return Response.fail(message=str(e))
         except Exception as e:
             return Response.fail(code=-1, message="An unexpected error occurred")
-
     return wrapper

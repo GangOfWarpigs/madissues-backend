@@ -29,10 +29,10 @@ class SignInOwnerCommand(Command[SignInOwnerCommandRequest, SignInOwnerCommandRe
         owner = self.repository.get_owner_by_email(request.email)
 
         if owner is None:
-            return Response.fail(code=1, message="Owner does not exists")
+            return Response.fail(code=1, message="Invalid credentials")
 
         if self.passwordsDoesNotMatch(request.password, owner.password):
-            return Response.fail(code=2, message="Invalid password")
+            return Response.fail(code=2, message="Invalid credentials")
 
         return Response.ok(SignInOwnerCommandResponse(
             token=owner.token
