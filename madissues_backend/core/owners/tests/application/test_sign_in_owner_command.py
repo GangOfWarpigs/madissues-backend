@@ -13,8 +13,6 @@ from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 
 
-
-
 class TestSignUpOwnerCommand(unittest.TestCase):
     def setUp(self):
         self.db = EntityTable()
@@ -54,7 +52,6 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         assert response.is_success() is False, "The result must be valid with valid credentials"
         assert response.error.error_code is 1, "Error code must be caused by mail"
 
-
     def test_login_failed_with_invalid_password(self):
         request = SignInOwnerCommandRequest(
             email="john.doe@example.com",
@@ -64,4 +61,3 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         response = command.run(request)
         assert response.is_success() is False, "The result must be valid with valid credentials"
         assert response.error.error_code is 2, "Error code must be caused by password"
-
