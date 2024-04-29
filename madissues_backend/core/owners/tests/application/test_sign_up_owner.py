@@ -112,7 +112,6 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.return_value = False
 
         response = self.command.run(special_email_request)
-        print(response)
         self.assertFalse(response.success, "Signup should fail with invalid email format")
         self.assertTrue("email" in response.error.error_field, "Signup should fail with invalid email format")
 

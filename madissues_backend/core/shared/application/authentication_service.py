@@ -7,7 +7,7 @@ class AuthenticationService(ABC):
         ...
 
     @abstractmethod
-    def get_user_id(self) -> int:
+    def get_user_id(self) -> str:
         ...
 
     @abstractmethod

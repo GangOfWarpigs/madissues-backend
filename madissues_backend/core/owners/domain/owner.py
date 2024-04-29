@@ -1,8 +1,10 @@
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, BaseModel
 
+from madissues_backend.core.owners.domain.owner_email_updated import OwnerEmailUpdatedPayload, OwnerEmailUpdated
 from madissues_backend.core.shared.domain.entity import AggregateRoot
+from madissues_backend.core.shared.domain.events import DomainEvent
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
 from madissues_backend.core.shared.domain.value_objects import Email, GenericUUID
 from madissues_backend.core.shared.domain.password import Password
@@ -14,7 +16,8 @@ class Owner(AggregateRoot[GenericUUID]):
     first_name: Annotated[str, Field(min_length=1)]
     last_name: Annotated[str, Field(min_length=1)]
     phone_number: str = Field(min_length=1, pattern=r'^(\+\d{1,3})?(\d{9,15})$')
-    password: str = Field(default="", init=False)  # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
+    password: str = Field(default="",
+                          init=False)  # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
     token: str = Field(default="", init=False)
 
     def __init__(self, **data):
@@ -26,3 +29,9 @@ class Owner(AggregateRoot[GenericUUID]):
 
     def generate_auth_token(self, token_generator: TokenGenerator):
         self.token = token_generator.generate()
+
+    def change_email(self, email: Email):
+        self.email = email
+        self.register_event(
+            OwnerEmailUpdated(payload=OwnerEmailUpdatedPayload(user_id=str(self.id), email=email))
+        )
