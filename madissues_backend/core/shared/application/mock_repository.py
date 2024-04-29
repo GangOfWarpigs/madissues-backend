@@ -15,6 +15,7 @@ class EntityTable:
         }
 
 
+
 class GenericMockRepository(Generic[EntityId, EntityType], metaclass=abc.ABCMeta):
     """An interface for a generic mock repository"""
 
