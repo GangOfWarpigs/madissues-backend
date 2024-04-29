@@ -21,7 +21,7 @@ class Owner(AggregateRoot[GenericUUID]):
         super().__init__(**data)
 
     def set_password(self, raw_password, hasher: PasswordHasher):
-        password_validator = Password(password=raw_password)
+        password_validator = Password(value=raw_password)
         self.password = hasher.hash(password_validator.value)
 
     def generate_auth_token(self, token_generator: TokenGenerator):

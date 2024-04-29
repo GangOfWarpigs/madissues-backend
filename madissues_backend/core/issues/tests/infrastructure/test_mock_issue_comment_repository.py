@@ -26,9 +26,10 @@ class TestMockIssueCommentRepository(unittest.TestCase):
 
     def test_save_existing_issue_comment(self):
         comment = next(iter(self.added_comments))
-        comment.text = "Updated text"
-        saved_comment = self.repo.save(comment)
-        self.assertEqual(saved_comment.text, "Updated text")
+        comment.content = "Updated text"
+        self.repo.save(comment)
+        saved_comment = self.repo.get_by_id(comment.id)
+        self.assertEqual(saved_comment.content, "Updated text")
 
     def test_save_non_existing_issue_comment(self):
         non_existing_comment = IssueMother.random_issue_comment(issue_id=GenericUUID.next_id(),
@@ -61,9 +62,9 @@ class TestMockIssueCommentRepository(unittest.TestCase):
         self.assertTrue(all(comment.author == author_id for comment in comments_by_author))
 
     def test_get_all_by_issue(self):
-        issue_id = next(iter(self.added_comments)).issue
+        issue_id = next(iter(self.added_comments)).issue_id
         comments_by_issue = self.repo.get_all_by_issue(issue_id)
-        self.assertTrue(all(comment.issue == issue_id for comment in comments_by_issue))
+        self.assertTrue(all(comment.issue_id == issue_id for comment in comments_by_issue))
 
     def test_get_all_by_response_to(self):
         response_to_id = next(iter(self.added_comments)).response_to
@@ -107,13 +108,19 @@ class TestMockIssueCommentRepository(unittest.TestCase):
         self.assertEqual(len(retrieved_comments), 0)
 
     def test_get_all_by_date_greater_than_nonexistent(self):
-        retrieved_comments = self.repo.get_all_by_date_greater_than(GenericUUID.next_id())
-        self.assertEqual(len(retrieved_comments), 0)
+        retrieved_comments = self.repo.get_all_by_date_greater_than(self.added_comments[-1].date_time)
+        # Find number of comments with date greater than the last comment's date
+        num_comments = len([comment for comment in self.added_comments if comment.date_time > self.added_comments[-1].date_time])
+        self.assertEqual(len(retrieved_comments), num_comments)
 
     def test_get_all_by_date_less_than_nonexistent(self):
-        retrieved_comments = self.repo.get_all_by_date_less_than(GenericUUID.next_id())
-        self.assertEqual(len(retrieved_comments), 0)
+        retrieved_comments = self.repo.get_all_by_date_less_than(self.added_comments[-1].date_time)
+        # Find number of comments with date less than the last comment's date
+        num_comments = len([comment for comment in self.added_comments if comment.date_time < self.added_comments[-1].date_time])
+        self.assertEqual(len(retrieved_comments), num_comments)
 
-        
+
+
+
 if __name__ == '__main__':
     unittest.main()

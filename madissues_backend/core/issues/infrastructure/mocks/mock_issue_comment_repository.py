@@ -21,16 +21,16 @@ class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[U
         return [issue for issue in self._issues.values() if issue.author == author_id]
 
     def get_all_by_issue(self, issue_id: GenericUUID) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.issue == issue_id]
+        return [issue for issue in self._issues.values() if issue.issue_id == issue_id]
 
     def get_all_by_response_to(self, response_to_id: GenericUUID) -> list[IssueComment]:
         return [issue for issue in self._issues.values() if issue.response_to == response_to_id]
 
     def get_all_by_date_greater_than(self, date: datetime) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.date > date]
+        return [issue for issue in self._issues.values() if issue.date_time > date]
 
     def get_all_by_date_less_than(self, date: datetime) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.date < date]
+        return [issue for issue in self._issues.values() if issue.date_time < date]
 
     def add(self, issue: IssueComment):
         # Check if the issue already exists
@@ -46,7 +46,7 @@ class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[U
     def get_by_id(self, issue_id: GenericUUID) -> IssueComment:
         return self._issues.get(issue_id)
 
-    def save(self, entity: IssueComment):
-        if entity.id not in self._issues:
-            raise ValueError(f"Issue with id {entity.id} does not exist")
-        self._issues[entity.id] = entity
+    def save(self, issue_comment: IssueComment):
+        if issue_comment.id not in self._issues:
+            raise ValueError(f"Issue with id {issue_comment.id} does not exist")
+        self._issues[issue_comment.id] = issue_comment

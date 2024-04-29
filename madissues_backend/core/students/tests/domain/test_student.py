@@ -13,7 +13,7 @@ class TestStudent(unittest.TestCase):
     def setUp(self):
         self.valid_student_data = {
             'id': GenericUUID.next_id(),
-            'organization': GenericUUID.next_id(),
+            'organization_id': GenericUUID.next_id(),
             'email': 'test@example.com',
             'first_name': 'John',
             'last_name': 'Doe',
@@ -41,7 +41,7 @@ class TestStudent(unittest.TestCase):
 
     def test_missing_organization(self):
         invalid_student_data = self.valid_student_data.copy()
-        del invalid_student_data['organization']
+        del invalid_student_data['organization_id']
         with self.assertRaises(ValidationError):
             Student(**invalid_student_data)
 
