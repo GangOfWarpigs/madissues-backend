@@ -57,7 +57,7 @@ class IssueMother:
             details=IssueMother.random_details(),
             proofs=IssueMother.random_image_links(),
             status=IssueMother.random_status(),
-            timestamp=datetime.now() - timedelta(days=random.randint(0, 365)),
+            date_time=datetime.now() - timedelta(days=random.randint(0, 365)),
             course=GenericUUID.next_id(),
             teachers=IssueMother.random_uuid_list(random.randint(1, 3)),
             student=GenericUUID.next_id(),
@@ -82,7 +82,7 @@ class IssueMother:
             author=author,
             likes=IssueMother.random_uuid_list(random.randint(0, 10)),
             content=IssueMother.random_content(),
-            timestamp=datetime.now(),
+            date_time=datetime.now(),
             response_to=None if random.choice([True, False]) else GenericUUID.next_id()
         )
 

@@ -14,7 +14,7 @@ class TestIssue(unittest.TestCase):
             'details': 'Test details',
             'proofs': ['https://example.com/image1.jpg', 'https://example.com/image2.png'],
             'status': 'Queued',
-            'timestamp': datetime.now(),
+            'date_time': datetime.now(),
             'course': GenericUUID.next_id(),
             'teachers': [GenericUUID.next_id(), GenericUUID.next_id()],
             'student': GenericUUID.next_id(),
@@ -44,9 +44,9 @@ class TestIssue(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 
-    def test_missing_timestamp(self):
+    def test_missing_date_time(self):
         invalid_issue_data = self.valid_issue_data.copy()
-        del invalid_issue_data['timestamp']
+        del invalid_issue_data['date_time']
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 

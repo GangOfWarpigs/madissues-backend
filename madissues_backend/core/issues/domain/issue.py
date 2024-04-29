@@ -18,7 +18,7 @@ class Issue(AggregateRoot[GenericUUID]):
     details: Details
     proofs: list[LinkToImage]  # List of image links
     status: Status  # Queued, In progress, Solved, Not Solved
-    timestamp: datetime
+    date_time: datetime
     course: GenericUUID
     teachers: list[GenericUUID]
     student: GenericUUID

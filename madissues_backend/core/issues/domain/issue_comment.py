@@ -14,5 +14,5 @@ class IssueComment(Entity[GenericUUID]):
     author: GenericUUID
     likes: list[GenericUUID]
     content: Content
-    timestamp: datetime
+    date_time: datetime
     response_to: GenericUUID | None

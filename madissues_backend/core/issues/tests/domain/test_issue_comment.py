@@ -14,7 +14,7 @@ class TestIssueComment(unittest.TestCase):
             'author': GenericUUID.next_id(),
             'likes': [GenericUUID.next_id()],
             'content': 'Test comment content',
-            'timestamp': datetime.now(),
+            'date_time': datetime.now(),
             'response_to': None
         }
 
@@ -46,9 +46,9 @@ class TestIssueComment(unittest.TestCase):
         with self.assertRaises(ValidationError):
             IssueComment(**invalid_comment_data)
 
-    def test_missing_timestamp(self):
+    def test_missing_date_time(self):
         invalid_comment_data = self.valid_comment_data.copy()
-        del invalid_comment_data['timestamp']
+        del invalid_comment_data['date_time']
         with self.assertRaises(ValidationError):
             IssueComment(**invalid_comment_data)
 

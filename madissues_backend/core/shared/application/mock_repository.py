@@ -11,7 +11,8 @@ class EntityTable:
             'owners': {},
             'organizations': {},
             'students': {},
-            'issues': {}
+            'issues': {},
+            'issue_comments': {},
         }
 
 
