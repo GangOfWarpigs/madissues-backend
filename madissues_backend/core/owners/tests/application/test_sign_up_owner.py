@@ -1,4 +1,5 @@
-t puimport unittest
+import unittest
+
 from unittest.mock import Mock
 
 from madissues_backend.core.owners.application.commands.sign_up_owner_command import SignUpOwnerCommandRequest, \
@@ -158,11 +159,10 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         long_response = self.command.run(long_password_request)
 
         # Assert failures
-        print(short_response)
         self.assertFalse(short_response.success, "Signup should fail with too short password")
         self.assertFalse(long_response.success, "Signup should fail with too long password")
-        self.assertTrue("password" in short_response.error.error_field, "password")
-        self.assertTrue("password" in long_response.error.error_field, "password")
+        self.assertTrue("password_value" in short_response.error.error_field, "password")
+        self.assertTrue("password_value" in long_response.error.error_field, "password")
 
     def test_unhandled_exception(self):
         # Simulate an exception in a dependency
