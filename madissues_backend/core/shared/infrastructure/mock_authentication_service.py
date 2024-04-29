@@ -9,12 +9,15 @@ def createMockAuthenticationService(database: EntityTable):
             self.database: EntityTable = database
 
         def is_authenticated(self) -> bool:
-            raise NotImplementedError()
+            ...
 
         def get_user_id(self) -> int:
             raise NotImplementedError()
 
         def is_student(self) -> bool:
+            raise NotImplementedError()
+
+        def is_owner(self) -> bool:
             raise NotImplementedError()
 
         def is_site_admin(self) -> bool:
@@ -23,7 +26,5 @@ def createMockAuthenticationService(database: EntityTable):
         def is_council_member(self) -> bool:
             raise NotImplementedError()
 
-        def is_owner(self) -> bool:
-            raise NotImplementedError()
 
     return MockAuthenticationService
