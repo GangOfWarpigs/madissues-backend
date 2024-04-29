@@ -37,7 +37,6 @@ class TestStudentPreferences(unittest.TestCase):
         preferences = StudentPreferences(**valid_preferences_data)
         self.assertIsInstance(preferences, StudentPreferences)
 
-
     def test_invalid_language(self):
         invalid_preferences_data = {
             'id': GenericUUID.next_id(),

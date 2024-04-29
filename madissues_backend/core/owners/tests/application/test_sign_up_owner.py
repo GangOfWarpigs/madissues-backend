@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import Mock
 
-from pydantic import ValidationError
-
 from madissues_backend.core.owners.application.commands.sign_up_owner_command import SignUpOwnerCommandRequest, \
     SignUpOwnerCommand
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
@@ -11,8 +9,8 @@ from madissues_backend.core.shared.application.mock_repository import EntityTabl
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
-from madissues_backend.core.shared.infrastructure.mock_password_hasher import MockPasswordHasher
-from madissues_backend.core.shared.infrastructure.mock_token_generator import MockTokenGenerator
+from madissues_backend.core.shared.infrastructure.mocks.mock_password_hasher import MockPasswordHasher
+from madissues_backend.core.shared.infrastructure.mocks.mock_token_generator import MockTokenGenerator
 
 
 # Assuming these classes are defined and imported as before.
@@ -41,7 +39,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.token_generator.generate.return_value = "auth_token"
 
         # Execute the command with the valid request
-        response = self.command.execute(self.valid_request)
+        response = self.command.run(self.valid_request)
 
         # Assert success and check response data
         self.assertTrue(response.is_success(), "Signup should succeed with valid inputs")
@@ -53,7 +51,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.return_value = True
 
         # Execute the command with the valid request
-        response = self.command.execute(self.valid_request)
+        response = self.command.run(self.valid_request)
 
         # Assert failure due to existing email
         self.assertFalse(response.success, "Signup should fail when email already exists")
@@ -74,7 +72,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.return_value = False
 
         # Execute the command with mismatched passwords
-        response = self.command.execute(mismatched_request)
+        response = self.command.run(mismatched_request)
 
         # Assert failure due to password mismatch
         self.assertFalse(response.success, "Signup should fail when passwords do not match")
@@ -95,7 +93,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.return_value = False
 
         # Test validation
-        response = self.command.execute(empty_request)
+        response = self.command.run(empty_request)
         self.assertTrue(response.is_error())
 
     def test_special_characters_in_email(self):
@@ -112,7 +110,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         self.owner_repository.exists_owner_with_email.return_value = False
 
-        response = self.command.execute(special_email_request)
+        response = self.command.run(special_email_request)
         print(response)
         self.assertFalse(response.success, "Signup should fail with invalid email format")
         self.assertTrue("email" in response.error.error_field, "Signup should fail with invalid email format")
@@ -129,7 +127,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         )
 
         self.owner_repository.exists_owner_with_email.return_value = False
-        response = self.command.execute(invalid_phone_request)
+        response = self.command.run(invalid_phone_request)
         self.assertTrue("phone_number" in response.error.error_field, "Test must fail because phone number")
 
     def test_password_length_extremes(self):
@@ -156,8 +154,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         )
 
         # Execute tests
-        short_response = self.command.execute(short_password_request)
-        long_response = self.command.execute(long_password_request)
+        short_response = self.command.run(short_password_request)
+        long_response = self.command.run(long_password_request)
 
         # Assert failures
         print(short_response)
@@ -172,7 +170,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         self.owner_repository.exists_owner_with_email.side_effect = Exception("Unexpected error")
 
         # Execute the command
-        self.assertEqual(self.command.execute(self.valid_request).error.error_code, -1,
+        self.assertEqual(self.command.run(self.valid_request).error.error_code, -1,
                          "Unexpected erros must throw -1 code error")
 
     def test_end_to_end_command_with_mocks(self):

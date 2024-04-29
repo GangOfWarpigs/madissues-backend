@@ -14,6 +14,17 @@ class Command(Generic[CommandRequest, CommandResponse]):
     def execute(self, request: CommandRequest) -> Response[CommandResponse]:
         pass
 
+    def run(self, request: CommandRequest) -> Response[CommandResponse]:
+        try:
+            return self.execute(request)
+        except ValidationError as e:
+            field: list[str] = json.loads(e.json())[0]["loc"]
+            return Response.field_fail(message='{} must be valid'.format(", ".join(field)), field=field)
+        except ValueError as e:
+            return Response.fail(message=str(e))
+        except Exception as e:
+            return Response.fail(code=-1, message="An unexpected error occurred")
+
 
 def authenticated_only(cls):
     original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
@@ -78,20 +89,3 @@ def council_members_only(cls):
 
     cls.execute = new_execute
     return cls
-
-
-def command_error_handler(
-        func: Callable[[Any, CommandRequest], Response[CommandResponse]]) -> Callable[[Any, CommandRequest], Response[CommandResponse]]:
-    """ Decorator to handle exceptions in command execution methods """
-
-    def wrapper(self: Any, request: CommandRequest) -> Response[CommandResponse]:
-        try:
-            return func(self, request)
-        except ValidationError as e:
-            field: list[str] = json.loads(e.json())[0]["loc"]
-            return Response.field_fail(message='{} must be valid'.format(", ".join(field)), field=field)
-        except ValueError as e:
-            return Response.fail(message=str(e))
-        except Exception as e:
-            return Response.fail(code=-1, message="An unexpected error occurred")
-    return wrapper

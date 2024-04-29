@@ -4,8 +4,7 @@ from pydantic import BaseModel, ValidationError
 
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
 from madissues_backend.core.owners.domain.owner import Owner
-from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse, \
-    command_error_handler
+from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
@@ -34,7 +33,6 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
         self.password_hasher = password_hasher
         self.token_generator = token_generator
 
-    @command_error_handler
     def execute(self, request: SignUpOwnerCommandRequest) -> Response[SignUpOwnerCommandResponse]:
         if self.owner_repository.exists_owner_with_email(request.email):
             return Response.fail(message="Email is already in use")
