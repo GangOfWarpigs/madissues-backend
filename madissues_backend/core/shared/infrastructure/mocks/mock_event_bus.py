@@ -3,7 +3,7 @@ from madissues_backend.core.shared.application.event_handler import EventHandler
 from madissues_backend.core.shared.domain.events import DomainEvent
 
 
-class InMemoryEventBus(EventBus):
+class MockEventBus(EventBus):
 
     handlers: dict[str, list[EventHandler]] = {}
 

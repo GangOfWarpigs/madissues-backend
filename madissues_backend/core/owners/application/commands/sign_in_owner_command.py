@@ -2,8 +2,7 @@ from pydantic import BaseModel
 
 from madissues_backend.core.owners.application.ports.owner_repository import OwnerRepository
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
-from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse, \
-    command_error_handler
+from madissues_backend.core.shared.application.command import Command, CommandRequest, CommandResponse
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
 from madissues_backend.core.shared.domain.response import Response
 
@@ -18,13 +17,10 @@ class SignInOwnerCommandResponse(BaseModel):
 
 
 class SignInOwnerCommand(Command[SignInOwnerCommandRequest, SignInOwnerCommandResponse]):
-    def __init__(self, authentication_service: AuthenticationService, repository: OwnerRepository,
-                 password_hasher: PasswordHasher):
-        self.authentication_service = authentication_service
+    def __init__(self, repository: OwnerRepository, password_hasher: PasswordHasher):
         self.repository = repository
         self.password_hasher = password_hasher
 
-    @command_error_handler
     def execute(self, request: SignInOwnerCommandRequest) -> Response[SignInOwnerCommandResponse]:
         owner = self.repository.get_owner_by_email(request.email)
 

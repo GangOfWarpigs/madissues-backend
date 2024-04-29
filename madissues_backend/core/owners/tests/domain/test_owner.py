@@ -4,8 +4,8 @@ from pydantic import ValidationError
 
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.owners.domain.owner import Owner
-from madissues_backend.core.shared.infrastructure.mock_password_hasher import MockPasswordHasher
-from madissues_backend.core.shared.infrastructure.mock_token_generator import MockTokenGenerator
+from madissues_backend.core.shared.infrastructure.mocks.mock_password_hasher import MockPasswordHasher
+from madissues_backend.core.shared.infrastructure.mocks.mock_token_generator import MockTokenGenerator
 
 
 class OwnerTests(unittest.TestCase):
