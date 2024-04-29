@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import ValidationError
 
 from madissues_backend.core.issues.domain.issue_comment import IssueComment
+from madissues_backend.core.issues.domain.issue_mother import IssueMother
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
@@ -64,6 +65,23 @@ class TestIssueComment(unittest.TestCase):
         valid_comment_data['response_to'] = valid_response_to
         comment = IssueComment(**valid_comment_data)
         self.assertEqual(comment.response_to, valid_response_to)
+
+    def test_invalid_likes(self):
+        invalid_comment_data = self.valid_comment_data.copy()
+        invalid_comment_data['likes'] = ['invalid_uuid']
+        with self.assertRaises(ValidationError):
+            IssueComment(**invalid_comment_data)
+
+    def test_comment_tree(self):
+        response_to = GenericUUID.next_id()
+        comment = IssueMother.random_issue_comment()
+        comment.response_to = response_to
+        self.assertEqual(comment.response_to, response_to)
+        # Add another response to the previous comment
+        response_to_2 = GenericUUID.next_id()
+        comment_2 = IssueMother.random_issue_comment()
+        comment_2.response_to = response_to
+        self.assertEqual(comment_2.response_to, response_to)
 
 
 if __name__ == '__main__':

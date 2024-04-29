@@ -75,7 +75,7 @@ class IssueMother:
         return random.choice(contents)
 
     @staticmethod
-    def random_issue_comment(issue_id: GenericUUID, author: GenericUUID) -> IssueComment:
+    def random_issue_comment(issue_id: GenericUUID = GenericUUID.next_id(), author: GenericUUID = GenericUUID.next_id()) -> IssueComment:
         return IssueComment(
             id=GenericUUID.next_id(),
             issue_id=issue_id,
