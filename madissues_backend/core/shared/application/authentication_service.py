@@ -25,3 +25,4 @@ class AuthenticationService(ABC):
     @abstractmethod
     def is_owner(self) -> bool:
         ...
+
