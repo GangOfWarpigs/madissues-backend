@@ -22,7 +22,7 @@ class Owner(AggregateRoot[GenericUUID]):
 
     def set_password(self, raw_password, hasher: PasswordHasher):
         password_validator = Password(password_value=raw_password)
-        self.password = hasher.hash(password_validator.value)
+        self.password = hasher.hash(password_validator.password_value)
 
     def generate_auth_token(self, token_generator: TokenGenerator):
         self.token = token_generator.generate()

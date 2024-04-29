@@ -29,4 +29,4 @@ class Student(AggregateRoot[GenericUUID]):
 
     def set_password(self, raw_password: str, hasher: PasswordHasher):
         new_password = Password(password_value=raw_password)
-        self.password = hasher.hash(new_password.value)
+        self.password = hasher.hash(new_password.password_value)

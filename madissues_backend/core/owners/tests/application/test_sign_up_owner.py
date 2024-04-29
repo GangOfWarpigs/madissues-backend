@@ -187,7 +187,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
             verify_password="SecurePassword112233*",
             phone_number="599200100"
         ))
-        assert response.is_success() == True, "Must succeed"
+        assert response.is_success() is True, "Must succeed"
         self.assertIn(GenericUUID(response.success.owner_id), db.tables["owners"])
 
 # Uncomment below to run tests

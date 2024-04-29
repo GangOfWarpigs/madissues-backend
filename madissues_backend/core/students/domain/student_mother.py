@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 from uuid import uuid4
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
-from madissues_backend.core.shared.infrastructure.mock_password_hasher import MockPasswordHasher
+from madissues_backend.core.shared.infrastructure.mocks.mock_password_hasher import MockPasswordHasher
 
 from madissues_backend.core.students.domain.student import Student
 from madissues_backend.core.students.domain.student_preferences import StudentPreferences
