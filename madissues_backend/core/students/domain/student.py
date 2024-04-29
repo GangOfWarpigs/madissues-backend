@@ -11,7 +11,7 @@ from madissues_backend.core.students.domain.student_profile import StudentProfil
 
 
 class Student(AggregateRoot[GenericUUID]):
-    organization: GenericUUID
+    organization_id: GenericUUID
     email: Email
     first_name: Annotated[str, Field(min_length=1)]
     last_name: Annotated[str, Field(min_length=1)]

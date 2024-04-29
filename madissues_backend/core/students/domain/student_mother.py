@@ -60,7 +60,7 @@ class StudentMother:
         raw_password = StudentMother.random_password()
         student = Student(
             id=StudentMother.random_generic_uuid(),
-            organization=StudentMother.random_generic_uuid(),
+            organization_id=StudentMother.random_generic_uuid(),
             email=StudentMother.random_email(),
             first_name=StudentMother.random_name(),
             last_name=StudentMother.random_name(),
