@@ -27,6 +27,6 @@ class Student(AggregateRoot[GenericUUID]):
     def __init__(self, **data):
         super().__init__(**data)
 
-    def set_password(self, raw_password, hasher: PasswordHasher):
-        password = Password(value=raw_password)
-        self.password = hasher.hash(password.password)
+    def set_password(self, raw_password: str, hasher: PasswordHasher):
+        new_password = Password(value=raw_password)
+        self.password = hasher.hash(new_password.value)

@@ -6,9 +6,9 @@ from madissues_backend.core.shared.domain.value_objects import ValueObject
 
 
 class Password(ValueObject):
-    password: str
+    value: str
 
-    @field_validator('password', mode='before')
+    @field_validator('value', mode='before')
     @classmethod
     def is_secure_password(cls, password: str) -> str:
         min_length = 8
