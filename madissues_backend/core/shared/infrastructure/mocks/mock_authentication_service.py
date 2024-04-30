@@ -15,7 +15,7 @@ def create_mock_authentication_service(database: EntityTable):
                     return True
             return False
 
-        def get_user_id(self) -> int | None:
+        def get_user_id(self) -> str | None:
             owners = self.database.tables["owners"]
             students = self.database.tables["students"]
             for owner in owners.values():

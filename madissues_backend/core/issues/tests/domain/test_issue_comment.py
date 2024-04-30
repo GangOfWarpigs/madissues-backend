@@ -77,8 +77,6 @@ class TestIssueComment(unittest.TestCase):
         comment = IssueMother.random_issue_comment()
         comment.response_to = response_to
         self.assertEqual(comment.response_to, response_to)
-        # Add another response to the previous comment
-        response_to_2 = GenericUUID.next_id()
         comment_2 = IssueMother.random_issue_comment()
         comment_2.response_to = response_to
         self.assertEqual(comment_2.response_to, response_to)
