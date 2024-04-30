@@ -113,7 +113,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         response = self.command.run(special_email_request)
         self.assertFalse(response.success, "Signup should fail with invalid email format")
-        self.assertTrue("email" in response.error.error_field, "Signup should fail with invalid email format")
+        self.assertIn("email", response.error.error_field, "Signup should fail with invalid email format")
 
     def test_phone_number_validation(self):
         # Assuming phone number validation is added, testing an invalid phone number
@@ -128,7 +128,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         self.owner_repository.exists_owner_with_email.return_value = False
         response = self.command.run(invalid_phone_request)
-        self.assertTrue("phone_number" in response.error.error_field, "Test must fail because phone number")
+        self.assertIn("phone_number", response.error.error_field, "Test must fail because phone number")
 
     def test_password_length_extremes(self):
         # Test with a very short password
@@ -160,8 +160,8 @@ class TestSignUpOwnerCommand(unittest.TestCase):
         # Assert failures
         self.assertFalse(short_response.success, "Signup should fail with too short password")
         self.assertFalse(long_response.success, "Signup should fail with too long password")
-        self.assertTrue("password_value" in short_response.error.error_field, "password")
-        self.assertTrue("password_value" in long_response.error.error_field, "password")
+        self.assertIn("password_value", short_response.error.error_field, "password")
+        self.assertIn("password_value", long_response.error.error_field, "password")
 
     def test_unhandled_exception(self):
         # Simulate an exception in a dependency

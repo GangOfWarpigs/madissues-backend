@@ -48,7 +48,7 @@ class TestSignInOwnerCommand(unittest.TestCase):
         command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
         response = command.run(request)
         assert response.is_success() is False, "The result must be valid with valid credentials"
-        assert response.error.error_code is 1, "Error code must be caused by mail"
+        assert response.error.error_code == 1, "Error code must be caused by mail"
 
     def test_login_failed_with_invalid_password(self):
         request = SignInOwnerCommandRequest(
@@ -58,4 +58,4 @@ class TestSignInOwnerCommand(unittest.TestCase):
         command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
         response = command.run(request)
         assert response.is_success() is False, "The result must be valid with valid credentials"
-        assert response.error.error_code is 2, "Error code must be caused by password"
+        assert response.error.error_code == 2, "Error code must be caused by password"

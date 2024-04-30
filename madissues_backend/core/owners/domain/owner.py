@@ -17,7 +17,7 @@ class Owner(AggregateRoot[GenericUUID]):
     last_name: Annotated[str, Field(min_length=1)]
     phone_number: str = Field(min_length=1, pattern=r'^(\+\d{1,3})?(\d{9,15})$')
     password: str = Field(default="",
-                          init=False)  # Minimo 8 caracteres, mayusculas obligatorias, caracter especial, un numero mínimo
+                          init=False)
     token: str = Field(default="", init=False)
 
     def __init__(self, **data):
