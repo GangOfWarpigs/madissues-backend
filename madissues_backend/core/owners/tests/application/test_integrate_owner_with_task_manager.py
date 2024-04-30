@@ -46,9 +46,7 @@ class TestIntegrateOwnerWithTaskManager(unittest.TestCase):
         ))
         assert response.is_success() is True, "Response must be successful"
         assert response.success.api_key == "mock-token1", "Api token must be saved successfully"
-        assert self.owner_repository.get_by_id(
-            GenericUUID(
-                self.authorization.get_user_id())).task_manager.token == "mock-token1", "Owner must be saved in db"
+        assert self.owner_repository.get_by_id(GenericUUID(self.authorization.get_user_id())).task_manager.token == "mock-token1", "Owner must be saved in db"
 
     def test_integrate_owner_failed_with_invalid_task_manager(self):
         command = IntegrateOwnerWithTaskManagerCommand(self.authorization, self.owner_repository,
@@ -68,4 +66,25 @@ class TestIntegrateOwnerWithTaskManager(unittest.TestCase):
             api_key="invalid-token1"
         ))
         assert response.is_error() is True, "Response must be failed"
-        assert  response.error.error_code == 1, "Must be failing because token is invalid"
+        assert response.error.error_code == 2, "Must be failing because token is invalid"
+
+    def test_integrate_owner_failed_with_empty_api_key(self):
+        command = IntegrateOwnerWithTaskManagerCommand(self.authorization, self.owner_repository,
+                                                       self.task_manager_service_factory)
+        response = command.run(IntegrateOwnerWithTaskManagerRequest(
+            name="mock",
+            api_key=""
+        ))
+        assert response.is_error() is True, "Response must be failed"
+        assert response.error.error_code == 2, "Must be failing because api_key is empty"
+
+    def test_integrate_owner_failed_with_empty_name(self):
+        command = IntegrateOwnerWithTaskManagerCommand(self.authorization, self.owner_repository,
+                                                       self.task_manager_service_factory)
+        response = command.run(IntegrateOwnerWithTaskManagerRequest(
+            name="",
+            api_key="mock-token1"
+        ))
+        assert response.is_error() is True, "Response must be failed"
+        assert response.error.error_code == 1, "Must be failing because name is empty"
+

@@ -35,9 +35,9 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
 
     def execute(self, request: SignUpOwnerCommandRequest) -> Response[SignUpOwnerCommandResponse]:
         if self.owner_repository.exists_owner_with_email(request.email):
-            return Response.fail(message="Email is already in use")
+            return Response.fail(code=2, message="Email is already in use")
         if self.passwords_does_not_match(request.password, request.verify_password):
-            return Response.fail(message="Passwords do not match")
+            return Response.fail(code=3, message="Passwords do not match")
 
         owner = Owner(
             id=GenericUUID.next_id(),

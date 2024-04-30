@@ -32,7 +32,7 @@ class IntegrateOwnerWithTaskManagerCommand(Command[IntegrateOwnerWithTaskManager
         owner_id = self.authentication_service.get_user_id()
         task_manager = self.task_manager_factory.get_task_manager_by_name(request.name)
         if not task_manager.is_api_key_valid(request.api_key):
-            return Response.fail(code=1, message="Api Key is invalid")
+            return Response.fail(code=2, message="Api Key is invalid")
         owner = self.repository.get_by_id(GenericUUID(owner_id))
         owner.integrate_task_manager(request.name, request.api_key)
         self.repository.save(owner)

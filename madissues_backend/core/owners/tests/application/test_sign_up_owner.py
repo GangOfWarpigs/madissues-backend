@@ -56,7 +56,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         # Assert failure due to existing email
         self.assertFalse(response.success, "Signup should fail when email already exists")
-        self.assertEqual(response.error.error_message, "Email is already in use",
+        self.assertEqual(response.error.error_code, 2,
                          "Error message should indicate existing email")
 
     def test_password_mismatch(self):
@@ -77,7 +77,7 @@ class TestSignUpOwnerCommand(unittest.TestCase):
 
         # Assert failure due to password mismatch
         self.assertFalse(response.success, "Signup should fail when passwords do not match")
-        self.assertEqual(response.error.error_message, "Passwords do not match",
+        self.assertEqual(response.error.error_code, 3,
                          "Error message should indicate mismatched passwords")
 
     def test_empty_field_submission(self):

@@ -40,7 +40,7 @@ class TestSignInOwnerCommand(unittest.TestCase):
         assert response.is_success() is True, "The result must be valid with valid credentials"
         assert response.success.token is self.response.success.token, "Tokens must be the same"
 
-    def test_login_failed_with_invalid_mail(self):
+    def test_login_failed_with_non_valid_email(self):
         request = SignInOwnerCommandRequest(
             email="john.doe@example.comm",
             password="ValidPass123!"
@@ -48,7 +48,7 @@ class TestSignInOwnerCommand(unittest.TestCase):
         command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
         response = command.run(request)
         assert response.is_success() is False, "The result must be valid with valid credentials"
-        assert response.error.error_code == 1, "Error code must be caused by mail"
+        assert response.error.error_code == 2, "Error code must be caused by mail"
 
     def test_login_failed_with_invalid_password(self):
         request = SignInOwnerCommandRequest(
@@ -58,4 +58,34 @@ class TestSignInOwnerCommand(unittest.TestCase):
         command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
         response = command.run(request)
         assert response.is_success() is False, "The result must be valid with valid credentials"
-        assert response.error.error_code == 2, "Error code must be caused by password"
+        assert response.error.error_code == 3, "Error code must be caused by password"
+
+    def test_login_failed_with_empty_email(self):
+        request = SignInOwnerCommandRequest(
+            email="",
+            password="ValidPass123!"
+        )
+        command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
+        response = command.run(request)
+        assert response.is_success() is False, "The result must be failed"
+        assert response.error.error_code == 2, "Error code must be caused by empty email"
+
+    def test_login_failed_with_empty_password(self):
+        request = SignInOwnerCommandRequest(
+            email="john.doe@example.com",
+            password=""
+        )
+        command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
+        response = command.run(request)
+        assert response.is_success() is False, "The result must be failed"
+        assert response.error.error_code == 3, "Error code must be caused by empty password"
+
+    def test_login_failed_with_empty_email_and_password(self):
+        request = SignInOwnerCommandRequest(
+            email="",
+            password=""
+        )
+        command = SignInOwnerCommand(self.owner_repository, self.password_hasher)
+        response = command.run(request)
+        assert response.is_success() is False, "The result must be failed"
+        assert response.error.error_code == 2, "Error code must be caused by empty email and password"
