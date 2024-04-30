@@ -9,4 +9,4 @@ class OwnerEmailUpdatedPayload(BaseModel):
 
 
 class OwnerEmailUpdated(DomainEvent[OwnerEmailUpdatedPayload]):
-    name = "@owner/email_updated"
+    name : str = "@owner/email_updated"

@@ -17,9 +17,13 @@ def create_mock_authentication_service(database: EntityTable):
 
         def get_user_id(self) -> int | None:
             owners = self.database.tables["owners"]
+            students = self.database.tables["students"]
             for owner in owners.values():
                 if owner.token == self.token:
-                    return owner.id
+                    return str(owner.id)
+            for student in students.values():
+                if student.token == self.token:
+                    return str(student.id)
             return None
 
         def is_student(self) -> bool:

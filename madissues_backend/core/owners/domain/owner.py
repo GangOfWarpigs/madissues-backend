@@ -31,6 +31,7 @@ class Owner(AggregateRoot[GenericUUID]):
         self.token = token_generator.generate()
 
     def change_email(self, email: Email):
+        self.validate_field("email", email)
         self.email = email
         self.register_event(
             OwnerEmailUpdated(payload=OwnerEmailUpdatedPayload(user_id=str(self.id), email=email))

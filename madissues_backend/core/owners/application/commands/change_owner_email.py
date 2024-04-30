@@ -13,6 +13,7 @@ class ChangeOwnerEmailRequest(BaseModel):
 
 
 class ChangeOwnerEmailResponse(BaseModel):
+    id : str
     email: str
     first_name: str
     last_name: str
@@ -31,8 +32,9 @@ class ChangeOwnerEmailCommand(Command[ChangeOwnerEmailRequest, ChangeOwnerEmailR
         owner = self.owner_repository.get_by_id(GenericUUID(owner_id))
         owner.change_email(request.email)
         self.owner_repository.save(owner)
-        self.event_bus.notify(owner.collect_events())
+        self.event_bus.notify_all(owner.collect_events())
         return Response.ok(ChangeOwnerEmailResponse(
+            id=owner_id,
             email=owner.email,
             first_name=owner.first_name,
             last_name=owner.last_name,

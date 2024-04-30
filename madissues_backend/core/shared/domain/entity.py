@@ -11,6 +11,9 @@ EntityId = TypeVar("EntityId", bound=GenericUUID)
 class Entity(BaseModel, Generic[EntityId]):
     id: EntityId
 
+    def validate_field(self, name, value):
+        self.__class__.__pydantic_validator__.validate_assignment(self.__class__.model_construct(), name, value)
+
 
 EntityType = TypeVar("EntityType", bound=Entity)
 

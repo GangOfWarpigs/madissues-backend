@@ -1,12 +1,9 @@
 from typing import ClassVar, Generic, TypeVar
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 EventPayload = TypeVar("EventPayload")
 
 
 class DomainEvent(BaseModel, Generic[EventPayload]):
-    name: ClassVar[str] = "event_name"
+    name: str = Field(init=False)
     payload: EventPayload
-
-    def __init__(self, payload: EventPayload):
-        self.payload = payload

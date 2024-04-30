@@ -23,7 +23,7 @@ class Command(Generic[CommandRequest, CommandResponse]):
         except ValueError as e:
             return Response.fail(message=str(e))
         except Exception as e:
-            return Response.fail(code=-1, message="An unexpected error occurred")
+            return Response.fail(code=-1, message=str(e))
 
 
 def authenticated_only(cls):
@@ -32,7 +32,7 @@ def authenticated_only(cls):
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
         if not self.authentication_service.is_authenticated():
-            return Response.fail("User must be authenticated")
+            return Response.fail(code=403, message="User must be authenticated")
         return original_execute(self, request)
 
     cls.execute = new_execute
@@ -45,7 +45,7 @@ def students_only(cls):
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
         if not self.authentication_service.is_student():
-            return Response.fail("User must be a student")
+            return Response.fail(code=403, message="User must be a student")
         return original_execute(self, request)
 
     cls.execute = new_execute
@@ -58,7 +58,7 @@ def owners_only(cls):
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
         if not self.authentication_service.is_owner():
-            return Response.fail("User must be a owner")
+            return Response.fail(code=403, message="User must be a owner")
         return original_execute(self, request)
 
     cls.execute = new_execute
@@ -71,7 +71,7 @@ def site_admins_only(cls):
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
         if not self.authentication_service.is_site_admin():
-            return Response.fail("User must be a site admin")
+            return Response.fail(code=403, message="User must be a site admin")
         return original_execute(self, request)
 
     cls.execute = new_execute
@@ -84,7 +84,7 @@ def council_members_only(cls):
     @wraps(original_execute)
     def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
         if not self.authentication_service.is_council_member():
-            return Response.fail("User must be a council member")
+            return Response.fail(code=403, message="User must be a council member")
         return original_execute(self, request)
 
     cls.execute = new_execute

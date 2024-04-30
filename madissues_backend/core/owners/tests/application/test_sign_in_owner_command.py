@@ -13,15 +13,13 @@ from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 
 
-class TestSignUpOwnerCommand(unittest.TestCase):
+class TestSignInOwnerCommand(unittest.TestCase):
     def setUp(self):
         self.db = EntityTable()
         self.owner_repository = MockOwnerRepository(self.db)
         self.password_hasher = SHA256PasswordHasher()
         self.token_generator = UUIDTokenGenerator()
         self.command = SignUpOwnerCommand(self.owner_repository, self.password_hasher, self.token_generator)
-
-        # Valid request setup
         self.valid_request = SignUpOwnerCommandRequest(
             first_name="John",
             last_name="Doe",
