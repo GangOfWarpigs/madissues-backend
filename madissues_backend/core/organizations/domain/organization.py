@@ -20,6 +20,5 @@ class Organization(AggregateRoot[GenericUUID]):
     contact_info: ContactInfo  # Mayor a 1, maxim 80
     primary_color: HexadecimalColor  # hexadecimal valid
     secondary_color: HexadecimalColor  # hexadecimal valid
-    banner: LinkToImage  # Link a una image
-    trello_id: GenericUUID
+    board_id: str
 

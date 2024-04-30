@@ -9,7 +9,7 @@ htmlcov
 dist
 site
 .coverage
-coverage-reports/coverage.xml
+coverage-reports/coverage-1.xml
 .netlify
 test.db
 log.txt

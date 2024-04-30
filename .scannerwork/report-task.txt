@@ -2,5 +2,5 @@ projectKey=madissues-frontend
 serverUrl=http://localhost:9000
 serverVersion=10.5.0.89998
 dashboardUrl=http://localhost:9000/dashboard?id=madissues-frontend
-ceTaskId=3c3c3503-4c64-4fe8-9da5-04e3eebaf80f
-ceTaskUrl=http://localhost:9000/api/ce/task?id=3c3c3503-4c64-4fe8-9da5-04e3eebaf80f
+ceTaskId=6d8a6842-e44b-42eb-9dba-ca6732e8056d
+ceTaskUrl=http://localhost:9000/api/ce/task?id=6d8a6842-e44b-42eb-9dba-ca6732e8056d

@@ -16,8 +16,7 @@ class TestOrganization(unittest.TestCase):
             'contact_info': 'test@example.com',
             'primary_color': '#ff0000',
             'secondary_color': '#00ff00',
-            'banner': 'https://example.com/banner.jpg',
-            'trello_id': GenericUUID.next_id(),
+            'board_id': str(GenericUUID.next_id()),
         }
 
     def test_valid_organization(self):

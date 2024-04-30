@@ -19,8 +19,7 @@ class OrganizationMother:
             contact_info=OrganizationMother.generate_phone_number(),
             primary_color=OrganizationMother.generate_hex_color(),
             secondary_color=OrganizationMother.generate_hex_color(),
-            banner=OrganizationMother.generate_image_link(),
-            trello_id=GenericUUID.next_id()
+            board_id=str(GenericUUID.next_id())
         )
         return organization
 

@@ -1,10 +1,8 @@
 from typing import Annotated
-
-from pydantic import Field, BaseModel
-
+from pydantic import Field
 from madissues_backend.core.owners.domain.owner_email_updated import OwnerEmailUpdatedPayload, OwnerEmailUpdated
+from madissues_backend.core.owners.domain.owner_task_manager import OwnerTaskManager
 from madissues_backend.core.shared.domain.entity import AggregateRoot
-from madissues_backend.core.shared.domain.events import DomainEvent
 from madissues_backend.core.shared.domain.token_generator import TokenGenerator
 from madissues_backend.core.shared.domain.value_objects import Email, GenericUUID
 from madissues_backend.core.shared.domain.password import Password
@@ -19,6 +17,7 @@ class Owner(AggregateRoot[GenericUUID]):
     password: str = Field(default="",
                           init=False)
     token: str = Field(default="", init=False)
+    task_manager: OwnerTaskManager | None = Field(init=False, default=None)
 
     def __init__(self, **data):
         super().__init__(**data)
