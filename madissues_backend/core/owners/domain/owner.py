@@ -18,7 +18,6 @@ class Owner(AggregateRoot[GenericUUID]):
     password: str = Field(default="",
                           init=False)
     token: str = Field(default="", init=False)
-    task_manager: OwnerTaskManager | None = Field(init=False, default=None)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -35,10 +34,4 @@ class Owner(AggregateRoot[GenericUUID]):
         self.email = email
         self.register_event(
             OwnerEmailUpdated(payload=OwnerEmailUpdatedPayload(user_id=str(self.id), email=email))
-        )
-
-    def integrate_task_manager(self, task_manager : str, api_token):
-        self.task_manager = OwnerTaskManager(
-            task_manager_name=task_manager,
-            token=api_token
         )
