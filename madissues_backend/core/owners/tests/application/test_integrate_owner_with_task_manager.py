@@ -47,7 +47,9 @@ class TestIntegrateOwnerWithTaskManager(unittest.TestCase):
         assert response.is_success() is True, "Response must be successful"
         assert response.success.api_key == "mock-token1", "Api token must be saved successfully"
         assert self.owner_repository.get_by_id(
-            GenericUUID(self.authorization.get_user_id())).task_manager.token == "mock-token1", "Owner must be saved in db"
+            GenericUUID(
+                self.authorization.get_user_id())).task_manager.token == "mock-token1", "Owner must be saved in db"
+
     def test_integrate_owner_failed_with_invalid_task_manager(self):
         command = IntegrateOwnerWithTaskManagerCommand(self.authorization, self.owner_repository,
                                                        self.task_manager_service_factory)
@@ -55,7 +57,15 @@ class TestIntegrateOwnerWithTaskManager(unittest.TestCase):
             name="invalid",
             api_key="mock-token1"
         ))
-        print(response)
-
-        assert response.is_error() is True, "Response must be successful"
+        assert response.is_error() is True, "Response must be failed"
         self.assertIn("task_manager_name", response.error.error_field, "Api token must be saved successfully")
+
+    def test_integrate_owner_failed_with_invalid_task_manager(self):
+        command = IntegrateOwnerWithTaskManagerCommand(self.authorization, self.owner_repository,
+                                                       self.task_manager_service_factory)
+        response = command.run(IntegrateOwnerWithTaskManagerRequest(
+            name="mock",
+            api_key="invalid-token1"
+        ))
+        assert response.is_error() is True, "Response must be failed"
+        assert  response.error.error_code == 1, "Must be failing because token is invalid"
