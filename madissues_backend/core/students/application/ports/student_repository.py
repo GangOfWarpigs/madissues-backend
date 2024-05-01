@@ -44,3 +44,9 @@ class StudentRepository(GenericRepository[GenericUUID, Student], ABC):
     def exists_with_email(self, email: str) -> bool:
         pass
 
+    @abstractmethod
+    def can_student_join_organization(self, organization_id: GenericUUID) -> bool:
+        pass
+
+
+

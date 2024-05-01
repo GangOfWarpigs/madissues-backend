@@ -41,7 +41,6 @@ class StudentMother:
     @staticmethod
     def random_profile() -> StudentProfile:
         return StudentProfile(
-            id=StudentMother.random_generic_uuid(),
             degree=StudentMother.random_generic_uuid(),
             joined_courses=[StudentMother.random_generic_uuid() for _ in range(random.randint(1, 5))]
         )
@@ -49,7 +48,6 @@ class StudentMother:
     @staticmethod
     def random_preferences() -> StudentPreferences:
         return StudentPreferences(
-            id=StudentMother.random_generic_uuid(),
             theme=StudentMother.random_theme(),
             language=StudentMother.random_language()
         )
