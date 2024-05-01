@@ -34,3 +34,6 @@ class Student(AggregateRoot[GenericUUID]):
 
     def generate_auth_token(self, token_generator: TokenGenerator):
         self.token = token_generator.generate()
+
+    def check_password(self, raw_password: str, hasher: PasswordHasher) -> bool:
+        return hasher.hash(Password(password_value=raw_password)) == self.password
