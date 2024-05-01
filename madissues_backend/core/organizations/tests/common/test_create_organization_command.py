@@ -58,11 +58,55 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         assert response.success.logo == "uploaded_was_called.png"
         assert self.organization_repository.get_by_id(GenericUUID(response.success.id)) is not None, "Must be not None"
 
+    def test_organization_is_created_with_non_valid_chars(self):
+        command = CreateOrganizationCommand(self.authorization,
+                                            self.organization_repository, self.storage)
+        response = command.run(CreateOrganizationRequest(
+            name="string",
+            description="string",
+            contact_info="string",
+            primary_color="string",
+            secondary_color="string"
+        ))
+
+        print(response)
+        assert response.is_error() == True, "Command must succed"
+
+    def test_organization_without_beeing_owner(self):
+        command = CreateOrganizationCommand(self.authorization_service("mock-token"),
+                                            self.organization_repository, self.storage)
+        response = command.run(CreateOrganizationRequest(
+            name="organization1",
+            logo="b64",
+            description="this is my organization",
+            contact_info="contact info",
+            primary_color="#f5f5f5",
+            secondary_color="#f5f5f5"
+        ))
+
+        assert response.is_error() == True, "Command must fail"
+        assert response.error.error_code ==403, "Command must fail because you are not authorized"
+
+
+    def test_organization_without_logo(self):
+        command = CreateOrganizationCommand(self.authorization,
+                                            self.organization_repository, self.storage)
+        response = command.run(CreateOrganizationRequest(
+            name="organization1",
+            description="this is my organization",
+            contact_info="contact info",
+            primary_color="#f5f5f5",
+            secondary_color="#f5f5f5"
+        ))
+
+        assert response.is_success() == True, "Command must succed"
+        assert response.success.logo == None, "Logo must be none"
+
     def test_create_organization_failed_with_empty_name(self):
         command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
             name="",
-            logo="b64",
+            logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -90,7 +134,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="b64",
+            logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
             description="",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -104,7 +148,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="b64",
+            logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
             description="",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -124,6 +168,4 @@ class TestCreateOrganizationCommand(unittest.TestCase):
             primary_color="#f5f5f5",
             secondary_color="#f5f5f5"
         ))
-        assert response.is_error() is True, "Organization should not be created when description is empty"
-        assert response.error.error_code == 1, "Error code must be caused by empty description"
-        self.assertIn("logo", response.error.error_field, "Must be caused by description")
+        assert response.is_error() is True, "Organization should not be created when logo is invalid"

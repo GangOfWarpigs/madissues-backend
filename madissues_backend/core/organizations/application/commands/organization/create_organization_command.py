@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
 from madissues_backend.core.shared.application.command import Command, CommandResponse, owners_only
@@ -14,7 +14,7 @@ from madissues_backend.core.owners.domain.owner import Owner
 
 class CreateOrganizationRequest(BaseModel):
     name: str
-    logo: str | None
+    logo: str | None = Field(default=None)
     description: str
     contact_info: str
     primary_color: str
@@ -25,7 +25,7 @@ class CreateOrganizationResponse(BaseModel):
     id : str
     owner_id: str
     name: str
-    logo: str
+    logo: str | None
     description: str
     contact_info: str
     primary_color: str
@@ -50,7 +50,7 @@ class CreateOrganizationCommand(Command[CreateOrganizationRequest, CreateOrganiz
             primary_color=request.primary_color,
             secondary_color=request.secondary_color
         )
-        organization.upload_logo(request.logo, self.storage)
+        if request.logo: organization.upload_logo(request.logo, self.storage)
         self.repository.add(organization)
         return Response.ok(CreateOrganizationResponse(
             **organization.dict(exclude=["owner_id", "id"]),

@@ -1,7 +1,9 @@
+import base64
+import re
 import uuid
 from typing import Annotated, Type, Any
 
-from pydantic import Field, BaseModel, GetCoreSchemaHandler
+from pydantic import Field, BaseModel, GetCoreSchemaHandler, field_validator
 from pydantic_core import core_schema
 
 
@@ -22,9 +24,22 @@ class GenericUUID(uuid.UUID):
             raise ValueError('Invalid UUID')
         return cls(value.hex)
 
+
 class ValueObject(BaseModel):
     pass
 
 
 Email = Annotated[str, Field(min_length=5, max_length=200, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')]
 LinkToImage = Annotated[str, Field(min_length=1, pattern=r'^.*\.(png|jpe?g|gif)$')]
+
+
+class Base64Field(BaseModel):
+    image: str
+
+    @field_validator('image')
+    def validate_base64(cls, v):
+        try:
+            base64.b64decode(v, validate=True)
+        except Exception:
+            raise ValueError('Invalid base64 format')
+        return v
