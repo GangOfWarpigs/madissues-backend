@@ -21,5 +21,5 @@ class LocalStorageService(StorageService):
         with open(path + final_name, "wb") as file:
             file.write(image_data)
 
-        return path + final_name
+        return str(path + final_name)
 
