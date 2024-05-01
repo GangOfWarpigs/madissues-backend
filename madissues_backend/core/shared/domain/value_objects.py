@@ -1,7 +1,8 @@
 import uuid
-from typing import Annotated
+from typing import Annotated, Type, Any
 
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, GetCoreSchemaHandler
+from pydantic_core import core_schema
 
 
 class GenericUUID(uuid.UUID):
@@ -20,7 +21,6 @@ class GenericUUID(uuid.UUID):
         if not isinstance(value, uuid.UUID):
             raise ValueError('Invalid UUID')
         return cls(value.hex)
-
 
 class ValueObject(BaseModel):
     pass

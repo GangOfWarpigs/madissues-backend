@@ -3,11 +3,13 @@ import unittest
 from madissues_backend.core.organizations.domain.organization_mother import OrganizationMother
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
     MockOrganizationRepository
-from madissues_backend.core.owners.domain.owner_mother import OwnerMother
-from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
+
 from madissues_backend.core.shared.application.mock_repository import EntityTable
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
+#FIXME: this two imports must not be here
+from madissues_backend.core.owners.domain.owner_mother import OwnerMother
+from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
 
 class TestMockOrganizationRepository(unittest.TestCase):
     def setUp(self):

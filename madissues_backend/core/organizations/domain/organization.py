@@ -4,6 +4,7 @@ from pydantic import Field
 
 from madissues_backend.core.organizations.domain.organization_task_manager import OrganizationTaskManager
 from madissues_backend.core.shared.domain.entity import AggregateRoot
+from madissues_backend.core.shared.domain.storage_service import StorageService
 from madissues_backend.core.shared.domain.task_manager import TaskManager
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
@@ -16,13 +17,13 @@ ContactInfo = Annotated[str, Field(min_length=1, max_length=80)]
 
 class Organization(AggregateRoot[GenericUUID]):
     owner_id: GenericUUID
-    name: Name   # Mayor a 1
-    logo: LinkToImage  # Link a una image
-    description: Description  # Mayor a 1, maxim 280
-    contact_info: ContactInfo  # Mayor a 1, maxim 80
-    primary_color: HexadecimalColor  # hexadecimal valid
-    secondary_color: HexadecimalColor  # hexadecimal valid
-    board_id: str
+    name: Name
+    logo: LinkToImage | None = Field(init=False, default=None)
+    description: Description
+    contact_info: ContactInfo
+    primary_color: HexadecimalColor
+    secondary_color: HexadecimalColor
+    board_id: str | None = Field(init=False, default=None)
     task_manager: OrganizationTaskManager | None = Field(init=False, default=None)
 
     def integrate_task_manager(self, task_manager: TaskManager, api_token):
@@ -30,3 +31,8 @@ class Organization(AggregateRoot[GenericUUID]):
             task_manager_name=task_manager,
             token=api_token
         )
+
+    def upload_logo(self, image, storage : StorageService):
+        logo = storage.upload_b64_image(image)
+        self.validate_field("logo", logo)
+        self.logo = logo
