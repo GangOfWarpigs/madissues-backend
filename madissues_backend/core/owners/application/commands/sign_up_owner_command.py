@@ -36,7 +36,7 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
     def execute(self, request: SignUpOwnerCommandRequest) -> Response[SignUpOwnerCommandResponse]:
         if self.owner_repository.exists_owner_with_email(request.email):
             return Response.fail(code=2, message="Email is already in use")
-        if self.passwords_does_not_match(request.password, request.verify_password):
+        if self.passwords_do_not_match(request.password, request.verify_password):
             return Response.fail(code=3, message="Passwords do not match")
 
         owner = Owner(
@@ -57,5 +57,5 @@ class SignUpOwnerCommand(Command[SignUpOwnerCommandRequest, SignUpOwnerCommandRe
         )
 
     @staticmethod
-    def passwords_does_not_match(password, verify_password):
+    def passwords_do_not_match(password, verify_password):
         return password != verify_password

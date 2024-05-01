@@ -3,6 +3,7 @@ from typing import Annotated
 from pydantic import Field
 
 from madissues_backend.core.shared.domain.entity import AggregateRoot
+from madissues_backend.core.shared.domain.token_generator import TokenGenerator
 from madissues_backend.core.shared.domain.value_objects import Email, GenericUUID
 from madissues_backend.core.shared.domain.password import Password
 from madissues_backend.core.shared.domain.password_hasher import PasswordHasher
@@ -20,7 +21,7 @@ class Student(AggregateRoot[GenericUUID]):
     is_site_admin: bool
     is_council_member: bool
     is_banned: bool
-    token: str
+    token: str = Field(default="", init=False)
     profile: StudentProfile
     preferences: StudentPreferences
 
@@ -30,3 +31,6 @@ class Student(AggregateRoot[GenericUUID]):
     def set_password(self, raw_password: str, hasher: PasswordHasher):
         new_password = Password(password_value=raw_password)
         self.password = hasher.hash(new_password.password_value)
+
+    def generate_auth_token(self, token_generator: TokenGenerator):
+        self.token = token_generator.generate()

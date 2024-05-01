@@ -24,12 +24,10 @@ class TestStudent(unittest.TestCase):
             'is_banned': False,
             'token': 'test_token',
             'profile': StudentProfile(
-                id=GenericUUID.next_id(),
                 degree=GenericUUID.next_id(),
                 joined_courses=[GenericUUID.next_id(), GenericUUID.next_id()]
             ),
             'preferences': StudentPreferences(
-                id=GenericUUID.next_id(),
                 language='en',
                 theme='Light'
             )
@@ -96,12 +94,6 @@ class TestStudent(unittest.TestCase):
     def test_missing_is_banned(self):
         invalid_student_data = self.valid_student_data.copy()
         del invalid_student_data['is_banned']
-        with self.assertRaises(ValidationError):
-            Student(**invalid_student_data)
-
-    def test_missing_token(self):
-        invalid_student_data = self.valid_student_data.copy()
-        del invalid_student_data['token']
         with self.assertRaises(ValidationError):
             Student(**invalid_student_data)
 

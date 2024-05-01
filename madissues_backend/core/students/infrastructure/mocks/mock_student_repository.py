@@ -13,6 +13,7 @@ class MockStudentRepository(StudentRepository, GenericMockRepository[GenericUUID
     def __init__(self, entity_table: EntityTable):
         super().__init__(entity_table)
         self.students = self.entity_table.tables["students"]
+        self.organizations = self.entity_table.tables["organizations"]
 
     def add(self, student: Student):
         if self.students.get(student.id):
@@ -59,4 +60,9 @@ class MockStudentRepository(StudentRepository, GenericMockRepository[GenericUUID
             if student.email == email:
                 return True
         return False
-    
+
+    def can_student_join_organization(self, organization_id: GenericUUID) -> bool:
+        organization = self.organizations.get(organization_id)
+        if not organization:
+            return False
+        return True

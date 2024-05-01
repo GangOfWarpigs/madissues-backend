@@ -9,7 +9,6 @@ from madissues_backend.core.students.domain.student_profile import StudentProfil
 class TestStudentProfile(unittest.TestCase):
     def test_valid_student_profile(self):
         valid_profile_data = {
-            'id': GenericUUID.next_id(),
             'degree': GenericUUID.next_id(),
             'joined_courses': [GenericUUID.next_id(), GenericUUID.next_id()]
         }
@@ -18,7 +17,6 @@ class TestStudentProfile(unittest.TestCase):
 
     def test_missing_degree(self):
         invalid_profile_data = {
-            'id': GenericUUID.next_id(),
             'joined_courses': [GenericUUID.next_id(), GenericUUID.next_id()]
         }
         with self.assertRaises(ValidationError):
@@ -26,7 +24,6 @@ class TestStudentProfile(unittest.TestCase):
 
     def test_missing_joined_courses(self):
         invalid_profile_data = {
-            'id': GenericUUID.next_id(),
             'degree': GenericUUID.next_id()
         }
         with self.assertRaises(ValidationError):
@@ -34,7 +31,6 @@ class TestStudentProfile(unittest.TestCase):
 
     def test_invalid_joined_courses(self):
         invalid_profile_data = {
-            'id': GenericUUID.next_id(),
             'degree': GenericUUID.next_id(),
             'joined_courses': ['a', 'b', 'c']
         }
@@ -42,17 +38,15 @@ class TestStudentProfile(unittest.TestCase):
             StudentProfile(**invalid_profile_data)
 
     def test_empty_joined_courses(self):
-        invalid_profile_data = {
-            'id': GenericUUID.next_id(),
+        valid_profile_data = {
             'degree': GenericUUID.next_id(),
             'joined_courses': []
         }
-        student_profile = StudentProfile(**invalid_profile_data)
+        student_profile = StudentProfile(**valid_profile_data)
         self.assertIsInstance(student_profile, StudentProfile)
 
     def test_invalid_joined_courses_type(self):
         invalid_profile_data = {
-            'id': GenericUUID.next_id(),
             'degree': GenericUUID.next_id(),
             'joined_courses': 'invalid_type'
         }

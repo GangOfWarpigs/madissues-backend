@@ -24,3 +24,4 @@ class Issue(AggregateRoot[GenericUUID]):
     student: GenericUUID
     task_manager_id: GenericUUID
     assigned_to: GenericUUID
+
