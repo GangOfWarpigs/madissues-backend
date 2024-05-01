@@ -16,7 +16,7 @@ class GenericRepository(Generic[EntityId, EntityType], metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_by_id(self, id: EntityId) -> EntityType:
+    def get_by_id(self, id: EntityId) -> EntityType | None:
         raise NotImplementedError()
 
     @abc.abstractmethod

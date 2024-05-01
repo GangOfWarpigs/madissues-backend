@@ -23,7 +23,6 @@ class Organization(AggregateRoot[GenericUUID]):
     contact_info: ContactInfo
     primary_color: HexadecimalColor
     secondary_color: HexadecimalColor
-    board_id: str | None = Field(init=False, default=None)
     task_manager: OrganizationTaskManager | None = Field(init=False, default=None)
 
     def integrate_task_manager(self, task_manager: TaskManager, api_token):

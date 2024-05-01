@@ -7,7 +7,7 @@ from madissues_backend.core.shared.application.mock_repository import GenericMoc
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
-class MockOrganizationRepository(OrganizationRepository, GenericMockRepository[UUID, Organization]):
+class MockOrganizationRepository(OrganizationRepository, GenericMockRepository[GenericUUID, Organization]):
     def __init__(self, entity_table: EntityTable):
         super().__init__(entity_table)
         self._organizations: Dict[UUID, Organization] = self.entity_table.tables["organizations"]
@@ -27,7 +27,7 @@ class MockOrganizationRepository(OrganizationRepository, GenericMockRepository[U
             raise ValueError(f"Organization with id {organization_id} does not exist")
         del self._organizations[organization_id]
 
-    def get_by_id(self, organization_id: GenericUUID) -> Optional[Organization]:
+    def get_by_id(self, organization_id: GenericUUID) -> Organization | None:
         return self._organizations.get(organization_id)
 
     def get_by_name(self, name: str) -> Optional[Organization]:
