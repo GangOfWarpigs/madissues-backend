@@ -2,11 +2,9 @@ from typing import Annotated
 
 from pydantic import Field, ValidationError
 
-from madissues_backend.core.organizations.domain.organization_task_manager import OrganizationTaskManager
 from madissues_backend.core.shared.domain.entity import AggregateRoot
 from madissues_backend.core.shared.domain.storage_service import StorageService
-from madissues_backend.core.shared.domain.task_manager import TaskManager
-from madissues_backend.core.shared.domain.value_objects import GenericUUID, Base64Field
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 Name = Annotated[str, Field(min_length=1, max_length=280)]
 Description = Annotated[str, Field(min_length=1, max_length=280)]
@@ -23,13 +21,6 @@ class Organization(AggregateRoot[GenericUUID]):
     contact_info: ContactInfo
     primary_color: HexadecimalColor
     secondary_color: HexadecimalColor
-    task_manager: OrganizationTaskManager | None = Field(init=False, default=None)
-
-    def integrate_task_manager(self, task_manager: TaskManager, api_token):
-        self.task_manager = OrganizationTaskManager(
-            task_manager_name=task_manager,
-            token=api_token
-        )
 
     def upload_logo(self, image, storage: StorageService):
         logo = storage.upload_b64_image(image)
