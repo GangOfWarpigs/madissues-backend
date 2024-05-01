@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
-from madissues_backend.core.shared.application.command import Command, CommandResponse, \
-    owners_only
+from madissues_backend.core.shared.application.command import Command, CommandResponse, owners_only
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.storage_service import StorageService
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
