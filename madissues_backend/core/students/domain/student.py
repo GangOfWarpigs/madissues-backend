@@ -47,7 +47,7 @@ class Student(AggregateRoot[GenericUUID]):
         self.token = token_generator.generate()
 
     def check_password(self, raw_password: str, hasher: PasswordHasher) -> bool:
-        return hasher.hash(Password(password_value=raw_password)) == self.password
+        return hasher.hash(raw_password) == self.password
 
     def change_email(self, email: Email):
         self.validate_field("email", email)

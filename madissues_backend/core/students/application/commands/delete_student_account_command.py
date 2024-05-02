@@ -28,12 +28,16 @@ class DeleteStudentCommand(Command[DeleteStudentRequest, DeleteStudentResponse])
     def execute(self, request: DeleteStudentRequest) -> Response[DeleteStudentResponse]:
         deletion_requestor_id = self.authentication_service.get_user_id()
         deletion_requestor = self.student_repository.get_by_id(GenericUUID(deletion_requestor_id))
+        if deletion_requestor is None:
+            return Response.fail(code=2, message="User is not found")
         if (not deletion_requestor.is_council_member and
                 not deletion_requestor.is_site_admin and
                 deletion_requestor.id != request.student_id):
             return Response.fail(code=500, message="You can only delete your own account")
 
         student_being_deleted = self.student_repository.get_by_id(GenericUUID(request.student_id))
+        if student_being_deleted is None:
+            return Response.fail(code=3, message="Student is not found")
         self.student_repository.remove(student_being_deleted.id)
         student_being_deleted.register_event(
             StudentDeleted(payload=StudentDeletedPayload(

@@ -12,7 +12,7 @@ from madissues_backend.core.students.domain.student_profile import StudentProfil
 class StudentMother:
     @staticmethod
     def random_email() -> str:
-        domains = ["example.com", "test.com", "demo.com"]
+        domains = ["example.com", "tests.com", "demo.com"]
         return f"user{random.randint(1, 10000)}@{random.choice(domains)}"
 
     @staticmethod

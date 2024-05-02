@@ -12,7 +12,7 @@ class OwnerTests(unittest.TestCase):
     def setUp(self):
         self.valid_owner_data = {
             'id': GenericUUID.next_id(),
-            'email': 'test@example.com',
+            'email': 'tests@example.com',
             'first_name': 'John',
             'last_name': 'Doe',
             'phone_number': '123456789',

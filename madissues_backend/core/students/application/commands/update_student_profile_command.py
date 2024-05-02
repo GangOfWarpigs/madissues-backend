@@ -31,6 +31,8 @@ class UpdateStudentProfileCommand(Command[ChangeStudentProfileRequest, ChangeStu
     def execute(self, request: ChangeStudentProfileRequest) -> Response[ChangeStudentProfileResponse]:
         student_id = self.authentication_service.get_user_id()
         student = self.student_repository.get_by_id(GenericUUID(student_id))
+        if student is None:
+            return Response.fail(code=2, message="Student is not found")
         student.update_profile(
             degree=request.degree,
             joined_courses=request.joined_courses

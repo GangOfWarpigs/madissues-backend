@@ -37,16 +37,16 @@ class UpdateStudentPersonalDataCommand(Command[ChangeStudentPersonalDataRequest,
     def execute(self, request: ChangeStudentPersonalDataRequest) -> Response[ChangeStudentPersonalDataResponse]:
         student_id = self.authentication_service.get_user_id()
         student = self.student_repository.get_by_id(GenericUUID(student_id))
+        if student is None:
+            return Response.fail(code=2, message="This student does not exist")
         student.update_personal_data(
                 first_name=request.first_name,
                 last_name=request.last_name,
                 email=request.email,
                 started_studies_date=request.started_studies_date
         )
-
         self.student_repository.save(student)
         self.event_bus.notify_all(student.collect_events())
-
         return Response.ok(ChangeStudentPersonalDataResponse(
             student_id=str(student.id),
             first_name=student.first_name,

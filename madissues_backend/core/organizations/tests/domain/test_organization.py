@@ -13,7 +13,7 @@ class TestOrganization(unittest.TestCase):
             'name': 'Test Organization',
             'logo': 'https://example.com/logo.png',
             'description': 'Test description',
-            'contact_info': 'test@example.com',
+            'contact_info': 'tests@example.com',
             'primary_color': '#ff0000',
             'secondary_color': '#00ff00',
             'board_id': str(GenericUUID.next_id()),

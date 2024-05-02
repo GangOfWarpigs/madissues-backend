@@ -32,6 +32,8 @@ class UpdateStudentPreferencesCommand(Command[ChangeStudentPreferencesRequest, C
     def execute(self, request: ChangeStudentPreferencesRequest) -> Response[ChangeStudentPreferencesResponse]:
         student_id = self.authentication_service.get_user_id()
         student = self.student_repository.get_by_id(GenericUUID(student_id))
+        if student is None:
+            return Response.fail(code=2, message="Student is not found")
         student.change_preferences(StudentPreferences(
             language=request.language,
             theme=request.theme

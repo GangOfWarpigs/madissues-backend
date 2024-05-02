@@ -29,6 +29,8 @@ class ChangeStudentEmailCommand(Command[ChangeStudentEmailRequest, ChangeStudent
     def execute(self, request: ChangeStudentEmailRequest) -> Response[ChangeStudentEmailResponse]:
         student_id = self.authentication_service.get_user_id()
         student = self.student_repository.get_by_id(GenericUUID(student_id))
+        if student is None:
+            return Response.fail(code=2, message="Student is not found")
         student.change_email(request.email)
         self.student_repository.save(student)
         self.event_bus.notify_all(student.collect_events())

@@ -14,7 +14,7 @@ class TestStudent(unittest.TestCase):
         self.valid_student_data = {
             'id': GenericUUID.next_id(),
             'organization_id': GenericUUID.next_id(),
-            'email': 'test@example.com',
+            'email': 'tests@example.com',
             'first_name': 'John',
             'last_name': 'Doe',
             'password': 'TestPassword123',

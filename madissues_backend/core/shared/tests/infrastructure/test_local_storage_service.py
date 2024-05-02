@@ -13,8 +13,8 @@ class TestLocalStorageService(unittest.TestCase):
         test_b64image_path = "./cat.b64"
         with open(test_b64image_path, "rb") as file:
             image = file.read().decode("utf-8")
-            path = self.storage_service.upload_b64_image(image, path="test/", final_name="cat.jpeg")
-            self.assertEqual(path, "../../../../media/test/cat.jpeg")
+            path = self.storage_service.upload_b64_image(image, path="tests/", final_name="cat.jpeg")
+            self.assertEqual(path, "../../../../media/tests/cat.jpeg")
 
 
 if __name__ == '__main__':

@@ -28,6 +28,8 @@ class BanStudentCommand(Command[BanStudentRequest, BanStudentResponse]):
 
     def execute(self, request: BanStudentRequest) -> Response[BanStudentResponse]:
         student = self.student_repository.get_by_id(GenericUUID(request.student_id))
+        if student is None:
+            return Response.fail(code=2, message="Student is not found")
         student.ban()
         self.student_repository.save(student)
         self.event_bus.notify_all(student.collect_events())

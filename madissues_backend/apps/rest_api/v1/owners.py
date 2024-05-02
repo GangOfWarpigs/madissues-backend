@@ -26,7 +26,7 @@ def signin_owners(request: SignInOwnerCommandRequest) -> Response[SignInOwnerCom
     return command.run(request)
 
 
-@router.post("/owners/me/change_email", tags=["owners"])
+@router.put("/owners/me/change_email", tags=["owners"])
 def change_owner_email(request: ChangeOwnerEmailRequest, token: Annotated[str, Header()]):
     authorization = authorization_service(token)
     command = ChangeOwnerEmailCommand(authorization, owner_repository, event_bus)

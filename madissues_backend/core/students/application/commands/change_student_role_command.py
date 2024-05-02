@@ -31,6 +31,8 @@ class ChangeStudentRoleCommand(Command[ChangeStudentRoleRequest, ChangeStudentRo
 
     def execute(self, request: ChangeStudentRoleRequest) -> Response[ChangeStudentRoleResponse]:
         student = self.student_repository.get_by_id(GenericUUID(request.student_id))
+        if student is None:
+            return Response.fail(code=2, message="Student is not found")
         student.change_role(make_admin=request.admin_role,
                             make_council_member=request.council_member_role)
         self.student_repository.save(student)
