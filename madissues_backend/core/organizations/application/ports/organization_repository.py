@@ -17,19 +17,3 @@ class OrganizationRepository(GenericRepository[GenericUUID, Organization], ABC):
     def get_by_name(self, name: str) -> Organization | None:
         pass
 
-    @abstractmethod
-    def add(self, organization: Organization):
-        pass
-
-    @abstractmethod
-    def remove(self, organization_id: GenericUUID):
-        pass
-
-    @abstractmethod
-    def get_by_id(self, organization_id: GenericUUID) -> Organization:
-        pass
-
-    @abstractmethod
-    def save(self, entity: Organization):
-        pass
-

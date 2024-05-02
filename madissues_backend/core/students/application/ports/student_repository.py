@@ -9,22 +9,6 @@ from madissues_backend.core.students.domain.student import Student
 class StudentRepository(GenericRepository[GenericUUID, Student], ABC):
 
     @abstractmethod
-    def add(self, student: Student):
-        pass
-
-    @abstractmethod
-    def remove(self, student_id: EntityId):
-        pass
-
-    @abstractmethod
-    def get_by_id(self, student_id: EntityId) -> Student:
-        pass
-
-    @abstractmethod
-    def save(self, student: Student):
-        pass
-
-    @abstractmethod
     def get_by_email(self, email: str) -> Student | None:
         pass
 

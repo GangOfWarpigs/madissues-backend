@@ -22,7 +22,7 @@ class MockStudentRepository(StudentRepository, GenericMockRepository[GenericUUID
 
     def remove(self, student_id: EntityId):
         if not self.students.get(student_id):
-            raise ValueError("Student does not exists")
+            raise ValueError("Student does not exist")
         del self.students[student_id]
 
     def get_by_id(self, student_id: EntityId) -> Student:

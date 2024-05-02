@@ -8,19 +8,17 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.students.application.ports.student_repository import StudentRepository
 
 
-class ChangeStudentProfileRequest(BaseModel):
-    degree: str
-    joined_courses: list[str]
+class ChangeStudentEmailRequest(BaseModel):
+    email: str
 
 
-class ChangeStudentProfileResponse(BaseModel):
+class ChangeStudentEmailResponse(BaseModel):
     student_id: str
-    degree: str
-    joined_courses: list[str]
+    email: str
 
 
 @students_only
-class UpdateStudentProfileCommand(Command[ChangeStudentProfileRequest, ChangeStudentProfileResponse]):
+class ChangeStudentEmailCommand(Command[ChangeStudentEmailRequest, ChangeStudentEmailResponse]):
     def __init__(self, authentication_service: AuthenticationService,
                  student_repository: StudentRepository,
                  event_bus: EventBus):
@@ -28,19 +26,13 @@ class UpdateStudentProfileCommand(Command[ChangeStudentProfileRequest, ChangeStu
         self.student_repository = student_repository
         self.event_bus = event_bus
 
-    def execute(self, request: ChangeStudentProfileRequest) -> Response[ChangeStudentProfileResponse]:
+    def execute(self, request: ChangeStudentEmailRequest) -> Response[ChangeStudentEmailResponse]:
         student_id = self.authentication_service.get_user_id()
         student = self.student_repository.get_by_id(GenericUUID(student_id))
-        student.update_profile(
-            degree=request.degree,
-            joined_courses=request.joined_courses
-        )
-
+        student.change_email(request.email)
         self.student_repository.save(student)
         self.event_bus.notify_all(student.collect_events())
-
-        return Response.ok(ChangeStudentProfileResponse(
+        return Response.ok(ChangeStudentEmailResponse(
             student_id=str(student.id),
-            degree=str(student.profile.degree),
-            joined_courses=[str(course) for course in student.profile.joined_courses]
+            email=student.email
         ))

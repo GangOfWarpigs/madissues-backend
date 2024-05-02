@@ -47,6 +47,11 @@ class TestMockIssueRepository(unittest.TestCase):
         fetched_issue = self.repo.get_by_id(issue.id)
         self.assertEqual(fetched_issue, issue)
 
+    def test_get_by_non_existing_id(self):
+        non_existing_id = GenericUUID.next_id()
+        fetched_issue = self.repo.get_by_id(non_existing_id)
+        self.assertIsNone(fetched_issue)
+
     def test_get_all(self):
         all_issues = self.repo.get_all()
         self.assertEqual(len(all_issues), len(self.repo._issues))
