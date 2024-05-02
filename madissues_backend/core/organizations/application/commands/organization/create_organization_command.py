@@ -53,7 +53,7 @@ class CreateOrganizationCommand(Command[CreateOrganizationRequest, CreateOrganiz
         if request.logo: organization.upload_logo(request.logo, self.storage)
         self.repository.add(organization)
         return Response.ok(CreateOrganizationResponse(
-            **organization.dict(exclude=["owner_id", "id"]),
+            **organization.dict(exclude={"owner_id", "id"}),
             owner_id=str(organization.owner_id),
             id=str(organization.id)
         ))

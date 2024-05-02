@@ -89,3 +89,16 @@ def council_members_only(cls):
 
     cls.execute = new_execute
     return cls
+
+
+def council_members_or_site_admins_only(cls):
+    original_execute: Callable[[Any, CommandRequest], Response[CommandResponse]] = cls.execute  # type: ignore
+
+    @wraps(original_execute)
+    def new_execute(self, request: CommandRequest) -> 'Response[CommandResponse]':
+        if not self.authentication_service.is_council_member() and not self.authentication_service.is_site_admin():
+            return Response.fail(code=403, message="User must be a council member or site admin")
+        return original_execute(self, request)
+
+    cls.execute = new_execute
+    return cls
