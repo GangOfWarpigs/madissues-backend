@@ -1,4 +1,5 @@
 import base64
+import json
 import re
 import uuid
 from typing import Annotated, Type, Any
@@ -24,6 +25,11 @@ class GenericUUID(uuid.UUID):
             raise ValueError('Invalid UUID')
         return cls(value.hex)
 
+
+def entity_json_encoder(obj):
+    if isinstance(obj, GenericUUID):
+        return str(obj)
+    return json.json_encoder(obj)
 
 class ValueObject(BaseModel):
     pass

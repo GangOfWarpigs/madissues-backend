@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import Mock
 
 from madissues_backend.core.organizations.application.commands.organization.create_organization_command import \
     CreateOrganizationCommand, CreateOrganizationRequest
@@ -14,33 +13,19 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_storage_service imp
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 
-# FIXME: delete this imports using EntityTableMother
-from madissues_backend.core.owners.application.commands.sign_up_owner_command import SignUpOwnerCommandRequest, \
-    SignUpOwnerCommand
-from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
-
 
 class TestCreateOrganizationCommand(unittest.TestCase):
     def setUp(self):
         self.db = EntityTable()
-        self.owner_repository = MockOwnerRepository(self.db)
+        self.db.load_snapshot("with_owner_created")
         self.event_bus = MockEventBus()
         self.authorization_service = create_mock_authentication_service(self.db)
         self.password_hasher = SHA256PasswordHasher()
         self.token_generator = UUIDTokenGenerator()
-        self.command = SignUpOwnerCommand(self.owner_repository, self.password_hasher, self.token_generator)
-        self.valid_request = SignUpOwnerCommandRequest(
-            first_name="John",
-            last_name="Doe",
-            email="john.doe@example.com",
-            password="ValidPass123!",
-            verify_password="ValidPass123!",
-            phone_number="+123456789012"
-        )
-        self.response = self.command.run(self.valid_request)
-        self.authorization = self.authorization_service(self.response.success.token)
+        self.authorization = self.authorization_service("1d372590-a034-4e05-b1e8-02a9e91068f3")
         self.organization_repository = MockOrganizationRepository(self.db)
         self.storage = MockStorageService()
+
 
     def test_organization_is_created_without_errors(self):
         command = CreateOrganizationCommand(self.authorization,
@@ -85,8 +70,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         ))
 
         assert response.is_error() == True, "Command must fail"
-        assert response.error.error_code ==403, "Command must fail because you are not authorized"
-
+        assert response.error.error_code == 403, "Command must fail because you are not authorized"
 
     def test_organization_without_logo(self):
         command = CreateOrganizationCommand(self.authorization,

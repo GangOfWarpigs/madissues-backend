@@ -1,3 +1,4 @@
+import json
 import unittest
 from datetime import datetime
 
@@ -96,6 +97,10 @@ class TestStudent(unittest.TestCase):
         del invalid_student_data['is_banned']
         with self.assertRaises(ValidationError):
             Student(**invalid_student_data)
+
+    def test_student_can_be_serialized_to_json(self):
+        student = Student(**self.valid_student_data)
+        assert json.loads(student.json())["id"] == str(self.valid_student_data["id"])
 
 
 if __name__ == '__main__':
