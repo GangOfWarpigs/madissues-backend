@@ -1,13 +1,13 @@
 from pydantic import Field
-
-from madissues_backend.core.shared.domain.value_objects import ValueObject
-from madissues_backend.core.task_manager.domain.card import Card
+from typing import Annotated
 
 
-class Board(ValueObject):
-    board_id: str
-    queued_list_id: str
-    in_progress_list_id: str
-    solved_list_id: str
-    not_solved_list_id: str
-    cards: list[Card] = Field(init=False, default=list())
+from madissues_backend.core.shared.domain.entity import Entity
+from madissues_backend.core.shared.domain.value_objects import ValueObject, GenericUUID
+
+
+class Board(Entity[GenericUUID]):
+    queued_list_id: Annotated[str, Field(min_length=1)]
+    in_progress_list_id: Annotated[str, Field(min_length=1)]
+    solved_list_id: Annotated[str, Field(min_length=1)]
+    not_solved_list_id: Annotated[str, Field(min_length=1)]

@@ -7,5 +7,5 @@ from madissues_backend.core.task_manager.domain.task_manager import TaskManager
 
 class TaskManagerRepository(GenericRepository[GenericUUID, TaskManager], ABC):
     @abstractmethod
-    def check_can_integrate_organization(self, organization_id, user_id):
+    def check_can_integrate_organization(self, organization_id, user_id) -> bool:
         ...

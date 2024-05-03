@@ -17,7 +17,7 @@ class TaskManagerService(ABC):
         ...
 
     @abstractmethod
-    def add_user(self, email: str):
+    def invite_user(self, email: str):
         ...
 
 
