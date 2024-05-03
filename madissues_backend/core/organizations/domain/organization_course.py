@@ -11,8 +11,8 @@ HexadecimalColor = Annotated[str, Field(min_length=1, pattern=r'^#([A-Fa-f0-9]{6
 
 
 class OrganizationCourse(Entity[GenericUUID]):
-    name: Name  # min 2, maxim 60
-    code: Code  # min 2 max 8
-    icon: LinkToImage  # image valida
-    primary_color: HexadecimalColor  # hexadecimal valid
-    secondary_color: HexadecimalColor  # hexadecimal valid
+    name: Name
+    code: Code
+    icon: LinkToImage
+    primary_color: HexadecimalColor
+    secondary_color: HexadecimalColor

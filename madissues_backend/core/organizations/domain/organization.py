@@ -2,6 +2,9 @@ from typing import Annotated
 
 from pydantic import Field, ValidationError
 
+from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
+from madissues_backend.core.organizations.domain.organization_degree import OrganizationDegree
+from madissues_backend.core.organizations.domain.organization_teacher import OrganizationTeacher
 from madissues_backend.core.shared.domain.entity import AggregateRoot
 from madissues_backend.core.shared.domain.storage_service import StorageService
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
@@ -21,6 +24,9 @@ class Organization(AggregateRoot[GenericUUID]):
     contact_info: ContactInfo
     primary_color: HexadecimalColor
     secondary_color: HexadecimalColor
+    teachers: list[OrganizationTeacher] = Field(default=[], init=False)
+    courses: list[OrganizationCourse] = Field(default=[], init=False)
+    degrees: list[OrganizationDegree] = Field(default=[], init=False)
 
     def upload_logo(self, image, storage: StorageService):
         logo = storage.upload_b64_image(image)
