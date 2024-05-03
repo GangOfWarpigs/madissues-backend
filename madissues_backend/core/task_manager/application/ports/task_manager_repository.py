@@ -9,3 +9,7 @@ class TaskManagerRepository(GenericRepository[GenericUUID, TaskManager], ABC):
     @abstractmethod
     def check_can_integrate_organization(self, organization_id, user_id) -> bool:
         ...
+
+    @abstractmethod
+    def is_there_a_task_manager_for_organization(self, organization_id : str) -> bool:
+        ...

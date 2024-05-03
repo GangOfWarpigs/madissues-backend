@@ -26,6 +26,7 @@ class EntityTable:
             'students': {},
             'issues': {},
             'issue_comments': {},
+            "task_managers" : {}
         }
 
     def save_snapshot(self, name):
