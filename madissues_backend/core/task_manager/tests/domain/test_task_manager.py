@@ -49,11 +49,6 @@ class TestTaskManager(unittest.TestCase):
         self.assertIsNotNone(self.task_manager.faqs_board)
         self.assertIsNotNone(self.task_manager.issue_board)
 
-    def test_generate_idle_board_with_same_name(self):
-        board1 = self.task_manager.generate_idle_board("test", self.mock_service)
-        board2 = self.task_manager.generate_idle_board("test", self.mock_service)
-        self.assertEqual(board1, board2)
-
     def test_generate_idle_board_with_different_service(self):
         self.mock_service2 = Mock(spec=TaskManagerService)
         self.mock_service2.create_empty_board.return_value = "123e4567-e89b-12d3-a456-426614174000"
@@ -68,11 +63,6 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(self.mock_service.create_empty_list.call_count, 16)
         self.assertIsNotNone(self.task_manager.faqs_board)
         self.assertIsNotNone(self.task_manager.issue_board)
-
-    def test_generate_idle_board_with_same_service(self):
-        board1 = self.task_manager.generate_idle_board("test", self.mock_service)
-        board2 = self.task_manager.generate_idle_board("test", self.mock_service)
-        self.assertEqual(board1, board2)
 
     def test_generate_infrastructure_with_same_service(self):
         self.task_manager.generate_infrastructure(self.mock_factory)

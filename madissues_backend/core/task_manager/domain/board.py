@@ -11,3 +11,4 @@ class Board(Entity[GenericUUID]):
     in_progress_list_id: Annotated[str, Field(min_length=1)]
     solved_list_id: Annotated[str, Field(min_length=1)]
     not_solved_list_id: Annotated[str, Field(min_length=1)]
+    board_id: str

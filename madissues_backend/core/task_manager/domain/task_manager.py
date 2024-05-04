@@ -33,7 +33,8 @@ class TaskManager(AggregateRoot[GenericUUID]):
     def generate_idle_board(name: str, task_manager: TaskManagerService) -> Board:
         board_id = task_manager.create_empty_board(name)
         return Board(
-            id=GenericUUID(board_id),
+            id=GenericUUID.next_id(),
+            board_id=board_id,
             queued_list_id=task_manager.create_empty_list(board_id, "Queued"),
             in_progress_list_id=task_manager.create_empty_list(board_id, "In progress"),
             solved_list_id=task_manager.create_empty_list(board_id, "Solved"),

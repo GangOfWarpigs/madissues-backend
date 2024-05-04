@@ -37,8 +37,8 @@ class MockTaskManagerRepository(TaskManagerRepository, GenericMockRepository[Gen
             raise ValueError("TaskManager not found")
         self.task_managers[task_manager.id] = task_manager
 
-    def check_can_integrate_organization(self, organization_id, owner_id) -> bool:
-        organization = self.organizations.get(organization_id)
+    def check_can_integrate_organization(self, organization_id: str, owner_id: str) -> bool:
+        organization = self.organizations.get(GenericUUID(organization_id))
         if not organization or str(organization.owner_id) != str(owner_id):
             return False
         return True

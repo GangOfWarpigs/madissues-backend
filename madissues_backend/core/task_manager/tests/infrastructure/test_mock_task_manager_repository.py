@@ -59,7 +59,7 @@ class TestMockTaskManagerRepository(unittest.TestCase):
             owner_id=owner_id
         )
         self.entity_table.tables["owners"][owner_id] = owner_id
-        self.assertTrue(self.repo.check_can_integrate_organization(organization_id, owner_id))
+        self.assertTrue(self.repo.check_can_integrate_organization(str(organization_id), str(owner_id)))
     def test_is_there_a_task_manager_for_organization(self):
         task_manager_config = TaskManagerConfig(service="trello", api_key="test_key")  # replace with actual values
         task_manager = TaskManager(id=GenericUUID.next_id(), organization_id=GenericUUID.next_id(),
@@ -92,11 +92,11 @@ class TestMockTaskManagerRepository(unittest.TestCase):
 
     def test_check_can_integrate_organization_no_organization(self):
         self.entity_table.tables["students"][GenericUUID.next_id()] = None
-        self.assertFalse(self.repo.check_can_integrate_organization(GenericUUID.next_id(), GenericUUID.next_id()))
+        self.assertFalse(self.repo.check_can_integrate_organization(str(GenericUUID.next_id()), str(GenericUUID.next_id())))
 
     def test_check_can_integrate_organization_no_user(self):
         self.entity_table.tables["organizations"][GenericUUID.next_id()] = None
-        self.assertFalse(self.repo.check_can_integrate_organization(GenericUUID.next_id(), GenericUUID.next_id()))
+        self.assertFalse(self.repo.check_can_integrate_organization(str(GenericUUID.next_id()), str(GenericUUID.next_id())))
 
     def test_is_there_a_task_manager_for_organization_no_task_manager(self):
         self.assertFalse(self.repo.is_there_a_task_manager_for_organization(GenericUUID.next_id()))
@@ -117,7 +117,7 @@ class TestMockTaskManagerRepository(unittest.TestCase):
             self.repo.get_by_id(task_manager.id)
 
     def test_check_can_integrate_organization_no_organization_no_user(self):
-        self.assertFalse(self.repo.check_can_integrate_organization(GenericUUID.next_id(), GenericUUID.next_id()))
+        self.assertFalse(self.repo.check_can_integrate_organization(str(GenericUUID.next_id()), str(GenericUUID.next_id())))
 
 if __name__ == '__main__':
     unittest.main()
