@@ -65,7 +65,7 @@ class TestMockTaskManagerRepository(unittest.TestCase):
         task_manager = TaskManager(id=GenericUUID.next_id(), organization_id=GenericUUID.next_id(),
                                    config=task_manager_config)
         self.repo.add(task_manager)
-        self.assertTrue(self.repo.is_there_a_task_manager_for_organization(task_manager.organization_id))
+        self.assertTrue(self.repo.is_there_a_task_manager_for_organization(str(task_manager.organization_id)))
 
     def test_add_task_manager_already_exists(self):
         task_manager_config = TaskManagerConfig(service="trello", api_key="test_key")  # replace with actual values

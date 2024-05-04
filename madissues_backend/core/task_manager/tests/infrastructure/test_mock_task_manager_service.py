@@ -3,6 +3,7 @@ from madissues_backend.core.task_manager.domain.task_manager_config import TaskM
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import \
     InMemoryTaskManagerService, InMemoryTaskManagerFactory
 
+
 class TestInMemoryTaskManagerService(unittest.TestCase):
     def setUp(self):
         self.service = InMemoryTaskManagerService("valid_api_key")
@@ -30,13 +31,13 @@ class TestInMemoryTaskManagerService(unittest.TestCase):
 
         assert len(self.service.lists) == 5
 
-
     def test_invite_multiple_users(self):
         emails = [f"test{i}@example.com" for i in range(5)]
         for email in emails:
             self.service.invite_user(email)
         for email in emails:
             self.assertIn(email, self.service.invited_users)
+
 
 class TestInMemoryTaskManagerFactory(unittest.TestCase):
     def setUp(self):
@@ -50,6 +51,7 @@ class TestInMemoryTaskManagerFactory(unittest.TestCase):
         services = [self.factory.of(TaskManagerConfig(service=f"service{i}", api_key=f"key{i}")) for i in range(5)]
         for service in services:
             self.assertIsInstance(service, InMemoryTaskManagerService)
+
 
 if __name__ == '__main__':
     unittest.main()

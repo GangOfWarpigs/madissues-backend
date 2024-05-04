@@ -26,11 +26,53 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="invalid_api_key"
+            api_key="valid_api_key"
         ))
+
+        assert response.is_success() == True, "Must be successful"
+        assert response.success.message is not None, "Message must have something"
+        assert self.repository.is_there_a_task_manager_for_organization("cc164174-07f7-4cd4-8a7e-43c96d9b825a") == True
+
+    def test_integration_not_successful(self):
+        command = IntegrateOrganizationWithTaskManagerCommand(self.auth, self.repository, self.factory)
+        response = command.run(IntegrateOrganizationWithTaskManagerRequest(
+            organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
+            task_manager="trello",
+            api_key="looool"
+        ))
+
         print(response)
 
-    # Add more tests here...
+        assert response.is_error() is True, "Must be error"
+        assert response.error.error_code == 4, "Message must have something"
+
+    def test_integration_not_owner(self):
+        command = IntegrateOrganizationWithTaskManagerCommand(self.authentication("invalid_token"), self.repository, self.factory)
+        response = command.run(IntegrateOrganizationWithTaskManagerRequest(
+            organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
+            task_manager="trello",
+            api_key="looool"
+        ))
+        assert response.is_error() is True, "Must be error"
+        assert response.error.error_code == 403, "Message must have something"
+
+    def test_there_is_already_an_integration(self):
+        command = IntegrateOrganizationWithTaskManagerCommand(self.auth, self.repository, self.factory)
+        response = command.run(IntegrateOrganizationWithTaskManagerRequest(
+            organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
+            task_manager="trello",
+            api_key="valid_api_key"
+        ))
+        print(self.db.tables)
+        command = IntegrateOrganizationWithTaskManagerCommand(self.auth, self.repository, self.factory)
+        response = command.run(IntegrateOrganizationWithTaskManagerRequest(
+            organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
+            task_manager="trello",
+            api_key="valid_api_key"
+        ))
+        assert response.is_error() is True, "Must be error"
+        assert response.error.error_code == 3, "Message must have something"
+        assert self.repository.is_there_a_task_manager_for_organization("cc164174-07f7-4cd4-8a7e-43c96d9b825a") == True
 
 if __name__ == '__main__':
     unittest.main()

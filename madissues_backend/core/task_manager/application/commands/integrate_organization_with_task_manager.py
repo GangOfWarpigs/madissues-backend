@@ -38,18 +38,27 @@ class IntegrateOrganizationWithTaskManagerCommand(
             return Response.fail(code=2, message="You have no permissions for performing this action")
 
         if self.repository.is_there_a_task_manager_for_organization(organization_id):
-            return Response.fail(code=2, message="You have integrated your organization with a task manager already")
+            return Response.fail(code=3, message="You have integrated your organization with a task manager already")
+
+        config = TaskManagerConfig(
+            service=request.task_manager,
+            api_key=request.api_key
+        )
+
+        task_manager_service = self.factory.of(config)
+        if not task_manager_service.is_api_key_valid():
+            return Response.fail(code=4, message="Api key proportioned to us is not valid")
+
+
 
         task_manager = TaskManager(
             id=GenericUUID.next_id(),
             organization_id=GenericUUID(organization_id),
-            config=TaskManagerConfig(
-                service=request.task_manager,
-                api_key=request.api_key
-            )
+            config=config
         )
 
         task_manager.generate_infrastructure(task_manager_factory=self.factory)
+        self.repository.add(task_manager)
 
         return Response.ok(
             IntegrateOrganizationWithTaskManagerResponse(

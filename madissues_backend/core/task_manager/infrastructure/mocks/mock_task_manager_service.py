@@ -4,7 +4,7 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class InMemoryTaskManagerService(TaskManagerService):
-    def __init__(self, api_key):
+    def __init__(self, api_key : str):
         self.api_key = api_key
         self.boards = {}
         self.lists = {}
