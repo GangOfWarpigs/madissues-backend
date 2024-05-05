@@ -9,27 +9,9 @@ from starlette.staticfiles import StaticFiles
 from madissues_backend.apps.rest_api.v1.owners import router as owners_router
 from madissues_backend.apps.rest_api.v1.organizations import router as organizations_router
 from madissues_backend.apps.rest_api.v1.students import router as students_router
+from madissues_backend.apps.rest_api.v1.task_manager import router as task_manager_router
 
 app = FastAPI()
-
-
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi(
-        title="Madissues API",
-        version="2.5.0",
-        summary="This is madissues OpenAPI documentation",
-        description="Madissues is a service that allows students to complain easily about teachers and college issues",
-        routes=app.routes,
-    )
-    openapi_schema["info"]["x-logo"] = {
-        "url": "http://localhost:8000/public/logo.png"
-    }
-    openapi_schema["info"]["x-logo"]["backgroundColor"] = "#f5f5f5"
-
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
 
 
 dirname = os.path.dirname(__file__)
@@ -37,5 +19,4 @@ app.mount("/public", StaticFiles(directory=os.path.join(dirname, "assets")), nam
 app.include_router(owners_router)
 app.include_router(organizations_router)
 app.include_router(students_router)
-
-app.openapi = custom_openapi
+app.include_router(task_manager_router)

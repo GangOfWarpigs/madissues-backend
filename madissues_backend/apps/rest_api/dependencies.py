@@ -10,6 +10,9 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import Mo
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 from madissues_backend.core.students.infrastructure.mocks.mock_student_repository import MockStudentRepository
+from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
+    MockTaskManagerRepository
+from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import MockTaskManagerFactory
 
 database = EntityTable()
 
@@ -17,6 +20,7 @@ database = EntityTable()
 password_hasher = SHA256PasswordHasher()
 token_generator = UUIDTokenGenerator()
 event_bus = MockEventBus()
+task_manager_factory= MockTaskManagerFactory()
 
 #services
 storage_service=LocalStorageService(media_path="../../../media/")
@@ -26,3 +30,5 @@ authorization_service = create_mock_authentication_service(database)
 owner_repository = MockOwnerRepository(database)
 organization_repository=MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
+task_manager_repository = MockTaskManagerRepository(database)
+

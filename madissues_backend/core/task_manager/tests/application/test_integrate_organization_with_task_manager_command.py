@@ -8,7 +8,7 @@ from madissues_backend.core.task_manager.application.commands.integrate_organiza
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import \
-    InMemoryTaskManagerService, InMemoryTaskManagerFactory
+    InMemoryTaskManagerService, MockTaskManagerFactory
 
 
 class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         self.repository = MockTaskManagerRepository(self.db)
         self.authentication = create_mock_authentication_service(self.db)
         self.auth = self.authentication("1d372590-a034-4e05-b1e8-02a9e91068f3")
-        self.factory = InMemoryTaskManagerFactory()
+        self.factory = MockTaskManagerFactory()
 
     def test_integration_successful(self):
         print(self.db.tables)

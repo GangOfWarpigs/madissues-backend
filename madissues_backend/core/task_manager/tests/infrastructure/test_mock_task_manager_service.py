@@ -1,7 +1,7 @@
 import unittest
 from madissues_backend.core.task_manager.domain.task_manager_config import TaskManagerConfig
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import \
-    InMemoryTaskManagerService, InMemoryTaskManagerFactory
+    InMemoryTaskManagerService, MockTaskManagerFactory
 
 
 class TestInMemoryTaskManagerService(unittest.TestCase):
@@ -41,7 +41,7 @@ class TestInMemoryTaskManagerService(unittest.TestCase):
 
 class TestInMemoryTaskManagerFactory(unittest.TestCase):
     def setUp(self):
-        self.factory = InMemoryTaskManagerFactory()
+        self.factory = MockTaskManagerFactory()
 
     def test_of(self):
         service = self.factory.of(TaskManagerConfig(service="trello", api_key="test_key"))

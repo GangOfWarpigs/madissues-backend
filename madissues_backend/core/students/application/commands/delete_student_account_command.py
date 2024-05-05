@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
-from madissues_backend.core.shared.application.command import Command, council_members_or_site_admins_only
+from madissues_backend.core.shared.application.command import Command, council_members_or_site_admins_only, \
+    students_only
 from madissues_backend.core.shared.application.event_bus import EventBus
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
@@ -17,6 +18,7 @@ class DeleteStudentResponse(BaseModel):
     student_id: str
 
 
+@students_only
 class DeleteStudentCommand(Command[DeleteStudentRequest, DeleteStudentResponse]):
     def __init__(self, authentication_service: AuthenticationService,
                  student_repository: StudentRepository,

@@ -1,6 +1,7 @@
 from madissues_backend.core.shared.domain.entity import AggregateRoot
 from madissues_backend.core.shared.domain.value_objects import GenericUUID, ValueObject
 from madissues_backend.core.task_manager.domain.board import Board
+from madissues_backend.core.task_manager.domain.member import Member
 from madissues_backend.core.task_manager.domain.task_manager_config import TaskManagerConfig
 from madissues_backend.core.task_manager.domain.task_manager_service import TaskManagerFactory, TaskManagerService
 from pydantic import Field
@@ -11,13 +12,13 @@ class TaskManager(AggregateRoot[GenericUUID]):
     config: TaskManagerConfig
     faqs_board: Board | None = Field(init=True, default=False)
     issue_board: Board | None = Field(init=True, default=False)
+    members: list[Member] = Field(init=True, default=list())
 
     def generate_infrastructure(self, task_manager_factory: TaskManagerFactory):
         task_manager = task_manager_factory.of(self.config)
         self.faqs_board = self.generate_idle_board("faqs", task_manager)
         self.issue_board = self.generate_idle_board("issues", task_manager)
 
-    """
     def invite_member(self, student_id: GenericUUID, email: str, task_manager_factory: TaskManagerFactory):
         task_manager = task_manager_factory.of(self.config)
         task_manager.invite_user(email)
@@ -25,10 +26,10 @@ class TaskManager(AggregateRoot[GenericUUID]):
             Member(
                 id=GenericUUID.next_id(),
                 student_id=student_id,
-                email=email
+                task_manager_email=email
             )
         )
-    """
+
     @staticmethod
     def generate_idle_board(name: str, task_manager: TaskManagerService) -> Board:
         board_id = task_manager.create_empty_board(name)

@@ -10,6 +10,8 @@ from madissues_backend.core.students.application.commands.ban_student_command im
     BanStudentCommand, BanStudentRequest
 from madissues_backend.core.students.application.commands.change_student_email_command import ChangeStudentEmailRequest, \
     ChangeStudentEmailResponse, ChangeStudentEmailCommand
+from madissues_backend.core.students.application.commands.delete_student_account_command import DeleteStudentResponse, \
+    DeleteStudentRequest, DeleteStudentCommand
 from madissues_backend.core.students.application.commands.sign_in_student_command import SignInStudentCommandRequest, \
     SignInStudentCommandResponse, SignInStudentCommand
 from madissues_backend.core.students.application.commands.sign_up_student_command import SignUpStudentCommandRequest, \
@@ -24,13 +26,13 @@ from madissues_backend.core.students.application.commands.update_student_profile
 router = APIRouter()
 
 
-@router.post("/students/signup", tags=["students"])
+@router.post("/students/signup/", tags=["students"])
 def student_signup(request: SignUpStudentCommandRequest) -> Response[SignUpStudentCommandResponse]:
     command = SignUpStudentCommand(student_repository, password_hasher, token_generator)
     return command.run(request)
 
 
-@router.post("/students/signin", tags=["students"])
+@router.post("/students/signin/", tags=["students"])
 def student_signin(request: SignInStudentCommandRequest) -> Response[SignInStudentCommandResponse]:
     command = SignInStudentCommand(student_repository, password_hasher)
     return command.run(request)
@@ -44,7 +46,7 @@ def student_update_personal_data(request: ChangeStudentPersonalDataRequest, toke
     return command.run(request)
 
 
-@router.put("/students/me/preferences", tags=["students"])
+@router.put("/students/me/preferences/", tags=["students"])
 def student_update_preferences(request: ChangeStudentPreferencesRequest, token: Annotated[str, Header()]) -> Response[
     ChangeStudentPreferencesResponse]:
     authentication = authorization_service(token)
@@ -52,7 +54,7 @@ def student_update_preferences(request: ChangeStudentPreferencesRequest, token: 
     return command.run(request)
 
 
-@router.put("/students/me/profile", tags=["students"])
+@router.put("/students/me/profile/", tags=["students"])
 def student_update_profile(request: ChangeStudentProfileRequest, token: Annotated[str, Header()]) -> Response[
     ChangeStudentProfileResponse]:
     authentication = authorization_service(token)
@@ -60,7 +62,7 @@ def student_update_profile(request: ChangeStudentProfileRequest, token: Annotate
     return command.run(request)
 
 
-@router.put("/students/me/change_email", tags=["students"])
+@router.put("/students/me/change_email/", tags=["students"])
 def student_change_email(request: ChangeStudentEmailRequest, token: Annotated[str, Header()]) -> Response[
     ChangeStudentEmailResponse]:
     authentication = authorization_service(token)
@@ -68,12 +70,23 @@ def student_change_email(request: ChangeStudentEmailRequest, token: Annotated[st
     return command.run(request)
 
 
-@router.post("/students/{student_id}/ban", tags=["students"])
+@router.post("/students/{student_id}/ban/", tags=["students"])
 def student_ban(student_id: str, token: Annotated[str, Header()]) -> Response[BanStudentResponse]:
     authentication = authorization_service(token)
     command = BanStudentCommand(authentication, student_repository, event_bus)
     return command.run(
         BanStudentRequest(
+            student_id=student_id
+        )
+    )
+
+
+@router.delete("/students/{student_id}/", tags=["students"])
+def student_delete(student_id: str, token: Annotated[str, Header()]) -> Response[DeleteStudentResponse]:
+    authentication = authorization_service(token)
+    command = DeleteStudentCommand(authentication, student_repository, event_bus)
+    return command.run(
+        DeleteStudentRequest(
             student_id=student_id
         )
     )

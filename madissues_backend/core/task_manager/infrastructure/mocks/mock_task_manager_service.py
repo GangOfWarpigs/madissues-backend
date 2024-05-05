@@ -27,6 +27,6 @@ class InMemoryTaskManagerService(TaskManagerService):
         self.invited_users.append(email)
 
 
-class InMemoryTaskManagerFactory(TaskManagerFactory):
+class MockTaskManagerFactory(TaskManagerFactory):
     def of(self, config: TaskManagerConfig) -> TaskManagerService:
         return InMemoryTaskManagerService(config.api_key)
