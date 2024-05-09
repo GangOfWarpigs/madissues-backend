@@ -25,4 +25,4 @@ def create_organization(request: CreateOrganizationRequest,
 def list_organization(token: Annotated[str, Header()]):
     authorization = authorization_service(token)
     query = GetOrganizationsOfOwnerQuery(authorization, organization_query_repository)
-    return query.query()
+    return query.execute()

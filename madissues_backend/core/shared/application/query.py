@@ -2,9 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
 QueryResult = TypeVar("QueryResult")
+QueryParams = TypeVar("QueryParams")
 
 
-class Query(ABC, Generic[QueryResult]):
+class Query(ABC, Generic[QueryParams, QueryResult]):
     @abstractmethod
-    def query(self) -> QueryResult:
+    def execute(self, params: QueryParams | None = None) -> QueryResult:
         pass
