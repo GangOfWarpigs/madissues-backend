@@ -1,4 +1,6 @@
 from madissues_backend.core.organizations.application.ports.organization_repository import OrganizationRepository
+from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_query_repository import \
+    MockOrganizationQueryRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
     MockOrganizationRepository
 from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
@@ -16,19 +18,21 @@ from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_
 
 database = EntityTable()
 
-#utilities
+# utilities
 password_hasher = SHA256PasswordHasher()
 token_generator = UUIDTokenGenerator()
 event_bus = MockEventBus()
-task_manager_factory= MockTaskManagerFactory()
+task_manager_factory = MockTaskManagerFactory()
 
-#services
-storage_service=LocalStorageService(media_path="../../../media/")
+# services
+storage_service = LocalStorageService(media_path="../../../media/")
 authorization_service = create_mock_authentication_service(database)
 
-#repositories
+# repositories
 owner_repository = MockOwnerRepository(database)
-organization_repository=MockOrganizationRepository(database)
+organization_repository = MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
 task_manager_repository = MockTaskManagerRepository(database)
 
+# query repositories
+organization_query_repository = MockOrganizationQueryRepository(database)

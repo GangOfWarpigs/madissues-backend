@@ -31,4 +31,3 @@ def change_owner_email(request: ChangeOwnerEmailRequest, token: Annotated[str, H
     authorization = authorization_service(token)
     command = ChangeOwnerEmailCommand(authorization, owner_repository, event_bus)
     return command.run(request)
-
