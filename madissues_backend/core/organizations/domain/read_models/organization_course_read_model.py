@@ -18,6 +18,7 @@ class OrganizationCourseReadModel(BaseModel):
     def of(course : OrganizationCourse):
         return OrganizationCourseReadModel(
             id=str(course.id),
+            name=course.name,
             code=course.code,
             icon=course.icon,
             primary_color=course.primary_color,
