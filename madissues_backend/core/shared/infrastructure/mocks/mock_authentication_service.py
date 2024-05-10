@@ -1,5 +1,6 @@
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
 from madissues_backend.core.shared.application.mock_repository import EntityTable
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 def create_mock_authentication_service(database: EntityTable):
@@ -39,6 +40,15 @@ def create_mock_authentication_service(database: EntityTable):
             if self.__token_is_in_student_table() or not self.__token_is_in_owner_table():
                 return False
             return True
+
+        def is_owner_of(self, organization_id: str) -> bool:
+            # Get organization by id
+            organization = self.database.tables["organizations"][GenericUUID(organization_id)]
+            owners = self.database.tables["owners"]
+            for owner in owners.values():
+                if owner.token == self.token and owner.id == organization.owner_id:
+                    return True
+            return False
 
         def is_site_admin(self) -> bool:
             students = self.database.tables["students"]

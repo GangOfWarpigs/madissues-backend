@@ -1,7 +1,9 @@
 from typing import Annotated
 
-from pydantic import Field, ValidationError
+from pydantic import Field
 
+from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
+    OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
 from madissues_backend.core.organizations.domain.organization_degree import OrganizationDegree
 from madissues_backend.core.organizations.domain.organization_teacher import OrganizationTeacher
@@ -32,3 +34,20 @@ class Organization(AggregateRoot[GenericUUID]):
         logo = storage.upload_b64_image(image)
         self.validate_field("logo", logo)
         self.logo = logo
+
+    def add_teacher(self, teacher: OrganizationTeacher):
+        # Check if the teacher is already in the organization with index
+        if teacher in self.teachers:
+            raise ValueError("Teacher already exists")
+        self.teachers.append(teacher)
+        self.register_event(
+            OrganizationTeacherAdded(
+                payload=OrganizationTeacherAddedPayload(
+                    first_name=teacher.first_name,
+                    last_name=teacher.last_name,
+                    email=teacher.email,
+                    office_link=teacher.office_link,
+                    courses=[course_id for course_id in teacher.courses]
+                )
+            )
+        )
