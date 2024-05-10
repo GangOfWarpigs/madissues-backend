@@ -1,17 +1,19 @@
 import unittest
 
-from madissues_backend.core.organizations.application.commands.teacher.create_organization_teacher_command import \
-    CreateOrganizationTeacherRequest, CreateOrganizationTeacherCommand
+from madissues_backend.core.organizations.application.commands.course.create_organization_course_command import \
+    CreateOrganizationCourseRequest, CreateOrganizationCourseResponse, CreateOrganizationCourseCommand
+from madissues_backend.core.organizations.domain.organization_mother import OrganizationMother
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
     MockOrganizationRepository
 from madissues_backend.core.shared.application.mock_repository import EntityTable
+from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_service import \
     create_mock_authentication_service
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 
 
-class TestCreateOrganizationTeacherCommand(unittest.TestCase):
+class TestCreateOrganizationCourseCommand(unittest.TestCase):
     def setUp(self):
         self.db = EntityTable()
         self.db.load_snapshot("with_organization_created")
@@ -23,51 +25,60 @@ class TestCreateOrganizationTeacherCommand(unittest.TestCase):
 
     def test_execute_success(self):
         # Arrange
-
-        teacher_request = CreateOrganizationTeacherRequest(
+        course_request = CreateOrganizationCourseRequest(
             organization_id=str(self.organization.id),
-            first_name="John",
-            last_name="Doe",
-            email="john.doe@example.com",
-            office_link="https://www.dis.ulpgc.es/john-doe",
-            courses=[str(course.id) for course in self.organization.courses]
+            name="Mathematics",
+            code="MATHS101",
+            icon="math_icon.png",
+            primary_color="#ffffff",
+            secondary_color="#000000"
         )
-
-        command = CreateOrganizationTeacherCommand(
+        command = CreateOrganizationCourseCommand(
             authentication_service=self.authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act
-        response = command.execute(teacher_request)
+        response = command.execute(course_request)
 
         # Assert
-        self.assertTrue(response.is_success(), "Email should be updated")
-        self.assertEqual(response.success.email, teacher_request.email,
-                         "Email should be correctly assigned in response")
+        self.assertTrue(response.is_success(), "Course should be created successfully")
+        self.assertIsNotNone(response.success.id, "Course ID should not be None")
+        self.assertEqual(response.success.organization_id, course_request.organization_id,
+                         "Organization ID should match")
+        self.assertEqual(response.success.name, course_request.name, "Course name should match")
+        self.assertEqual(response.success.code, course_request.code, "Course code should match")
+        self.assertEqual(response.success.icon, course_request.icon, "Course icon should match")
+        self.assertEqual(response.success.primary_color, course_request.primary_color,
+                         "Course primary color should match")
+        self.assertEqual(response.success.secondary_color, course_request.secondary_color,
+                         "Course secondary color should match")
 
-        # Teacher should be added to the organization
-        organization = self.organization_repository.get_by_id(GenericUUID(teacher_request.organization_id))
-        self.assertTrue((GenericUUID(response.success.id) in [teacher.id for teacher in organization.teachers]),
-                        "Teacher should be added to the organization")
-        self.assertEqual(len(self.event_bus.events), 1, "Should be triggered an event")
+        # Course should be added to the organization
+        organization = self.organization_repository.get_by_id(GenericUUID(course_request.organization_id))
+        self.assertTrue((GenericUUID(response.success.id) in [course.id for course in organization.courses]),
+                        "Course should be added to the organization")
+        self.assertEqual(len(self.event_bus.events), 1, "Should trigger an event")
 
     def test_execute_invalid_organization_id(self):
         # Arrange
-        teacher_request = CreateOrganizationTeacherRequest(
+        course_request = CreateOrganizationCourseRequest(
             organization_id="invalid_id",
-            first_name="John",
-            last_name="Doe"
+            name="Mathematics",
+            code="MATH101",
+            icon="math_icon.png",
+            primary_color="#ffffff",
+            secondary_color="#000000"
         )
-        command = CreateOrganizationTeacherCommand(
+        command = CreateOrganizationCourseCommand(
             authentication_service=self.authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act
-        response = command.execute(teacher_request)
+        response = command.execute(course_request)
 
         # Assert
         self.assertTrue(not response.success, "Organization ID should be invalid")
@@ -78,19 +89,22 @@ class TestCreateOrganizationTeacherCommand(unittest.TestCase):
         # Arrange
         unauthorized_owner = self.db.tables['owners'][GenericUUID("ca7b384c-0ae9-489f-90c6-a18a6781dcd0")]
         authentication_service = create_mock_authentication_service(self.db)(unauthorized_owner.token)
-        teacher_request = CreateOrganizationTeacherRequest(
+        course_request = CreateOrganizationCourseRequest(
             organization_id=str(self.organization.id),
-            first_name="John",
-            last_name="Doe"
+            name="Mathematics",
+            code="MATH101",
+            icon="math_icon.png",
+            primary_color="#ffffff",
+            secondary_color="#000000"
         )
-        command = CreateOrganizationTeacherCommand(
+        command = CreateOrganizationCourseCommand(
             authentication_service=authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act (raises an exception)
-        response = command.execute(teacher_request)
+        response = command.execute(course_request)
 
         # Assert
         self.assertTrue(not response.success, "User should not be authorized")

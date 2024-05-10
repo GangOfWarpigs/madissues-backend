@@ -2,6 +2,10 @@ from typing import Annotated
 
 from pydantic import Field
 
+from madissues_backend.core.organizations.domain.events.organization_course_added import OrganizationCourseAdded, \
+    OrganizationCourseAddedPayload
+from madissues_backend.core.organizations.domain.events.organization_course_deleted import OrganizationCourseDeleted, \
+    OrganizationCourseDeletedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -92,6 +96,68 @@ class Organization(AggregateRoot[GenericUUID]):
                     email=updated_teacher.email,
                     office_link=updated_teacher.office_link,
                     courses=[course_id for course_id in updated_teacher.courses]
+                )
+            )
+        )
+        return True
+
+    def get_course_by_id(self, course_id: GenericUUID) -> OrganizationCourse | None:
+        for course in self.courses:
+            if course.id == course_id:
+                return course
+        return None
+
+    def add_course(self, course: OrganizationCourse):
+        # Check if the course is already in the organization with index
+        if course in self.courses:
+            raise ValueError("Course already exists")
+        self.courses.append(course)
+        self.register_event(
+            OrganizationCourseAdded(
+                payload=OrganizationCourseAddedPayload(
+                    id=str(course.id),
+                    organization_id=str(self.id),
+                    name=course.name,
+                    code=course.code,
+                    icon=course.icon,
+                    primary_color=course.primary_color,
+                    secondary_color=course.secondary_color
+                )
+            )
+        )
+
+    def delete_course(self, course_id: GenericUUID):
+        course = self.get_course_by_id(course_id)
+        if course is None:
+            raise ValueError("Course not found")
+        self.courses.remove(course)
+        self.register_event(
+            OrganizationCourseDeleted(
+                payload=OrganizationCourseDeletedPayload(
+                    id=str(course.id),
+                    organization_id=str(self.id),
+                )
+            )
+        )
+
+    def update_course(self, updated_course: OrganizationCourse) -> bool:
+        for index, course in enumerate(self.courses):
+            if course.id == updated_course.id:
+                self.courses[index] = updated_course
+                break
+        else:
+            return False
+
+        self.register_event(
+            OrganizationCourseAdded(
+                payload=OrganizationCourseAddedPayload(
+                    id=str(updated_course.id),
+                    organization_id=str(self.id),
+                    name=updated_course.name,
+                    code=updated_course.code,
+                    icon=updated_course.icon,
+                    primary_color=updated_course.primary_color,
+                    secondary_color=updated_course.secondary_color
                 )
             )
         )
