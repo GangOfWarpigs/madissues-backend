@@ -6,6 +6,8 @@ from madissues_backend.core.organizations.domain.events.organization_teacher_add
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
     OrganizationTeacherDeletedPayload
+from madissues_backend.core.organizations.domain.events.organization_teacher_updated import OrganizationTeacherUpdated, \
+    OrganizationTeacherUpdatedPayload
 from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
 from madissues_backend.core.organizations.domain.organization_degree import OrganizationDegree
 from madissues_backend.core.organizations.domain.organization_teacher import OrganizationTeacher
@@ -72,3 +74,25 @@ class Organization(AggregateRoot[GenericUUID]):
                 )
             )
         )
+
+    def update_teacher(self, updated_teacher: OrganizationTeacher) -> bool:
+        for index, teacher in enumerate(self.teachers):
+            if teacher.id == updated_teacher.id:
+                self.teachers[index] = updated_teacher
+                break
+        else:
+            return False
+
+        self.register_event(
+            OrganizationTeacherUpdated(
+                payload=OrganizationTeacherUpdatedPayload(
+                    teacher_id=str(updated_teacher.id),
+                    first_name=updated_teacher.first_name,
+                    last_name=updated_teacher.last_name,
+                    email=updated_teacher.email,
+                    office_link=updated_teacher.office_link,
+                    courses=[course_id for course_id in updated_teacher.courses]
+                )
+            )
+        )
+        return True
