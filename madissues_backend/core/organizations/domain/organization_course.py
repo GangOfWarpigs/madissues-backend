@@ -16,3 +16,4 @@ class OrganizationCourse(Entity[GenericUUID]):
     icon: LinkToImage
     primary_color: HexadecimalColor
     secondary_color: HexadecimalColor
+
