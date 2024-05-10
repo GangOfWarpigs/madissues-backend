@@ -6,11 +6,19 @@ from madissues_backend.apps.rest_api.dependencies import authorization_service, 
     storage_service, organization_query_repository
 from madissues_backend.core.organizations.application.commands.organization.create_organization_command import \
     CreateOrganizationRequest, CreateOrganizationResponse, CreateOrganizationCommand
+from madissues_backend.core.organizations.application.queries.get_organization_courses_query import \
+    GetOrganizationCoursesQuery
+from madissues_backend.core.organizations.application.queries.get_organization_teachers_query import \
+    GetOrganizationTeachersQuery
 from madissues_backend.core.organizations.application.queries.get_organizations_of_owner_query import \
     GetOrganizationsOfOwnerQuery
 from madissues_backend.core.organizations.application.queries.get_single_organization_query import \
     GetSingleOrganizationQuery, Params
+from madissues_backend.core.organizations.domain.read_models.organization_course_read_model import \
+    OrganizationCourseReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_teacher_read_model import \
+    OrganizationTeacherReadModel
 from madissues_backend.core.shared.domain.response import Response
 
 router = APIRouter()
@@ -36,3 +44,15 @@ def single_organization(token: Annotated[str, Header()], id: str) -> Response[Or
     authorization = authorization_service(token)
     query = GetSingleOrganizationQuery(authorization, organization_query_repository)
     return query.execute(Params(id=id))
+
+@router.get("/organizations/{id}/teachers", tags=["organizations"])
+def get_organization_teachers(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationTeacherReadModel]]:
+    authorization = authorization_service(token)
+    query = GetOrganizationTeachersQuery(authorization, organization_query_repository)
+    return query.execute(id)
+
+@router.get("/organizations/{id}/teachers", tags=["organizations"])
+def get_organization_courses(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationCourseReadModel]]:
+    authorization = authorization_service(token)
+    query = GetOrganizationCoursesQuery(authorization, organization_query_repository)
+    return query.execute(id)
