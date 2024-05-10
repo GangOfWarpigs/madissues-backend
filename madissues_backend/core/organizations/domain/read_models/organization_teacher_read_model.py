@@ -2,7 +2,7 @@ from pydantic import Field, BaseModel
 
 
 class OrganizationTeacher(BaseModel):
-    id : str
+    id: str
     first_name: str  # min 1
     last_name: str  # min 1
     email: str  # email valid

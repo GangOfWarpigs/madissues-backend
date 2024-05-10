@@ -3,6 +3,7 @@ from madissues_backend.core.organizations.infrastructure.mocks.mock_organization
     MockOrganizationQueryRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
     MockOrganizationRepository
+from madissues_backend.core.owners.infrastructure.mocks.mock_owner_query_repository import MockOwnerQueryRepository
 from madissues_backend.core.owners.infrastructure.mocks.mock_owner_repository import MockOwnerRepository
 from madissues_backend.core.shared.application.mock_repository import EntityTable
 from madissues_backend.core.shared.infrastructure.local_storage_service import LocalStorageService
@@ -38,3 +39,4 @@ task_manager_repository = MockTaskManagerRepository(database)
 
 # query repositories
 organization_query_repository = MockOrganizationQueryRepository(database)
+owner_query_repository = MockOwnerQueryRepository(database)
