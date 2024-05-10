@@ -10,6 +10,7 @@ from madissues_backend.core.organizations.application.queries.get_organizations_
     GetOrganizationsOfOwnerQuery
 from madissues_backend.core.organizations.application.queries.get_single_organization_query import \
     GetSingleOrganizationQuery, Params
+from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
 from madissues_backend.core.shared.domain.response import Response
 
 router = APIRouter()
@@ -24,14 +25,14 @@ def create_organization(request: CreateOrganizationRequest,
 
 
 @router.get("/organizations/", tags=["organizations"])
-def list_organization(token: Annotated[str, Header()]):
+def list_organization(token: Annotated[str, Header()]) -> Response[list[OrganizationReadModel]]:
     authorization = authorization_service(token)
     query = GetOrganizationsOfOwnerQuery(authorization, organization_query_repository)
     return query.execute()
 
 
 @router.get("/organizations/{id}", tags=["organizations"])
-def single_organization(token: Annotated[str, Header()], id: str):
+def single_organization(token: Annotated[str, Header()], id: str) -> Response[OrganizationReadModel]:
     authorization = authorization_service(token)
     query = GetSingleOrganizationQuery(authorization, organization_query_repository)
     return query.execute(Params(id=id))

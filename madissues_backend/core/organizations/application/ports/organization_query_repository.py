@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from madissues_backend.core.organizations.domain.read_models.OrganizationReadModel import OrganizationReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
 
 
 class OrganizationQueryRepository(ABC):
