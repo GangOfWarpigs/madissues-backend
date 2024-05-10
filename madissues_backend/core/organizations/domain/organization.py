@@ -1,7 +1,13 @@
 from typing import Annotated
 
-from pydantic import Field, ValidationError
+from pydantic import Field
 
+from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
+    OrganizationTeacherAddedPayload
+from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
+    OrganizationTeacherDeletedPayload
+from madissues_backend.core.organizations.domain.events.organization_teacher_updated import OrganizationTeacherUpdated, \
+    OrganizationTeacherUpdatedPayload
 from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
 from madissues_backend.core.organizations.domain.organization_degree import OrganizationDegree
 from madissues_backend.core.organizations.domain.organization_teacher import OrganizationTeacher
@@ -32,3 +38,61 @@ class Organization(AggregateRoot[GenericUUID]):
         logo = storage.upload_b64_image(image, final_name=str(GenericUUID.next_id()))
         self.validate_field("logo", logo)
         self.logo = logo
+
+    def add_teacher(self, teacher: OrganizationTeacher):
+        # Check if the teacher is already in the organization with index
+        if teacher in self.teachers:
+            raise ValueError("Teacher already exists")
+        self.teachers.append(teacher)
+        self.register_event(
+            OrganizationTeacherAdded(
+                payload=OrganizationTeacherAddedPayload(
+                    first_name=teacher.first_name,
+                    last_name=teacher.last_name,
+                    email=teacher.email,
+                    office_link=teacher.office_link,
+                    courses=[course_id for course_id in teacher.courses]
+                )
+            )
+        )
+
+    def get_teacher_by_id(self, teacher_id: GenericUUID) -> OrganizationTeacher | None:
+        for teacher in self.teachers:
+            if teacher.id == teacher_id:
+                return teacher
+        return None
+
+    def delete_teacher(self, teacher_id: GenericUUID):
+        teacher = self.get_teacher_by_id(teacher_id)
+        if teacher is None:
+            raise ValueError("Teacher not found")
+        self.teachers.remove(teacher)
+        self.register_event(
+            OrganizationTeacherDeleted(
+                payload=OrganizationTeacherDeletedPayload(
+                    teacher_id=str(teacher.id)
+                )
+            )
+        )
+
+    def update_teacher(self, updated_teacher: OrganizationTeacher) -> bool:
+        for index, teacher in enumerate(self.teachers):
+            if teacher.id == updated_teacher.id:
+                self.teachers[index] = updated_teacher
+                break
+        else:
+            return False
+
+        self.register_event(
+            OrganizationTeacherUpdated(
+                payload=OrganizationTeacherUpdatedPayload(
+                    teacher_id=str(updated_teacher.id),
+                    first_name=updated_teacher.first_name,
+                    last_name=updated_teacher.last_name,
+                    email=updated_teacher.email,
+                    office_link=updated_teacher.office_link,
+                    courses=[course_id for course_id in updated_teacher.courses]
+                )
+            )
+        )
+        return True

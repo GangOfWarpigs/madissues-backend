@@ -24,11 +24,9 @@ class MockOwnerRepository(OwnerRepository, GenericMockRepository[GenericUUID, Ow
             raise ValueError("Owner does not exists")
         del self.owners[owner_id]
 
-    def get_by_id(self, owner_id: GenericUUID) -> Owner:
-        owner = self.owners.get(owner_id)
-        if not owner:
-            raise ValueError("Owner not found")
-        return owner
+    def get_by_id(self, owner_id: GenericUUID) -> Owner | None:
+        return self.owners.get(owner_id)
+
 
     def save(self, entity: Owner):
         index = self.owners.get(entity.id)

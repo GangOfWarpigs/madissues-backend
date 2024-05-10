@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from madissues_backend.core.organizations.domain.organization import Organization
 from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
+from madissues_backend.core.organizations.domain.organization_degree import OrganizationDegree
 from madissues_backend.core.organizations.domain.organization_teacher import OrganizationTeacher
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
@@ -19,7 +20,9 @@ class OrganizationMother:
             contact_info=OrganizationMother.generate_phone_number(),
             primary_color=OrganizationMother.generate_hex_color(),
             secondary_color=OrganizationMother.generate_hex_color(),
-            board_id=str(GenericUUID.next_id())
+            teachers=[OrganizationMother.generate_organization_teacher() for _ in range(random.randint(1, 5))],
+            courses=[OrganizationMother.generate_organization_course() for _ in range(random.randint(1, 5))],
+            degrees=[OrganizationMother.generate_organization_degree() for _ in range(random.randint(1, 5))]
         )
         return organization
 
@@ -48,8 +51,20 @@ class OrganizationMother:
         return teacher
 
     @staticmethod
+    def generate_organization_degree():
+        degree = OrganizationDegree(
+            id=GenericUUID.next_id(),
+            name=OrganizationMother.generate_degree_name(),
+        )
+        return degree
+
+    @staticmethod
     def generate_company_name():
         return f"Organization {str(uuid4())[:8]}"
+
+    @staticmethod
+    def generate_degree_name():
+        return f"Degree {str(uuid4())[:8]}"
 
     @staticmethod
     def generate_course_name():

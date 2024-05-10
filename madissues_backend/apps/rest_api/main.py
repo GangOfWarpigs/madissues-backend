@@ -31,7 +31,10 @@ app.add_middleware(
 )
 
 dirname = os.path.dirname(__file__)
-app.mount("/public", StaticFiles(directory=os.path.join(dirname, "assets")), name="static")
+
+app.mount("/public",
+          StaticFiles(directory=os.path.join(dirname, "assets")),
+          name="static")
 app.include_router(owners_router)
 app.include_router(organizations_router)
 app.include_router(students_router)
