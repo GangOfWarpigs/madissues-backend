@@ -6,6 +6,8 @@ from madissues_backend.core.organizations.domain.events.organization_course_adde
     OrganizationCourseAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_course_deleted import OrganizationCourseDeleted, \
     OrganizationCourseDeletedPayload
+from madissues_backend.core.organizations.domain.events.organization_degree_added import OrganizationDegreeAdded, \
+    OrganizationDegreeAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -162,3 +164,19 @@ class Organization(AggregateRoot[GenericUUID]):
             )
         )
         return True
+
+    def add_degree(self, degree: OrganizationDegree):
+        # Check if the degree is already in the organization with index
+        if degree in self.degrees:
+            raise ValueError("Degree already exists")
+        self.degrees.append(degree)
+        # Register event
+        self.register_event(
+            OrganizationDegreeAdded(
+                payload=OrganizationDegreeAddedPayload(
+                    id=str(degree.id),
+                    organization_id=str(self.id),
+                    name=degree.name
+                )
+            )
+        )

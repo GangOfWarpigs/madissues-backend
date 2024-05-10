@@ -56,7 +56,11 @@ class CreateOrganizationTeacherCommand(Command[CreateOrganizationTeacherRequest,
             courses=[GenericUUID(course_id) for course_id in request.courses]
         )
         # Add the teacher to the organization
-        organization.add_teacher(teacher)
+        try:
+            organization.add_teacher(teacher)
+        except ValueError as e:
+            return Response.fail(message=str(e)) # Teacher already exists
+
         self.event_bus.notify_all(organization.collect_events())
 
         # Save the organization
