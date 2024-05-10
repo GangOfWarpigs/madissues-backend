@@ -9,13 +9,14 @@ class TestOrganizationCourse(unittest.TestCase):
             'id': GenericUUID.next_id(),
             'name': 'Test Course',
             'code': 'TEST1234',
-            'icon': 'https://example.com/icon.png',
+            'icon': 'ion-home',
             'primary_color': '#e400ff',
             'secondary_color': '#0049ff',
         }
 
     def test_valid_course(self):
         course = OrganizationCourse(**self.valid_course_data)
+        print("Course: ", course)
         self.assertIsInstance(course, OrganizationCourse)
 
     def test_invalid_name_min_length(self):
@@ -30,9 +31,9 @@ class TestOrganizationCourse(unittest.TestCase):
         with self.assertRaises(ValidationError):
             OrganizationCourse(**invalid_course_data)
 
-    def test_invalid_icon_format(self):
+    def test_no_icon(self):
         invalid_course_data = self.valid_course_data.copy()
-        invalid_course_data['icon'] = 'not_an_url'
+        invalid_course_data['icon'] = ''
         with self.assertRaises(ValidationError):
             OrganizationCourse(**invalid_course_data)
 
