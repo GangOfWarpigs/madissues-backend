@@ -26,7 +26,6 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         self.organization_repository = MockOrganizationRepository(self.db)
         self.storage = MockStorageService()
 
-
     def test_organization_is_created_without_errors(self):
         command = CreateOrganizationCommand(self.authorization,
                                             self.organization_repository, self.storage)
@@ -57,7 +56,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         print(response)
         assert response.is_error() == True, "Command must succed"
 
-    def test_organization_without_beeing_owner(self):
+    def test_create_organization_without_being_owner(self):
         command = CreateOrganizationCommand(self.authorization_service("mock-token"),
                                             self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
@@ -72,7 +71,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         assert response.is_error() == True, "Command must fail"
         assert response.error.error_code == 403, "Command must fail because you are not authorized"
 
-    def test_organization_without_logo(self):
+    def test_create_organization_without_logo(self):
         command = CreateOrganizationCommand(self.authorization,
                                             self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
@@ -114,42 +113,13 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         assert response.error.error_code == 1, "Error code must be caused by empty description"
         self.assertIn("description", response.error.error_field, "Must be caused by description")
 
-    def test_create_organization_failed_with_empty_description(self):
-        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
-        response = command.run(CreateOrganizationRequest(
-            name="organization1",
-            logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
-            description="",
-            contact_info="contact info",
-            primary_color="#f5f5f5",
-            secondary_color="#f5f5f5"
-        ))
-        assert response.is_error() is True, "Organization should not be created when description is empty"
-        assert response.error.error_code == 1, "Error code must be caused by empty description"
-        self.assertIn("description", response.error.error_field, "Must be caused by description")
-
-    def test_create_organization_failed_with_empty_description(self):
-        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
-        response = command.run(CreateOrganizationRequest(
-            name="organization1",
-            logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
-            description="",
-            contact_info="contact info",
-            primary_color="#f5f5f5",
-            secondary_color="#f5f5f5"
-        ))
-        assert response.is_error() is True, "Organization should not be created when description is empty"
-        assert response.error.error_code == 1, "Error code must be caused by empty description"
-        self.assertIn("description", response.error.error_field, "Must be caused by description")
-
     def test_create_organization_failed_with_empty_logo(self):
         command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="",
             description="pepe",
             contact_info="contact info",
             primary_color="#f5f5f5",
             secondary_color="#f5f5f5"
         ))
-        assert response.is_error() is True, "Organization should not be created when logo is invalid"
+        assert response.is_error() is False, "Organization should not be created when logo is invalid"

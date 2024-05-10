@@ -33,7 +33,7 @@ ContactInfo = Annotated[str, Field(min_length=1, max_length=80)]
 class Organization(AggregateRoot[GenericUUID]):
     owner_id: GenericUUID
     name: Name
-    logo: LinkToImage | None = Field(init=False, default=None)
+    logo: LinkToImage | None = Field(init=False, default="default_organization_logo.png")
     description: Description
     contact_info: ContactInfo
     primary_color: HexadecimalColor

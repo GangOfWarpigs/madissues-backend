@@ -50,7 +50,9 @@ class CreateOrganizationCommand(Command[CreateOrganizationRequest, CreateOrganiz
             primary_color=request.primary_color,
             secondary_color=request.secondary_color
         )
-        if request.logo: organization.upload_logo(request.logo, self.storage)
+        if request.logo:
+            organization.upload_logo(request.logo, self.storage)
+
         self.repository.add(organization)
         return Response.ok(CreateOrganizationResponse(
             **organization.dict(),
