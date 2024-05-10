@@ -38,7 +38,7 @@ class CreateOrganizationCommand(Command[CreateOrganizationRequest, CreateOrganiz
                  storage: StorageService):
         self.authentication_service = authentication_service
         self.repository = repository
-        self.storage = storage
+        self.storage_service = storage
 
     def execute(self, request: CreateOrganizationRequest) -> Response[CreateOrganizationResponse]:
         organization = Organization(
@@ -51,7 +51,7 @@ class CreateOrganizationCommand(Command[CreateOrganizationRequest, CreateOrganiz
             secondary_color=request.secondary_color
         )
         if request.logo:
-            organization.upload_logo(request.logo, self.storage)
+            organization.upload_logo(request.logo, self.storage_service)
 
         self.repository.add(organization)
         return Response.ok(CreateOrganizationResponse(

@@ -11,6 +11,7 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_serv
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 from madissues_backend.core.shared.infrastructure.mocks.mock_storage_service import MockStorageService
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
+from madissues_backend.core.shared.infrastructure.storage.local_storage_service import LocalStorageService
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 
 
@@ -24,14 +25,14 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         self.token_generator = UUIDTokenGenerator()
         self.authorization = self.authorization_service("1d372590-a034-4e05-b1e8-02a9e91068f3")
         self.organization_repository = MockOrganizationRepository(self.db)
-        self.storage = MockStorageService()
+        self.storage_service = LocalStorageService("../../../../../../media")
 
     def test_organization_is_created_without_errors(self):
         command = CreateOrganizationCommand(self.authorization,
-                                            self.organization_repository, self.storage)
+                                            self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="b64",
+            logo="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxASEhUQEBAV",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -39,12 +40,12 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         ))
 
         assert response.is_success() == True, "Command must succed"
-        assert response.success.logo == "uploaded_was_called.png"
+        assert response.success.logo != "default_organization_logo.png"
         assert self.organization_repository.get_by_id(GenericUUID(response.success.id)) is not None, "Must be not None"
 
     def test_organization_is_created_with_non_valid_chars(self):
         command = CreateOrganizationCommand(self.authorization,
-                                            self.organization_repository, self.storage)
+                                            self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="string",
             description="string",
@@ -58,7 +59,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
 
     def test_create_organization_without_being_owner(self):
         command = CreateOrganizationCommand(self.authorization_service("mock-token"),
-                                            self.organization_repository, self.storage)
+                                            self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
             logo="b64",
@@ -73,7 +74,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
 
     def test_create_organization_without_logo(self):
         command = CreateOrganizationCommand(self.authorization,
-                                            self.organization_repository, self.storage)
+                                            self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
             description="this is my organization",
@@ -83,10 +84,10 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         ))
 
         assert response.is_success() == True, "Command must succed"
-        assert response.success.logo == None, "Logo must be none"
+        assert response.success.logo == "default_organization_logo.png", "Logo must be the default one"
 
     def test_create_organization_failed_with_empty_name(self):
-        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
+        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="",
             logo="data:image/gif;base64,R0lGODlhAQABAAAAACw=",
@@ -100,7 +101,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         self.assertIn("name", response.error.error_field, "Must be caused by name")
 
     def test_create_organization_failed_with_empty_description(self):
-        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
+        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
             logo="b64",
@@ -114,7 +115,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         self.assertIn("description", response.error.error_field, "Must be caused by description")
 
     def test_create_organization_failed_with_empty_logo(self):
-        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage)
+        command = CreateOrganizationCommand(self.authorization, self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
             description="pepe",
