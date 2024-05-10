@@ -1,6 +1,7 @@
 import base64
 import os
 from madissues_backend.core.shared.domain.storage_service import StorageService
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class LocalStorageService(StorageService):
@@ -20,6 +21,9 @@ class LocalStorageService(StorageService):
 
         with open(path + final_name, "wb") as file:
             file.write(image_data)
+
+        if final_name == None:
+            final_name = str(GenericUUID.next_id())
 
         return str(path + final_name)
 

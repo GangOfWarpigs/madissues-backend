@@ -8,6 +8,8 @@ from madissues_backend.core.organizations.application.commands.organization.crea
     CreateOrganizationRequest, CreateOrganizationResponse, CreateOrganizationCommand
 from madissues_backend.core.organizations.application.queries.get_organizations_of_owner_query import \
     GetOrganizationsOfOwnerQuery
+from madissues_backend.core.organizations.application.queries.get_single_organization_query import \
+    GetSingleOrganizationQuery, Params
 from madissues_backend.core.shared.domain.response import Response
 
 router = APIRouter()
@@ -26,3 +28,10 @@ def list_organization(token: Annotated[str, Header()]):
     authorization = authorization_service(token)
     query = GetOrganizationsOfOwnerQuery(authorization, organization_query_repository)
     return query.execute()
+
+
+@router.get("/organizations/{id}", tags=["organizations"])
+def single_organization(token: Annotated[str, Header()], id: str):
+    authorization = authorization_service(token)
+    query = GetSingleOrganizationQuery(authorization, organization_query_repository)
+    return query.execute(Params(id=id))
