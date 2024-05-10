@@ -38,7 +38,8 @@ class TestCreateIssueCommand(unittest.TestCase):
             date_time=datetime.now().strftime('%Y-%m-%d'),
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
-            student="1d372590-a034-4e05-b1e8-02a9e91068f3"
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
         ))
 
         assert create_response.is_success() is True, "Issue must be created successfully"
@@ -55,8 +56,8 @@ class TestCreateIssueCommand(unittest.TestCase):
                                             self.storage_service)
 
         proofs_base64 = [
-            "iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
-            "iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA"
+            ",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            ",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA"
         ]
 
         create_response = create_command.run(CreateIssueRequest(
@@ -68,7 +69,8 @@ class TestCreateIssueCommand(unittest.TestCase):
             date_time=datetime.now().strftime('%Y-%m-%d'),
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
-            student="1d372590-a034-4e05-b1e8-02a9e91068f3"
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
         ))
 
         assert create_response.is_success() is True, "Issue must be created successfully"
@@ -96,7 +98,8 @@ class TestCreateIssueCommand(unittest.TestCase):
             date_time=datetime.now().strftime('%Y-%m-%d'),
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
-            student="ca7b384c-0ae9-489f-90c6-a18a6781dcd0"
+            student="ca7b384c-0ae9-489f-90c6-a18a6781dcd0",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
         ))
 
         assert create_response.is_error() is True, "Issue creation must fail"

@@ -13,6 +13,7 @@ class IssueCreatedPayload(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
+    organization_id: str  # GenericUUID
 
 
 class IssueCreated(DomainEvent[IssueCreatedPayload]):

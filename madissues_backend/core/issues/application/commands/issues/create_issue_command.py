@@ -23,6 +23,7 @@ class CreateIssueRequest(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
+    organization_id: str  # GenericUUID
 
 
 class CreateIssueResponse(BaseModel):
@@ -35,6 +36,7 @@ class CreateIssueResponse(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
+    organization_id: str  # GenericUUID
 
 
 @students_only
@@ -70,6 +72,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             course=GenericUUID(request.course),
             teachers=[GenericUUID(teacher) for teacher in request.teachers],
             student_id=GenericUUID(request.student),
+            organization_id=GenericUUID(request.organization_id)
         )
 
         issue.register_event(IssueCreated(
@@ -83,6 +86,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
                 course=str(issue.course),
                 teachers=[str(teacher) for teacher in issue.teachers],
                 student=str(issue.student_id),
+                organization_id=str(issue.organization_id)
             )
         ))
         self.event_bus.notify_all(issue.collect_events())
@@ -99,4 +103,5 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             course=str(issue.course),
             teachers=[str(teacher) for teacher in issue.teachers],
             student=str(issue.student_id),
+            organization_id=str(issue.organization_id)
         ))

@@ -5,6 +5,7 @@ from madissues_backend.core.issues.application.commands.issues.create_issue_comm
     CreateIssueCommand, CreateIssueRequest
 from madissues_backend.core.issues.application.queries.find_all_issues_for_organization_query import FindAllIssuesQuery, \
     FindAllIssuesQueryParams
+from madissues_backend.core.issues.infrastructure.mocks.mock_issue_query_repository import MockIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_repository import MockIssueRepository
 from madissues_backend.core.shared.application.mock_repository import EntityTable
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
@@ -41,7 +42,8 @@ class TestFindAllIssuesQuery(unittest.TestCase):
             date_time=datetime.now().strftime('%Y-%m-%d'),
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
-            student="1d372590-a034-4e05-b1e8-02a9e91068f3"
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
         ))
 
         create_response_2 = create_command.run(CreateIssueRequest(
@@ -53,12 +55,13 @@ class TestFindAllIssuesQuery(unittest.TestCase):
             date_time=datetime.now().strftime('%Y-%m-%d'),
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
-            student="1d372590-a034-4e05-b1e8-02a9e91068f3"
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
         ))
 
         # Find issues by organization
         query = FindAllIssuesQuery(self.authentication_service, self.issue_query_repository)
-        params = FindAllIssuesQueryParams(organization_id="c0517ecb-24e5-4d5e-841c-48b7001e5f94")
+        params = FindAllIssuesQueryParams(organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa")
         query_response = query.execute(params)
 
         assert query_response.is_success() is True, "Query must be successful"
@@ -73,6 +76,6 @@ class TestFindAllIssuesQuery(unittest.TestCase):
 
         assert query_response.is_error() is True, "Query must fail"
         assert query_response.error.error_code == 403, "Error code must indicate 'forbidden'"
-        assert query_response.error.error_message == "User must be a owner", "Error message must indicate 'forbidden'"
+        assert query_response.error.error_message == "User must be a student", "Error message must indicate 'forbidden'"
 
 
