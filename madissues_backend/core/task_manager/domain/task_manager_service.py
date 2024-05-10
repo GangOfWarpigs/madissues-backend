@@ -9,7 +9,7 @@ class TaskManagerService(ABC):
         ...
 
     @abstractmethod
-    def create_empty_board(self, name: str) -> str:
+    def create_empty_board(self, organization_id: str, name: str) -> str:
         ...
 
     @abstractmethod
@@ -17,7 +17,23 @@ class TaskManagerService(ABC):
         ...
 
     @abstractmethod
-    def invite_user(self, email: str):
+    def invite_user(self, organization_id: str, email: str):
+        ...
+
+    @abstractmethod
+    def get_board_id(self, board_name: str) -> str:
+        ...
+
+    @abstractmethod
+    def get_boards_in_organization(self, board_name: str) -> list[str]:
+        ...
+
+    @abstractmethod
+    def create_organization(self, name: str) -> str:
+        ...
+
+    @abstractmethod
+    def delete_organization(self, organization_id: str):
         ...
 
 

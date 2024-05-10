@@ -9,7 +9,7 @@ from madissues_backend.core.shared.application.mock_repository import GenericMoc
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
-class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[UUID, IssueComment], ABC):
+class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[UUID, IssueComment]):
     def __init__(self, entity_table: EntityTable):
         super().__init__(entity_table)
         self._issues: Dict[UUID, IssueComment] = self.entity_table.tables["issue_comments"]

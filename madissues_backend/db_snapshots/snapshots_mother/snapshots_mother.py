@@ -8,6 +8,7 @@ from madissues_backend.core.shared.application.mock_repository import EntityTabl
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
+from madissues_backend.core.students.domain.student_mother import StudentMother
 from madissues_backend.core.students.infrastructure.mocks.mock_student_repository import MockStudentRepository
 
 
@@ -54,10 +55,26 @@ class SnapshotsMother:
         self.db.load_snapshot("with_organization_created")
         print("Snapshot loaded, ", self.db.tables)
 
+    def create_with_student_created(self):
+        student = StudentMother.random_student()
+        student.id = GenericUUID("fa68b53a-8db6-4f5b-9d15-e93cbc163bfa")
+        student.email = "student.jhon.doe@example.com"
+        student.password = "ValidPassword123!"
+        student.generate_auth_token(UUIDTokenGenerator())
+        self.student_repository.add(student)
+        self.db.save_snapshot("with_student_created")
+
+    def load_with_student_created(self):
+        self.db.load_snapshot("with_student_created")
+        print("Snapshot loaded, ", self.db.tables)
+
 
 if __name__ == '__main__':
     db = EntityTable()
     snapshots = SnapshotsMother()
     # snapshots.create_organization()
-    snapshots.load_with_organization_created()
+    # snapshots.load_with_organization_created()
+    snapshots.create_with_student_created()
+    snapshots.load_with_student_created()
+
     print("Snapshots created")

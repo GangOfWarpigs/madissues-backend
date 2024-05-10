@@ -13,3 +13,4 @@ def is_valid_service(service):
 class TaskManagerConfig(ValueObject):
     service: Annotated[str, AfterValidator(is_valid_service)]
     api_key: Annotated[str, Field(min_length=1)]
+    token: Annotated[str, Field(min_length=1)]

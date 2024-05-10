@@ -43,10 +43,13 @@ class Organization(AggregateRoot[GenericUUID]):
     degrees: list[OrganizationDegree] = Field(default=[], init=False)
 
     def upload_logo(self, image, storage: StorageService):
-        logo = storage.upload_b64_image(image, folder="organizations", image_name=str(GenericUUID.next_id()) + ".png")
+        logo = storage.upload_b64_image(image, folder="organizations", image_name=str(GenericUUID.next_id()))
         self.validate_field("logo", logo)
-        self.logo = logo
+        self.logo = logo.split("/")[-1].split(".")[0] # Takes the name of the image without the extension
 
+    def delete_logo(self, storage: StorageService):
+        storage.delete_image(folder="organizations", image_name=str(self.logo))
+        self.logo = None
 
     def add_teacher(self, teacher: OrganizationTeacher):
         # Check if the teacher is already in the organization with index

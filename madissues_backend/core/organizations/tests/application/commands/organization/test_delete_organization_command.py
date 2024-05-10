@@ -31,7 +31,7 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
 
         create_response = create_command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxASEhUQEBAV",
+            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -53,6 +53,63 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
         assert delete_response.is_success() is True, "Organization must be deleted successfully"
         assert self.organization_repository.get_by_id(GenericUUID(create_response.success.id)) is None, \
             "Organization must not exist in the repository"
+
+    def test_delete_nonexistent_organization(self):
+        # Delete organization with a non-existent ID
+        delete_command = DeleteOrganizationCommand(self.authorization,
+                                                   self.organization_repository,
+                                                   self.storage_service)
+
+        invalid_organization_UUID = GenericUUID.next_id()
+        # Check that the organization does not exist
+        assert self.organization_repository.get_by_id(invalid_organization_UUID) is None, \
+            "Organization must not exist in the repository"
+
+        delete_response = delete_command.run(
+            DeleteOrganizationRequest(
+                organization_id=str(invalid_organization_UUID))
+        )
+
+        assert delete_response.is_error() is True, "Organization deletion should fail"
+        assert delete_response.error.error_code == 404, "Error code must indicate 'not found'"
+        assert delete_response.error.error_message == "Organization not found", "Error message must indicate 'not found'"
+
+    def test_delete_organization_without_being_owner(self):
+        # Create organization
+        create_command = CreateOrganizationCommand(self.authorization,
+                                                   self.organization_repository,
+                                                   self.storage_service)
+
+        create_response = create_command.run(CreateOrganizationRequest(
+            name="organization1",
+            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            description="this is my organization",
+            contact_info="contact info",
+            primary_color="#f5f5f5",
+            secondary_color="#f5f5f5"
+        ))
+
+        assert create_response.is_success() is True, "Organization must be created successfully"
+
+        mock_token = GenericUUID.next_id()
+        # Check that the token is not the owner
+        assert self.authorization_service(mock_token) != create_response.success.owner_id, \
+            "Token must not be the owner of the organization"
+
+        # Delete organization without being the owner
+        delete_command = DeleteOrganizationCommand(self.authorization_service("mock-token"),
+                                                   self.organization_repository,
+                                                   self.storage_service)
+
+        delete_response = delete_command.run(
+            DeleteOrganizationRequest(
+                organization_id=create_response.success.id)
+        )
+
+        assert delete_response.is_error() is True, "Organization deletion should fail"
+        assert delete_response.error.error_code == 403, "Error code must indicate 'forbidden'"
+        assert delete_response.error.error_message == "User must be a owner", \
+            "Error message must indicate 'forbidden'"
 
 
 if __name__ == '__main__':

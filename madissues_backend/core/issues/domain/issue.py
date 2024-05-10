@@ -21,7 +21,4 @@ class Issue(AggregateRoot[GenericUUID]):
     date_time: datetime
     course: GenericUUID
     teachers: list[GenericUUID]
-    student: GenericUUID
-    task_manager_id: GenericUUID
-    assigned_to: GenericUUID
-
+    student_id: GenericUUID

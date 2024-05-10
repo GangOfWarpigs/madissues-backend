@@ -29,7 +29,7 @@ class DeleteOrganizationCommand(Command[DeleteOrganizationRequest, DeleteOrganiz
         # Retrieve organization by ID
         organization = self.repository.get_by_id(organization_id)
         if not organization:
-            return Response.fail(message="Organization not found")
+            return Response.fail(code=404, message="Organization not found")
 
         # Check if the user is the owner of the organization
         if not self.authentication_service.is_owner_of(str(organization.id)):
@@ -37,7 +37,7 @@ class DeleteOrganizationCommand(Command[DeleteOrganizationRequest, DeleteOrganiz
 
         # Delete the organization's logo if it exists
         if organization.logo:
-            self.storage_service.delete_image(folder="organizations", image_name=organization.logo)
+            organization.delete_logo(self.storage_service)
 
         # Delete the organization from the repository
         self.repository.remove(organization.id)
