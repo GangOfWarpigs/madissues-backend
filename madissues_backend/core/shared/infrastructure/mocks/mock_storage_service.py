@@ -4,7 +4,7 @@ from madissues_backend.core.shared.domain.storage_service import StorageService
 
 
 class MockStorageService(StorageService):
-    def upload_b64_image(self, image: str, path: str = "", final_name="") -> str:
+    def upload_b64_image(self, image: str, folder: str, image_name: str) -> str:
         return "uploaded_was_called.png"
 
     def get_b64_image(self, folder: str, image_name: str) -> bytes:
