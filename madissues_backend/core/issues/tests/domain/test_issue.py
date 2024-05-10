@@ -18,7 +18,6 @@ class TestIssue(unittest.TestCase):
             'course': GenericUUID.next_id(),
             'teachers': [GenericUUID.next_id(), GenericUUID.next_id()],
             'student': GenericUUID.next_id(),
-            'task_manager_id': GenericUUID.next_id(),
             'assigned_to': GenericUUID.next_id()
         }
 
@@ -86,11 +85,6 @@ class TestIssue(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 
-    def test_invalid_task_manager_id(self):
-        invalid_issue_data = self.valid_issue_data.copy()
-        invalid_issue_data['task_manager_id'] = 'invalid_task_manager_id'
-        with self.assertRaises(ValidationError):
-            Issue(**invalid_issue_data)
 
 
 if __name__ == '__main__':

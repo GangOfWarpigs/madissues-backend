@@ -71,10 +71,6 @@ class TestMockIssueRepository(unittest.TestCase):
         issues_by_teacher = self.repo.get_all_by_teacher(teacher_id)
         self.assertTrue(all(teacher_id in issue.teachers for issue in issues_by_teacher))
 
-    def test_get_by_task_manager(self):
-        task_manager_id = next(iter(self.added_issues)).task_manager_id
-        issues_by_manager = self.repo.get_by_task_manager(task_manager_id)
-        self.assertTrue(all(issue.task_manager_id == task_manager_id for issue in issues_by_manager))
 
 
 if __name__ == '__main__':

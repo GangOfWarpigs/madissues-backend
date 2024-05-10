@@ -61,7 +61,6 @@ class IssueMother:
             course=GenericUUID.next_id(),
             teachers=IssueMother.random_uuid_list(random.randint(1, 3)),
             student=GenericUUID.next_id(),
-            task_manager_id=GenericUUID.next_id(),
             assigned_to=GenericUUID.next_id()
         )
 

@@ -31,10 +31,6 @@ class IssueRepository(GenericRepository[GenericUUID, Issue], ABC):
         pass
 
     @abstractmethod
-    def get_by_task_manager(self, task_manager_id: GenericUUID) -> list[Issue]:
-        pass
-
-    @abstractmethod
     def get_all_by_assigned_to(self, assigned_to_id: GenericUUID) -> list[Issue]:
         pass
 

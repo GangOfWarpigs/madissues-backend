@@ -8,7 +8,7 @@ from madissues_backend.core.shared.application.mock_repository import GenericMoc
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
-class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue], ABC):
+class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue]):
     def __init__(self, entity_table: EntityTable):
         super().__init__(entity_table)
         self._issues: Dict[UUID, Issue] = self.entity_table.tables["issues"]
@@ -54,9 +54,6 @@ class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue], A
 
     def get_all_by_teacher(self, teacher_id: GenericUUID) -> list[Issue]:
         return [issue for issue in self._issues.values() if teacher_id in issue.teachers]
-
-    def get_by_task_manager(self, task_manager_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.task_manager_id == task_manager_id]
 
     def get_all_by_assigned_to(self, assigned_to_id: GenericUUID) -> list[Issue]:
         return [issue for issue in self._issues.values() if issue.assigned_to == assigned_to_id]
