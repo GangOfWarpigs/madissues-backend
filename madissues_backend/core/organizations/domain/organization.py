@@ -29,6 +29,6 @@ class Organization(AggregateRoot[GenericUUID]):
     degrees: list[OrganizationDegree] = Field(default=[], init=False)
 
     def upload_logo(self, image, storage: StorageService):
-        logo = storage.upload_b64_image(image)
+        logo = storage.upload_b64_image(image, final_name=str(GenericUUID.next_id()))
         self.validate_field("logo", logo)
         self.logo = logo
