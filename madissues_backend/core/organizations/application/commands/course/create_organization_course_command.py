@@ -56,7 +56,11 @@ class CreateOrganizationCourseCommand(Command[CreateOrganizationCourseRequest, C
             secondary_color=request.secondary_color
         )
         # Add the course to the organization
-        organization.add_course(course)
+        try:
+            organization.add_course(course)
+        except ValueError as e:
+            return Response.fail(message=str(e)) # Course already exists
+
         self.event_bus.notify_all(organization.collect_events())
 
         # Save the organization

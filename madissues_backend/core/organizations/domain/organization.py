@@ -6,6 +6,10 @@ from madissues_backend.core.organizations.domain.events.organization_course_adde
     OrganizationCourseAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_course_deleted import OrganizationCourseDeleted, \
     OrganizationCourseDeletedPayload
+from madissues_backend.core.organizations.domain.events.organization_degree_added import OrganizationDegreeAdded, \
+    OrganizationDegreeAddedPayload
+from madissues_backend.core.organizations.domain.events.organization_degree_deleted import \
+    OrganizationDegreeDeletedPayload, OrganizationDegreeDeleted
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -162,3 +166,39 @@ class Organization(AggregateRoot[GenericUUID]):
             )
         )
         return True
+
+    def get_degree_by_id(self, degree_id: GenericUUID) -> OrganizationDegree | None:
+        for degree in self.degrees:
+            if degree.id == degree_id:
+                return degree
+        return None
+
+    def add_degree(self, degree: OrganizationDegree):
+        # Check if the degree is already in the organization with index
+        if degree in self.degrees:
+            raise ValueError("Degree already exists")
+        self.degrees.append(degree)
+        # Register event
+        self.register_event(
+            OrganizationDegreeAdded(
+                payload=OrganizationDegreeAddedPayload(
+                    id=str(degree.id),
+                    organization_id=str(self.id),
+                    name=degree.name
+                )
+            )
+        )
+
+    def delete_degree(self, degree_id: GenericUUID):
+        degree = self.get_degree_by_id(degree_id)
+        if degree is None:
+            raise ValueError("Degree not found")
+        self.degrees.remove(degree)
+        self.register_event(
+            OrganizationDegreeDeleted(
+                payload=OrganizationDegreeDeletedPayload(
+                    id=str(degree.id),
+                    organization_id=str(self.id),
+                )
+            )
+        )
