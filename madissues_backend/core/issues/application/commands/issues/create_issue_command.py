@@ -9,6 +9,7 @@ from madissues_backend.core.shared.application.authentication_service import Aut
 from madissues_backend.core.shared.application.command import Command, students_only
 from madissues_backend.core.shared.application.event_bus import EventBus
 from madissues_backend.core.shared.domain.response import Response
+from madissues_backend.core.shared.domain.storage_service import StorageService
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
@@ -39,9 +40,10 @@ class CreateIssueResponse(BaseModel):
 @students_only
 class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
     def __init__(self, authentication_service: AuthenticationService, repository: IssueRepository,
-                 event_bus: EventBus):
+                 event_bus: EventBus, storage_service: StorageService):
         self.authentication_service = authentication_service
         self.repository = repository
+        self.storage_service = storage_service
         self.event_bus = event_bus
 
     def execute(self, request: CreateIssueRequest) -> Response[CreateIssueResponse]:
@@ -50,12 +52,19 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             - Must create a card in trello
             - Must notify the task manager via email
         """
+        # First upload the images to the storage service
+        proof_filenames = []
+        for proof in request.proofs:
+            filename = self.storage_service.upload_b64_image(image=proof, folder="issues",
+                                                             image_name=str(GenericUUID.next_id()))
+            proof_filenames.append(filename)
+
         issue = Issue(
             id=GenericUUID.next_id(),
             title=request.title,
             description=request.description,
             details=request.details,
-            proofs=request.proofs,
+            proofs=proof_filenames,
             status=request.status,
             date_time=datetime.strptime(request.date_time, '%Y-%m-%d'),
             course=GenericUUID(request.course),
@@ -81,5 +90,13 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
         self.repository.add(issue)
 
         return Response.ok(CreateIssueResponse(
-            **issue.dict(),
+            title=issue.title,
+            description=issue.description,
+            details=issue.details,
+            proofs=issue.proofs,
+            status=issue.status,
+            date_time=issue.date_time.strftime('%Y-%m-%d'),
+            course=str(issue.course),
+            teachers=[str(teacher) for teacher in issue.teachers],
+            student=str(issue.student_id),
         ))
