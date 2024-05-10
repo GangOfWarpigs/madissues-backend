@@ -3,7 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Header
 
 from madissues_backend.apps.rest_api.dependencies import authorization_service, organization_repository, \
-    storage_service, organization_query_repository
+    storage_service, organization_query_repository, event_bus
+from madissues_backend.core.organizations.application.commands.course.create_organization_course_command import \
+    CreateOrganizationCourseRequest, CreateOrganizationCourseResponse, CreateOrganizationCourseCommand
 from madissues_backend.core.organizations.application.commands.organization.create_organization_command import \
     CreateOrganizationRequest, CreateOrganizationResponse, CreateOrganizationCommand
 from madissues_backend.core.organizations.application.queries.get_organization_courses_query import \
@@ -30,6 +32,15 @@ def create_organization(request: CreateOrganizationRequest,
     authorization = authorization_service(token)
     command = CreateOrganizationCommand(authorization, organization_repository, storage_service)
     return command.run(request)
+
+
+@router.post("/organizations/{id}/courses", tags=["organizations"])
+def create_organization_course(request: CreateOrganizationCourseRequest,
+                        token: Annotated[str, Header()]) -> Response[CreateOrganizationCourseResponse]:
+    authorization = authorization_service(token)
+    command = CreateOrganizationCourseCommand(authorization, organization_repository, event_bus)
+    return command.run(request)
+
 
 
 @router.get("/organizations/", tags=["organizations"])

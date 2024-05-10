@@ -19,7 +19,7 @@ from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import MockTaskManagerFactory
 
 database = EntityTable()
-database.load_snapshot("with_task_managers_table")
+database.load_snapshot("with_organization_created")
 
 # utilities
 password_hasher = SHA256PasswordHasher()

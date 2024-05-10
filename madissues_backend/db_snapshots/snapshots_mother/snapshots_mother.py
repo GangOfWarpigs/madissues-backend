@@ -26,7 +26,7 @@ class SnapshotsMother:
 
         owner = OwnerMother.generate_owner()
         owner.id = GenericUUID("83d150fe-84f4-4a22-a109-5704342c589c")
-        owner.generate_auth_token(UUIDTokenGenerator())
+        owner.token = "1d372590-a034-4e05-b1e8-02a9e91068f3"
         organization.owner_id = owner.id
 
         other_owner = OwnerMother.generate_owner()
@@ -58,6 +58,6 @@ class SnapshotsMother:
 if __name__ == '__main__':
     db = EntityTable()
     snapshots = SnapshotsMother()
-    snapshots.create_organization()
+    # snapshots.create_organization()
     snapshots.load_with_organization_created()
     print("Snapshots created")
