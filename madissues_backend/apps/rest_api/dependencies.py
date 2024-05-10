@@ -11,6 +11,8 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import Mo
 from madissues_backend.core.shared.infrastructure.mocks.mock_storage_service import MockStorageService
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
+from madissues_backend.core.students.infrastructure.mocks.mock_student_query_repository import \
+    MockStudentQueryRepository
 from madissues_backend.core.students.infrastructure.mocks.mock_student_repository import MockStudentRepository
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
@@ -38,3 +40,4 @@ task_manager_repository = MockTaskManagerRepository(database)
 # query repositories
 organization_query_repository = MockOrganizationQueryRepository(database)
 owner_query_repository = MockOwnerQueryRepository(database)
+student_query_repository = MockStudentQueryRepository(database)

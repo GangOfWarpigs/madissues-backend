@@ -3,6 +3,8 @@ from madissues_backend.core.organizations.application.ports.organization_query_r
 from madissues_backend.core.organizations.domain.organization import Organization
 from madissues_backend.core.organizations.domain.read_models.organization_course_read_model import \
     OrganizationCourseReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_degree_read_model import \
+    OrganizationDegreeReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_teacher_read_model import \
     OrganizationTeacherReadModel
@@ -23,6 +25,9 @@ class MockOrganizationQueryRepository(OrganizationQueryRepository):
         organization: Organization = self.db.tables["organizations"][GenericUUID(id)]
         return list(OrganizationTeacherReadModel.of(x) for x in organization.teachers)
 
+    def get_all_teachers_degrees_organization(self, id: str) -> list[OrganizationDegreeReadModel]:
+        organization: Organization = self.db.tables["organizations"][GenericUUID(id)]
+        return list(OrganizationDegreeReadModel.of(x) for x in organization.degrees)
 
     def get_all_by_owner(self, owner_id: str):
         organizations_map: dict[GenericUUID, Organization] = self.db.tables["organizations"]
