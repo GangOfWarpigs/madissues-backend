@@ -65,7 +65,7 @@ class TrelloTaskManagerService(TaskManagerService):
         # Get the id field from the response
         return response.json()
 
-    def get_boards_in_organization(self, organization_id_or_name: str):
+    def get_boards_in_organization(self, organization_id_or_name: str) -> list[str]:
         query: dict = {}
         response = self._make_request("GET", f"organizations/{organization_id_or_name}/boards", query)
         return response.json()

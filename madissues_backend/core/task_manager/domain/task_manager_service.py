@@ -25,7 +25,7 @@ class TaskManagerService(ABC):
         ...
 
     @abstractmethod
-    def get_boards_in_organization(self, board_name: str) -> str:
+    def get_boards_in_organization(self, board_name: str) -> list[str]:
         ...
 
     @abstractmethod
