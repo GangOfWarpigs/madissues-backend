@@ -47,6 +47,7 @@ class Organization(AggregateRoot[GenericUUID]):
         self.validate_field("logo", logo)
         self.logo = logo
 
+
     def add_teacher(self, teacher: OrganizationTeacher):
         # Check if the teacher is already in the organization with index
         if teacher in self.teachers:

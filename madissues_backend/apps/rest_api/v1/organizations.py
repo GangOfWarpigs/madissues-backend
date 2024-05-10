@@ -6,8 +6,12 @@ from madissues_backend.apps.rest_api.dependencies import authorization_service, 
     storage_service, organization_query_repository, event_bus
 from madissues_backend.core.organizations.application.commands.course.create_organization_course_command import \
     CreateOrganizationCourseRequest, CreateOrganizationCourseResponse, CreateOrganizationCourseCommand
+from madissues_backend.core.organizations.application.commands.degree.create_organization_degree_command import \
+    CreateOrganizationDegreeCommand, CreateOrganizationDegreeRequest, CreateOrganizationDegreeResponse
 from madissues_backend.core.organizations.application.commands.organization.create_organization_command import \
     CreateOrganizationRequest, CreateOrganizationResponse, CreateOrganizationCommand
+from madissues_backend.core.organizations.application.commands.teacher.create_organization_teacher_command import \
+    CreateOrganizationTeacherResponse, CreateOrganizationTeacherRequest, CreateOrganizationTeacherCommand
 from madissues_backend.core.organizations.application.queries.get_organization_courses_query import \
     GetOrganizationCoursesQuery
 from madissues_backend.core.organizations.application.queries.get_organization_degrees_query import \
@@ -46,6 +50,22 @@ def create_organization_course(request: CreateOrganizationCourseRequest,
     return command.run(request)
 
 
+@router.post("/organizations/{id}/teachers", tags=["organizations"])
+def create_organization_teacher(request: CreateOrganizationTeacherRequest,
+                                token: Annotated[str, Header()]) -> Response[CreateOrganizationTeacherResponse]:
+    authorization = authorization_service(token)
+    command = CreateOrganizationTeacherCommand(authorization, organization_repository, event_bus)
+    return command.run(request)
+
+
+@router.post("/organizations/{id}/degrees", tags=["organizations"])
+def create_organization_degree(request: CreateOrganizationDegreeRequest,
+                               token: Annotated[str, Header()]) -> Response[CreateOrganizationDegreeResponse]:
+    authorization = authorization_service(token)
+    command = CreateOrganizationDegreeCommand(authorization, organization_repository, event_bus)
+    return command.run(request)
+
+
 @router.get("/organizations/", tags=["organizations"])
 def list_organization(token: Annotated[str, Header()]) -> Response[list[OrganizationReadModel]]:
     authorization = authorization_service(token)
@@ -72,6 +92,7 @@ def get_organization_courses(token: Annotated[str, Header()], id: str) -> Respon
     authorization = authorization_service(token)
     query = GetOrganizationCoursesQuery(authorization, organization_query_repository)
     return query.execute(id)
+
 
 @router.get("/organizations/{id}/degrees", tags=["organizations"])
 def get_organization_degrees(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationDegreeReadModel]]:
