@@ -22,3 +22,4 @@ class Issue(AggregateRoot[GenericUUID]):
     course: GenericUUID
     teachers: list[GenericUUID]
     student_id: GenericUUID
+    organization_id: GenericUUID
