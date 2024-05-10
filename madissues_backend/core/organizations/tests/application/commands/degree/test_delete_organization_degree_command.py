@@ -1,7 +1,7 @@
 import unittest
 
-from madissues_backend.core.organizations.application.commands.course.delete_organization_course_command import \
-    DeleteOrganizationCourseRequest, DeleteOrganizationCourseResponse, DeleteOrganizationCourseCommand
+from madissues_backend.core.organizations.application.commands.degree.delete_organization_degree_command import \
+    DeleteOrganizationDegreeRequest, DeleteOrganizationDegreeResponse, DeleteOrganizationDegreeCommand
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
     MockOrganizationRepository
 from madissues_backend.core.shared.application.mock_repository import EntityTable
@@ -12,55 +12,58 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_serv
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 
 
-class TestDeleteOrganizationCourseCommand(unittest.TestCase):
+class TestDeleteOrganizationDegreeCommand(unittest.TestCase):
     def setUp(self):
         self.db = EntityTable()
         self.db.load_snapshot("with_organization_created")
         self.organization_repository = MockOrganizationRepository(self.db)
         self.event_bus = MockEventBus()
-        self.organization_id = GenericUUID("cc164174-07f7-4cd4-8a7e-43c96d9b825a")
+        self.organization = self.organization_repository.get_by_id(GenericUUID("cc164174-07f7-4cd4-8a7e-43c96d9b825a"))
         self.owner = self.db.tables['owners'][GenericUUID("83d150fe-84f4-4a22-a109-5704342c589c")]
         self.authentication_service = create_mock_authentication_service(self.db)(self.owner.token)
 
     def test_execute_success(self):
         # Arrange
-        course_id = "2b3d1324-346b-40cb-9b7f-f744fe06b59d"
-        request = DeleteOrganizationCourseRequest(
-            course_id=course_id,
-            organization_id=str(self.organization_id)
+        degree_id = str(self.organization.degrees[0].id)
+        degree_request = DeleteOrganizationDegreeRequest(
+            organization_id=str(self.organization.id),
+            degree_id=degree_id
         )
-        command = DeleteOrganizationCourseCommand(
+        command = DeleteOrganizationDegreeCommand(
             authentication_service=self.authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act
-        response = command.execute(request)
+        response = command.execute(degree_request)
 
         # Assert
-        self.assertTrue(response.is_success(), "Course should be deleted")
-        self.assertEqual(response.success.course_id, course_id,
-                         "Correct course ID should be returned in response")
-        self.assertEqual(response.success.organization_id, str(self.organization_id),
-                         "Correct organization ID should be returned in response")
-        self.assertEqual(len(self.event_bus.events), 1, "Should be triggered an event")
+        self.assertTrue(response.is_success(), "Degree should be deleted successfully")
+        self.assertEqual(response.success.degree_id, degree_id, "Degree ID should match")
+        self.assertEqual(response.success.organization_id, str(self.organization.id), "Organization ID should match")
+
+        # Degree should be removed from the organization
+        organization = self.organization_repository.get_by_id(GenericUUID(degree_request.organization_id))
+        self.assertTrue(all(degree.id != GenericUUID(degree_id) for degree in organization.degrees),
+                        "Degree should be removed from the organization")
+        self.assertEqual(len(self.event_bus.events), 1, "Should trigger an event")
 
     def test_execute_invalid_organization_id(self):
         # Arrange
-        course_id = "2b3d1324-346b-40cb-9b7f-f744fe06b59d"
-        request = DeleteOrganizationCourseRequest(
-            course_id=course_id,
-            organization_id="invalid_id"
+        degree_id = str(self.organization.degrees[0].id)
+        degree_request = DeleteOrganizationDegreeRequest(
+            organization_id="invalid_id",
+            degree_id=degree_id
         )
-        command = DeleteOrganizationCourseCommand(
+        command = DeleteOrganizationDegreeCommand(
             authentication_service=self.authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act
-        response = command.execute(request)
+        response = command.execute(degree_request)
 
         # Assert
         self.assertTrue(not response.success, "Organization ID should be invalid")
@@ -69,21 +72,21 @@ class TestDeleteOrganizationCourseCommand(unittest.TestCase):
 
     def test_execute_unauthorized(self):
         # Arrange
-        course_id = "2b3d1324-346b-40cb-9b7f-f744fe06b59d"
+        degree_id = str(self.organization.degrees[0].id)
         unauthorized_owner = self.db.tables['owners'][GenericUUID("ca7b384c-0ae9-489f-90c6-a18a6781dcd0")]
         authentication_service = create_mock_authentication_service(self.db)(unauthorized_owner.token)
-        request = DeleteOrganizationCourseRequest(
-            course_id=course_id,
-            organization_id=str(self.organization_id)
+        degree_request = DeleteOrganizationDegreeRequest(
+            organization_id=str(self.organization.id),
+            degree_id=degree_id
         )
-        command = DeleteOrganizationCourseCommand(
+        command = DeleteOrganizationDegreeCommand(
             authentication_service=authentication_service,
             repository=self.organization_repository,
             event_bus=self.event_bus
         )
 
         # Act (raises an exception)
-        response = command.execute(request)
+        response = command.execute(degree_request)
 
         # Assert
         self.assertTrue(not response.success, "User should not be authorized")
