@@ -32,7 +32,7 @@ class TestCreateOrganizationCommand(unittest.TestCase):
                                             self.organization_repository, self.storage_service)
         response = command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxASEhUQEBAV",
+            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",

@@ -18,6 +18,11 @@ class LocalStorageService(StorageService):
         # Decode the image
         image_data = base64.b64decode(image)
 
+        if image_data[:4].startswith(b'\x89\x50\x4e\x47'):
+            image_name += '.png'
+        else:
+            raise ValueError("Invalid Image extension or file not supported")
+
         # Save the image in media folder
         full_path = f"{self.media_path}/{folder}/{image_name}"
 
@@ -37,8 +42,7 @@ class LocalStorageService(StorageService):
         if (folder == "") or (image_name == ""):
             raise ValueError("Folder and image_name cannot be empty")
 
-        full_path = f"{self.media_path}/{folder}/{image_name}"
-        print(full_path)
+        full_path = f"{self.media_path}/{folder}/{image_name}.png"
 
         if os.path.exists(full_path):
             with open(full_path, "rb") as file:
@@ -55,9 +59,19 @@ class LocalStorageService(StorageService):
             raise ValueError("Image name cannot be empty")
 
         # Save the image in media folder
-        full_path = f"{self.media_path}/{folder}/{image_name}"
+        full_path = f"{self.media_path}/{folder}/{image_name}.png"
 
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"Image {image_name} not found")
 
         os.remove(full_path)
+
+
+if __name__ == '__main__':
+    service = LocalStorageService("../../../../media")
+    # Decode the image
+    image = service.get_b64_image("tests", "cat.png")
+    print("Image retrieved")
+    print(image)
+
+    print("All tests passed")

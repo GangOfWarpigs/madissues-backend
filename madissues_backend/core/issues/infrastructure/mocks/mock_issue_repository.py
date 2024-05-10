@@ -50,13 +50,10 @@ class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue]):
         return [issue for issue in self._issues.values() if issue.course == course_id]
 
     def get_all_by_student(self, student_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.student == student_id]
+        return [issue for issue in self._issues.values() if issue.student_id == student_id]
 
     def get_all_by_teacher(self, teacher_id: GenericUUID) -> list[Issue]:
         return [issue for issue in self._issues.values() if teacher_id in issue.teachers]
-
-    def get_all_by_assigned_to(self, assigned_to_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.assigned_to == assigned_to_id]
 
     def get_all_by_status(self, status: str) -> list[Issue]:
         return [issue for issue in self._issues.values() if issue.status == status]

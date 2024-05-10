@@ -17,8 +17,7 @@ class TestIssue(unittest.TestCase):
             'date_time': datetime.now(),
             'course': GenericUUID.next_id(),
             'teachers': [GenericUUID.next_id(), GenericUUID.next_id()],
-            'student': GenericUUID.next_id(),
-            'assigned_to': GenericUUID.next_id()
+            'student_id': GenericUUID.next_id(),
         }
 
     def test_valid_issue(self):
@@ -61,12 +60,6 @@ class TestIssue(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 
-    def test_missing_assigned_to(self):
-        invalid_issue_data = self.valid_issue_data.copy()
-        del invalid_issue_data['assigned_to']
-        with self.assertRaises(ValidationError):
-            Issue(**invalid_issue_data)
-
     def test_invalid_teacher_list(self):
         invalid_issue_data = self.valid_issue_data.copy()
         invalid_issue_data['teachers'] = 'invalid_teacher_list'
@@ -75,7 +68,7 @@ class TestIssue(unittest.TestCase):
 
     def test_invalid_student_id(self):
         invalid_issue_data = self.valid_issue_data.copy()
-        invalid_issue_data['student'] = 'invalid_student_id'
+        invalid_issue_data['student_id'] = 'invalid_student_id'
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 
@@ -84,7 +77,6 @@ class TestIssue(unittest.TestCase):
         del invalid_issue_data['details']
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
-
 
 
 if __name__ == '__main__':

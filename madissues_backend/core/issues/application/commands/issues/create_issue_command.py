@@ -1,11 +1,14 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 from madissues_backend.core.issues.application.ports.issue_repository import IssueRepository
+from madissues_backend.core.issues.domain.events.issue_created import IssueCreated, IssueCreatedPayload
 from madissues_backend.core.issues.domain.issue import Issue
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
-from madissues_backend.core.shared.application.command import Command, owners_only, students_only
+from madissues_backend.core.shared.application.command import Command, students_only
+from madissues_backend.core.shared.application.event_bus import EventBus
 from madissues_backend.core.shared.domain.response import Response
-from madissues_backend.core.shared.domain.storage_service import StorageService
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
@@ -19,7 +22,6 @@ class CreateIssueRequest(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
-    assigned_to: str  # GenericUUID
 
 
 class CreateIssueResponse(BaseModel):
@@ -32,39 +34,52 @@ class CreateIssueResponse(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
-    assigned_to: str  # GenericUUID
 
 
 @students_only
 class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
     def __init__(self, authentication_service: AuthenticationService, repository: IssueRepository,
-                 storage: StorageService):
+                 event_bus: EventBus):
         self.authentication_service = authentication_service
         self.repository = repository
-        self.storage_service = storage
+        self.event_bus = event_bus
 
     def execute(self, request: CreateIssueRequest) -> Response[CreateIssueResponse]:
-        # Must assign the issue first to a task manager
-        # Must create a card in trello
-        # Must notify the task manager via email
-
-       issue = Issue(
+        """
+            - Must assign the issue first to a task manager
+            - Must create a card in trello
+            - Must notify the task manager via email
+        """
+        issue = Issue(
             id=GenericUUID.next_id(),
             title=request.title,
             description=request.description,
             details=request.details,
             proofs=request.proofs,
             status=request.status,
-            date_time=request.date_time,
+            date_time=datetime.strptime(request.date_time, '%Y-%m-%d'),
             course=GenericUUID(request.course),
             teachers=[GenericUUID(teacher) for teacher in request.teachers],
-            student=GenericUUID(request.student),
-            assigned_to=GenericUUID(request.assigned_to),
+            student_id=GenericUUID(request.student),
         )
-        if request.logo:
-            issue.upload_logo(request.logo, self.storage_service)
+
+        issue.register_event(IssueCreated(
+            payload=IssueCreatedPayload(
+                title=issue.title,
+                description=issue.description,
+                details=issue.details,
+                proofs=issue.proofs,
+                status=issue.status,
+                date_time=issue.date_time.strftime('%Y-%m-%d'),
+                course=str(issue.course),
+                teachers=[str(teacher) for teacher in issue.teachers],
+                student=str(issue.student_id),
+            )
+        ))
+        self.event_bus.notify_all(issue.collect_events())
 
         self.repository.add(issue)
+
         return Response.ok(CreateIssueResponse(
             **issue.dict(),
         ))

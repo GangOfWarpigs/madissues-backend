@@ -60,8 +60,7 @@ class IssueMother:
             date_time=datetime.now() - timedelta(days=random.randint(0, 365)),
             course=GenericUUID.next_id(),
             teachers=IssueMother.random_uuid_list(random.randint(1, 3)),
-            student=GenericUUID.next_id(),
-            assigned_to=GenericUUID.next_id()
+            student_id=GenericUUID.next_id()
         )
 
     @staticmethod
@@ -88,7 +87,7 @@ class IssueMother:
 
 # Ejemplo de uso
 random_issue = IssueMother.random_issue()
-random_comment = IssueMother.random_issue_comment(random_issue.id, random_issue.student)
+random_comment = IssueMother.random_issue_comment(random_issue.id, random_issue.student_id)
 
 print(random_issue)
 print(random_comment)
