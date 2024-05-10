@@ -37,6 +37,10 @@ class SnapshotsMother:
         organization.degrees = []
         organization.teachers = []
 
+        course = OrganizationMother.generate_organization_course()
+        course.id = GenericUUID("2b3d1324-346b-40cb-9b7f-f744fe06b59d")
+        organization.courses.append(course)
+
         self.owner_repository.add(owner)
         self.owner_repository.add(other_owner)
         self.organization_repository.add(organization)

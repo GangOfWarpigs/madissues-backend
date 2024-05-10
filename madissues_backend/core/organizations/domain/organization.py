@@ -4,6 +4,8 @@ from pydantic import Field
 
 from madissues_backend.core.organizations.domain.events.organization_course_added import OrganizationCourseAdded, \
     OrganizationCourseAddedPayload
+from madissues_backend.core.organizations.domain.events.organization_course_deleted import OrganizationCourseDeleted, \
+    OrganizationCourseDeletedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -99,6 +101,12 @@ class Organization(AggregateRoot[GenericUUID]):
         )
         return True
 
+    def get_course_by_id(self, course_id: GenericUUID) -> OrganizationCourse | None:
+        for course in self.courses:
+            if course.id == course_id:
+                return course
+        return None
+
     def add_course(self, course: OrganizationCourse):
         # Check if the course is already in the organization with index
         if course in self.courses:
@@ -114,6 +122,20 @@ class Organization(AggregateRoot[GenericUUID]):
                     icon=course.icon,
                     primary_color=course.primary_color,
                     secondary_color=course.secondary_color
+                )
+            )
+        )
+
+    def delete_course(self, course_id: GenericUUID):
+        course = self.get_course_by_id(course_id)
+        if course is None:
+            raise ValueError("Course not found")
+        self.courses.remove(course)
+        self.register_event(
+            OrganizationCourseDeleted(
+                payload=OrganizationCourseDeletedPayload(
+                    id=str(course.id),
+                    organization_id=str(self.id),
                 )
             )
         )
