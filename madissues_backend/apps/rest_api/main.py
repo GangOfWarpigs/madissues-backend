@@ -31,10 +31,11 @@ app.add_middleware(
 )
 
 dirname = os.path.dirname(__file__)
+dirname = os.path.abspath(os.path.join(dirname, '../../../'))
 
-app.mount("/public",
-          StaticFiles(directory=os.path.join(dirname, "assets")),
-          name="static")
+app.mount("/media",
+          StaticFiles(directory=os.path.join(dirname, "media")),
+          name="media")
 app.include_router(owners_router)
 app.include_router(organizations_router)
 app.include_router(students_router)

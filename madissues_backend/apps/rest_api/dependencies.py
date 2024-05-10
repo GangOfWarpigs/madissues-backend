@@ -10,6 +10,7 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_serv
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 from madissues_backend.core.shared.infrastructure.mocks.mock_storage_service import MockStorageService
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
+from madissues_backend.core.shared.infrastructure.storage.local_storage_service import LocalStorageService
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 from madissues_backend.core.students.infrastructure.mocks.mock_student_query_repository import \
     MockStudentQueryRepository
@@ -28,7 +29,7 @@ event_bus = MockEventBus()
 task_manager_factory = MockTaskManagerFactory()
 
 # services
-storage_service = MockStorageService()
+storage_service = LocalStorageService(media_path="media")
 authorization_service = create_mock_authentication_service(database)
 
 # repositories

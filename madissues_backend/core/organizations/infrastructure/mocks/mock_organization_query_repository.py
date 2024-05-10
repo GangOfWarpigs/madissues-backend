@@ -31,7 +31,7 @@ class MockOrganizationQueryRepository(OrganizationQueryRepository):
 
     def get_all_by_owner(self, owner_id: str):
         organizations_map: dict[GenericUUID, Organization] = self.db.tables["organizations"]
-        return list(OrganizationReadModel.of(x) for x in organizations_map.values())
+        return list(OrganizationReadModel.of(x) for x in organizations_map.values() if str(x.owner_id) == owner_id)
 
     def get_by_id(self, id: str):
         organization: Organization = self.db.tables["organizations"][GenericUUID(id)]

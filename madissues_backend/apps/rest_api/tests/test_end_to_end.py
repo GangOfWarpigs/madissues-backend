@@ -96,3 +96,29 @@ class TestEndToEnd(unittest.TestCase):
         })
 
         assert response.json()["success"][0]["id"] is not None, "Is allright mamma, its allright to me"
+
+        teachers = {
+            "organization_id": organization_id,
+            "first_name": "string",
+            "last_name": "string",
+            "email": "jrpenasco@gmail.com",
+            "office_link": "https://www.dis.ulpgc.es/pepe",
+            "courses": [course_id]
+        }
+
+        response = client.post("/organizations/" + organization_id + "/teachers/", json=teachers, headers={
+            "token": owner_token
+        })
+
+        assert response.json()["success"] is not None, "is succeded"
+
+        degree = {
+          "organization_id": organization_id,
+          "name": "name of subject"
+        }
+
+        response = client.post("/organizations/" + organization_id + "/degrees/", json=degree, headers={
+            "token": owner_token
+        })
+        print(response.json())
+        assert response.json()["success"] is not None, "is succeded"
