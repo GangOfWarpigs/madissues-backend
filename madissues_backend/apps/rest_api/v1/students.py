@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter
 
 from madissues_backend.apps.rest_api.dependencies import password_hasher, student_repository, authorization_service, \
-    event_bus, token_generator
+    event_bus, token_generator, student_query_repository
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.students.application.commands.ban_student_command import BanStudentResponse, \
     BanStudentCommand, BanStudentRequest
@@ -22,6 +22,8 @@ from madissues_backend.core.students.application.commands.update_student_prefere
     ChangeStudentPreferencesRequest, ChangeStudentPreferencesResponse, UpdateStudentPreferencesCommand
 from madissues_backend.core.students.application.commands.update_student_profile_command import \
     ChangeStudentProfileRequest, ChangeStudentProfileResponse, UpdateStudentProfileCommand
+from madissues_backend.core.students.application.queries.get_user_information_query import GetStudentInformationQuery
+from madissues_backend.core.students.domain.read_model.student_read_model import StudentReadModel
 
 router = APIRouter()
 
@@ -90,3 +92,8 @@ def student_delete(student_id: str, token: Annotated[str, Header()]) -> Response
             student_id=student_id
         )
     )
+@router.get("/students/me/", tags=["students"])
+def get_owner_profile(token: Annotated[str, Header()]) -> Response[StudentReadModel]:
+    authorization = authorization_service(token)
+    query = GetStudentInformationQuery(authorization, student_query_repository)
+    return query.execute()

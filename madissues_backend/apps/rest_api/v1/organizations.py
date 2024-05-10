@@ -10,6 +10,8 @@ from madissues_backend.core.organizations.application.commands.organization.crea
     CreateOrganizationRequest, CreateOrganizationResponse, CreateOrganizationCommand
 from madissues_backend.core.organizations.application.queries.get_organization_courses_query import \
     GetOrganizationCoursesQuery
+from madissues_backend.core.organizations.application.queries.get_organization_degrees_query import \
+    GetOrganizationDegreesQuery
 from madissues_backend.core.organizations.application.queries.get_organization_teachers_query import \
     GetOrganizationTeachersQuery
 from madissues_backend.core.organizations.application.queries.get_organizations_of_owner_query import \
@@ -18,6 +20,8 @@ from madissues_backend.core.organizations.application.queries.get_single_organiz
     GetSingleOrganizationQuery, Params
 from madissues_backend.core.organizations.domain.read_models.organization_course_read_model import \
     OrganizationCourseReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_degree_read_model import \
+    OrganizationDegreeReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_teacher_read_model import \
     OrganizationTeacherReadModel
@@ -36,11 +40,10 @@ def create_organization(request: CreateOrganizationRequest,
 
 @router.post("/organizations/{id}/courses", tags=["organizations"])
 def create_organization_course(request: CreateOrganizationCourseRequest,
-                        token: Annotated[str, Header()]) -> Response[CreateOrganizationCourseResponse]:
+                               token: Annotated[str, Header()]) -> Response[CreateOrganizationCourseResponse]:
     authorization = authorization_service(token)
     command = CreateOrganizationCourseCommand(authorization, organization_repository, event_bus)
     return command.run(request)
-
 
 
 @router.get("/organizations/", tags=["organizations"])
@@ -56,14 +59,22 @@ def single_organization(token: Annotated[str, Header()], id: str) -> Response[Or
     query = GetSingleOrganizationQuery(authorization, organization_query_repository)
     return query.execute(Params(id=id))
 
+
 @router.get("/organizations/{id}/teachers", tags=["organizations"])
 def get_organization_teachers(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationTeacherReadModel]]:
     authorization = authorization_service(token)
     query = GetOrganizationTeachersQuery(authorization, organization_query_repository)
     return query.execute(id)
 
-@router.get("/organizations/{id}/teachers", tags=["organizations"])
+
+@router.get("/organizations/{id}/courses", tags=["organizations"])
 def get_organization_courses(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationCourseReadModel]]:
     authorization = authorization_service(token)
     query = GetOrganizationCoursesQuery(authorization, organization_query_repository)
+    return query.execute(id)
+
+@router.get("/organizations/{id}/degrees", tags=["organizations"])
+def get_organization_degrees(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationDegreeReadModel]]:
+    authorization = authorization_service(token)
+    query = GetOrganizationDegreesQuery(authorization, organization_query_repository)
     return query.execute(id)
