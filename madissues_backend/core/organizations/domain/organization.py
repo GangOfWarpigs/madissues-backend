@@ -139,3 +139,26 @@ class Organization(AggregateRoot[GenericUUID]):
                 )
             )
         )
+
+    def update_course(self, updated_course: OrganizationCourse) -> bool:
+        for index, course in enumerate(self.courses):
+            if course.id == updated_course.id:
+                self.courses[index] = updated_course
+                break
+        else:
+            return False
+
+        self.register_event(
+            OrganizationCourseAdded(
+                payload=OrganizationCourseAddedPayload(
+                    id=str(updated_course.id),
+                    organization_id=str(self.id),
+                    name=updated_course.name,
+                    code=updated_course.code,
+                    icon=updated_course.icon,
+                    primary_color=updated_course.primary_color,
+                    secondary_color=updated_course.secondary_color
+                )
+            )
+        )
+        return True
