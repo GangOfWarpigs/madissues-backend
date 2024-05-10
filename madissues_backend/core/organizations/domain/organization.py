@@ -202,3 +202,22 @@ class Organization(AggregateRoot[GenericUUID]):
                 )
             )
         )
+
+    def update_degree(self, updated_degree: OrganizationDegree) -> bool:
+        for index, degree in enumerate(self.degrees):
+            if degree.id == updated_degree.id:
+                self.degrees[index] = updated_degree
+                break
+        else:
+            return False
+
+        self.register_event(
+            OrganizationDegreeAdded(
+                payload=OrganizationDegreeAddedPayload(
+                    id=str(updated_degree.id),
+                    organization_id=str(self.id),
+                    name=updated_degree.name
+                )
+            )
+        )
+        return True
