@@ -2,6 +2,8 @@ from typing import Annotated
 
 from pydantic import Field
 
+from madissues_backend.core.organizations.domain.events.organization_course_added import OrganizationCourseAdded, \
+    OrganizationCourseAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -96,3 +98,22 @@ class Organization(AggregateRoot[GenericUUID]):
             )
         )
         return True
+
+    def add_course(self, course: OrganizationCourse):
+        # Check if the course is already in the organization with index
+        if course in self.courses:
+            raise ValueError("Course already exists")
+        self.courses.append(course)
+        self.register_event(
+            OrganizationCourseAdded(
+                payload=OrganizationCourseAddedPayload(
+                    id=str(course.id),
+                    organization_id=str(self.id),
+                    name=course.name,
+                    code=course.code,
+                    icon=course.icon,
+                    primary_color=course.primary_color,
+                    secondary_color=course.secondary_color
+                )
+            )
+        )
