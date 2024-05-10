@@ -45,7 +45,7 @@ class Organization(AggregateRoot[GenericUUID]):
     def upload_logo(self, image, storage: StorageService):
         logo = storage.upload_b64_image(image, folder="organizations", image_name=str(GenericUUID.next_id()))
         self.validate_field("logo", logo)
-        self.logo = logo.split("/")[-1].split(".")[0] # Takes the name of the image without the extension
+        self.logo = logo # Takes the name of the image without the extension
 
     def delete_logo(self, storage: StorageService):
         storage.delete_image(folder="organizations", image_name=str(self.logo))
