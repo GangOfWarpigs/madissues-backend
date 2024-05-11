@@ -75,8 +75,8 @@ class TestFindAllIssuesQuery(unittest.TestCase):
         self.authentication_service = create_mock_authentication_service(self.db)(unauthorized_token)
         query = FindAllIssuesQuery(self.authentication_service, self.issue_query_repository)
         params = FindAllIssuesQueryParams(organization_id="c0517ecb-24e5-4d5e-841c-48b7001e5f94")
-        query_response = query.execute(params)
+        query_response = query.run(params)
 
         assert query_response.is_error() is True, "Query must fail"
         assert query_response.error.error_code == 403, "Error code must indicate 'forbidden'"
-        assert query_response.error.error_message == "User must be a student", "Error message must indicate 'forbidden'"
+        assert query_response.error.error_message == "User must be authenticated", "Error message must indicate 'forbidden'"
