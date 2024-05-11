@@ -17,8 +17,6 @@ class FindAllIssuesQuery(Query[FindAllIssuesQueryParams, list[IssueReadModel]]):
         self.query_repository = query_repository
 
     def execute(self, params: FindAllIssuesQueryParams | None = None) -> Response[list[IssueReadModel]]:
-        if not self.authentication_service.is_student():
-            return Response.fail(code=403, message="User must be a student")
         if params is not None:
             return Response.ok(self.query_repository.get_all_by_organization(params.organization_id))
         return Response.fail(message="you must send an id")
