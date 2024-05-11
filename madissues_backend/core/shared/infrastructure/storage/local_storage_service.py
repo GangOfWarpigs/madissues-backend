@@ -16,7 +16,13 @@ class LocalStorageService(StorageService):
             raise ValueError("Folder and image_name cannot be empty")
 
         # Decode the image
-        image=image.split(",")[1]
+        image=image.split(",")
+
+        if len(image) > 1:
+            image = image[1]
+        else:
+            image = image[0]
+
         image_data = base64.b64decode(image)
 
         if image_data[:4].startswith(b'\x89\x50\x4e\x47'):

@@ -27,6 +27,7 @@ class CreateIssueRequest(BaseModel):
 
 
 class CreateIssueResponse(BaseModel):
+    id: str
     title: str
     description: str
     details: str
@@ -42,7 +43,7 @@ class CreateIssueResponse(BaseModel):
 @students_only
 class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
     def __init__(self, authentication_service: AuthenticationService, repository: IssueRepository,
-                 event_bus: EventBus, storage_service: StorageService):
+                  storage_service: StorageService, event_bus: EventBus,):
         self.authentication_service = authentication_service
         self.repository = repository
         self.storage_service = storage_service
@@ -94,6 +95,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
         self.repository.add(issue)
 
         return Response.ok(CreateIssueResponse(
+            id=str(issue.id),
             title=issue.title,
             description=issue.description,
             details=issue.details,

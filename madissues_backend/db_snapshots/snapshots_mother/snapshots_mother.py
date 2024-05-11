@@ -46,6 +46,13 @@ class SnapshotsMother:
         degree.id = GenericUUID("f3b3b3b3-346b-40cb-9b7f-f744fe06b59d")
         organization.degrees.append(degree)
 
+        student = StudentMother.random_student()
+        student.id = GenericUUID("fa68b53a-8db6-4f5b-9d15-e93cbc163bfa")
+        student.email = "student.jhon.doe@example.com"
+        student.password = "ValidPassword123!"
+        student.generate_auth_token(UUIDTokenGenerator())
+
+        self.student_repository.add(student)
         self.owner_repository.add(owner)
         self.owner_repository.add(other_owner)
         self.organization_repository.add(organization)
@@ -72,9 +79,9 @@ class SnapshotsMother:
 if __name__ == '__main__':
     db = EntityTable()
     snapshots = SnapshotsMother()
-    # snapshots.create_organization()
-    # snapshots.load_with_organization_created()
-    snapshots.create_with_student_created()
-    snapshots.load_with_student_created()
+    snapshots.create_organization()
+    snapshots.load_with_organization_created()
+    # snapshots.create_with_student_created()
+    # snapshots.load_with_student_created()
 
     print("Snapshots created")
