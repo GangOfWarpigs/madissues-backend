@@ -21,4 +21,4 @@ class GetOrganizationTaskManagerQuery(
         OrganizationTaskManagerReadModel]:
         if params is None:
             return Response.fail(message="You need to pass an id")
-        return Response.ok(self.query_repository.get_all_courses_from_organization(params.organization_id))
+        return Response.ok(self.query_repository.get_organization_task_manager(params.organization_id))
