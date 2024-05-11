@@ -17,3 +17,7 @@ class TaskManagerRepository(GenericRepository[GenericUUID, TaskManager], ABC):
     @abstractmethod
     def get_by_organization_id(self, organization_id: str) -> TaskManager | None:
         ...
+
+    @abstractmethod
+    def get_organization(self, organization_id: str):
+        ...

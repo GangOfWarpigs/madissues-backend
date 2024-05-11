@@ -55,4 +55,7 @@ class MockTaskManagerRepository(TaskManagerRepository, GenericMockRepository[Gen
                 return task_manager
         return None
 
+    def get_organization(self, organization_id: str):
+        return self.organizations.get(GenericUUID(organization_id))
+
 

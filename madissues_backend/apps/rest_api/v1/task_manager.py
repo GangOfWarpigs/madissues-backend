@@ -11,8 +11,10 @@ from madissues_backend.core.task_manager.application.commands.integrate_organiza
 
 router = APIRouter()
 
+
 @router.post("/task_manager/integrate/", tags=["task manager"])
-def integrate_task_manager_with_organization(token: Annotated[str, Header()] = None, request: IntegrateOrganizationWithTaskManagerRequest = None) -> Response[IntegrateOrganizationWithTaskManagerResponse]:
+def integrate_task_manager_with_organization(token: Annotated[str, Header()] = None,
+                                             request: IntegrateOrganizationWithTaskManagerRequest = None) -> Response[IntegrateOrganizationWithTaskManagerResponse]:
     print(token)
     authorization = authorization_service(token)
     command = IntegrateOrganizationWithTaskManagerCommand(authorization, task_manager_repository, task_manager_factory)

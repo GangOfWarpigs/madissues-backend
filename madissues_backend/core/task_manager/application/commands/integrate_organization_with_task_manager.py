@@ -28,7 +28,7 @@ class IntegrateOrganizationWithTaskManagerCommand(
     def __init__(self, authentication_service: AuthenticationService, repository: TaskManagerRepository,
                  factory: TaskManagerFactory):
         self.authentication_service = authentication_service
-        self.repository = repository
+        self.task_manager_repository = repository
         self.task_manager_factory = factory
 
     def execute(self, request: IntegrateOrganizationWithTaskManagerRequest) -> Response[
@@ -37,10 +37,10 @@ class IntegrateOrganizationWithTaskManagerCommand(
         owner_id = self.authentication_service.get_user_id()
         organization_id = request.organization_id
 
-        if not self.repository.check_can_integrate_organization(organization_id, owner_id):
+        if not self.task_manager_repository.check_can_integrate_organization(organization_id, owner_id):
             return Response.fail(code=2, message="You have no permissions for performing this action")
 
-        if self.repository.is_there_a_task_manager_for_organization(organization_id):
+        if self.task_manager_repository.is_there_a_task_manager_for_organization(organization_id):
             return Response.fail(code=3, message="You have integrated your organization with a task manager already")
 
         config = TaskManagerConfig(
@@ -53,7 +53,9 @@ class IntegrateOrganizationWithTaskManagerCommand(
         if not task_manager_service.is_api_key_valid():
             return Response.fail(code=4, message="Api key proportioned to us is not valid")
 
-        project_id = task_manager_service.create_organization(name="Organization")
+        # Get the organization from the repository
+        organization = self.task_manager_repository.get_organization(organization_id)
+        project_id = task_manager_service.create_organization(name=organization.name)
 
         task_manager = TaskManager(
             id=GenericUUID.next_id(),
@@ -63,7 +65,7 @@ class IntegrateOrganizationWithTaskManagerCommand(
         )
 
         task_manager.generate_infrastructure(task_manager_factory=self.task_manager_factory)
-        self.repository.add(task_manager)
+        self.task_manager_repository.add(task_manager)
 
         return Response.ok(
             IntegrateOrganizationWithTaskManagerResponse(
