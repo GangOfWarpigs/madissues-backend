@@ -8,8 +8,8 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.issues.application.commands.comments.toggle_like_issue_comment_command import (
     ToggleLikeIssueCommentCommand,
-    LikeCommentRequest,
-    LikeCommentResponse
+    ToggleLikeCommentRequest,
+    ToggleLikeCommentResponse
 )
 from madissues_backend.core.issues.domain.issue_comment import IssueComment
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_repository import MockIssueCommentRepository
@@ -41,7 +41,7 @@ class TestToggleLikeIssueCommentCommand(unittest.TestCase):
 
     def test_like_comment_successfully(self):
         user_id = str(GenericUUID.next_id())
-        request = LikeCommentRequest(
+        request = ToggleLikeCommentRequest(
             comment_id=str(self.issue_comment.id),
             user_id=user_id
         )
@@ -56,7 +56,7 @@ class TestToggleLikeIssueCommentCommand(unittest.TestCase):
         self.issue_comment.likes.append(GenericUUID(user_id))
         self.issue_comment_repository.save(self.issue_comment)
 
-        request = LikeCommentRequest(
+        request = ToggleLikeCommentRequest(
             comment_id=str(self.issue_comment.id),
             user_id=user_id
         )
@@ -68,7 +68,7 @@ class TestToggleLikeIssueCommentCommand(unittest.TestCase):
 
     def test_like_nonexistent_comment(self):
         user_id = str(GenericUUID.next_id())
-        request = LikeCommentRequest(
+        request = ToggleLikeCommentRequest(
             comment_id=str(GenericUUID.next_id()),
             user_id=user_id
         )
