@@ -10,4 +10,4 @@ class IssueDeletedPayload(BaseModel):
 
 
 class IssueDeleted(DomainEvent[IssueDeletedPayload]):
-    name: str = "@owner/issue_deleted"
+    name: str = "@issue/issue_deleted"

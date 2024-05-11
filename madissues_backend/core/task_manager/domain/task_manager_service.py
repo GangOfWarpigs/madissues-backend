@@ -49,6 +49,7 @@ class TaskManagerService(ABC):
     def create_organization(self, name: str) -> str:
         ...
 
+    @abstractmethod
     def get_organization(self, organization_id_or_name: str) -> Any:
         ...
 

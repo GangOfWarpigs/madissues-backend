@@ -152,7 +152,6 @@ class TrelloTaskManagerFactory(TaskManagerFactory):
 
 
 if __name__ == "__main__":
-    pass
     load_dotenv()
     config = TaskManagerConfig(
         service="trello",

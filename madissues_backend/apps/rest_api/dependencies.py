@@ -18,6 +18,7 @@ from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator impo
 from madissues_backend.core.students.infrastructure.mocks.mock_student_query_repository import \
     MockStudentQueryRepository
 from madissues_backend.core.students.infrastructure.mocks.mock_student_repository import MockStudentRepository
+from madissues_backend.core.task_manager.application.handlers.issue_created_handler import IssueCreatedHandler
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import MockTaskManagerFactory
@@ -36,13 +37,13 @@ task_manager_factory = TrelloTaskManagerFactory()
 storage_service = LocalStorageService(media_path="media")
 authorization_service = create_mock_authentication_service(database)
 
+
 # repositories
 owner_repository = MockOwnerRepository(database)
 organization_repository = MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
 task_manager_repository = MockTaskManagerRepository(database)
 issue_repository = MockIssueRepository(database)
-issue_query_repository = MockIssueQueryRepository(database)
 issue_comment_repository = MockIssueCommentRepository(database)
 
 # query repositories
@@ -50,3 +51,12 @@ organization_query_repository = MockOrganizationQueryRepository(database)
 owner_query_repository = MockOwnerQueryRepository(database)
 student_query_repository = MockStudentQueryRepository(database)
 issue_query_repository = MockIssueQueryRepository(database)
+
+# Event handlers
+issue_created_event_handler = IssueCreatedHandler(task_manager_factory, task_manager_repository)
+
+
+# Subscriptions
+event_bus.subscribe(
+    handler=issue_created_event_handler,
+)

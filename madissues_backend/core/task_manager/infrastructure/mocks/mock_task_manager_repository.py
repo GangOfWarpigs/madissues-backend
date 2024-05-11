@@ -48,3 +48,11 @@ class MockTaskManagerRepository(TaskManagerRepository, GenericMockRepository[Gen
             if str(task_manager.organization_id) == organization_id:
                 return True
         return False
+
+    def get_by_organization_id(self, organization_id: str) -> TaskManager | None:
+        for task_manager in self.task_managers.values():
+            if str(task_manager.organization_id) == organization_id:
+                return task_manager
+        return None
+
+

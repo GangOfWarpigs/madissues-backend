@@ -17,4 +17,4 @@ class IssueCreatedPayload(BaseModel):
 
 
 class IssueCreated(DomainEvent[IssueCreatedPayload]):
-    name: str = "@owner/issue_created"
+    name: str = "@issue/issue_created"

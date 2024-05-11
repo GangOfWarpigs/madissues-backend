@@ -13,4 +13,4 @@ class IssueInfoUpdatedPayload(BaseModel):
 
 
 class IssueInfoUpdated(DomainEvent[IssueInfoUpdatedPayload]):
-    name: str = "@owner/issue_info_updated"
+    name: str = "@issue/issue_info_updated"
