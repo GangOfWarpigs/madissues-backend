@@ -205,6 +205,96 @@ class TestCreateIssueCommand(unittest.TestCase):
         # Assert no events triggered
         assert len(self.event_bus.events) == 0
 
+    def test_create_issue_without_proofs(self):
+        # Reset event bus
+        self.event_bus.events = []
+        # Create issue without proofs
+        create_command = CreateIssueCommand(self.authentication_service,
+                                            self.issue_repository,
+                                            self.storage_service,
+                                            self.event_bus)
+
+        create_response = create_command.run(CreateIssueRequest(
+            title="Test Issue",
+            description="Description of the test issue",
+            details="Additional details",
+            proofs=[],
+            status="Queued",
+            date_time=datetime.now().strftime('%Y-%m-%d'),
+            course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
+            teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
+        ))
+
+        assert create_response.is_success() is True, "Issue must be created successfully"
+        assert create_response.success.title == "Test Issue", "Title must match"
+        assert create_response.success.description == "Description of the test issue", "Description must match"
+        assert create_response.success.details == "Additional details", "Details must match"
+        assert create_response.success.status == "Queued", "Status must match"
+
+    def test_create_issue_with_proofs_with_commas(self):
+        # Reset event bus
+        self.event_bus.events = []
+        # Create issue with proofs
+        create_command = CreateIssueCommand(self.authentication_service,
+                                            self.issue_repository,
+                                            self.storage_service,
+                                            self.event_bus)
+
+        proofs_base64 = [
+            ",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            ",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA"
+        ]
+
+        create_response = create_command.run(CreateIssueRequest(
+            title="Test Issue",
+            description="Description of the test issue",
+            details="Additional details",
+            proofs=proofs_base64,
+            status="Queued",
+            date_time=datetime.now().strftime('%Y-%m-%d'),
+            course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
+            teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
+            student="1d372590-a034-4e05-b1e8-02a9e91068f3",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
+        ))
+
+        assert create_response.is_success() is True, "Issue must be created successfully"
+        assert create_response.success.title == "Test Issue", "Title must match"
+        assert create_response.success.description == "Description of the test issue", "Description must match"
+        assert create_response.success.details == "Additional details", "Details must match"
+        assert create_response.success.status == "Queued", "Status must match"
+        assert len(create_response.success.proofs) == 2, "Proofs must be added"
+
+    def test_create_issue_unauthorized_user(self):
+        # Reset event bus
+        self.event_bus.events = []
+        unauthorized_token = "fa68b53a-8db6-4f5b-9d15-e93cbc163bf0"
+        self.authentication_service = create_mock_authentication_service(self.db)(unauthorized_token)
+        # Create issue with unauthorized user
+        create_command = CreateIssueCommand(self.authentication_service,
+                                            self.issue_repository,
+                                            self.storage_service,
+                                            self.event_bus)
+
+        create_response = create_command.run(CreateIssueRequest(
+            title="Test Issue",
+            description="Description of the test issue",
+            details="Additional details",
+            proofs=[],
+            status="Queued",
+            date_time=datetime.now().strftime('%Y-%m-%d'),
+            course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
+            teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
+            student="ca7b384c-0ae9-489f-90c6-a18a6781dcd0",
+            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
+        ))
+
+        assert create_response.is_error() is True, "Issue creation must fail"
+        assert create_response.error.error_code == 403, "Error code must indicate 'forbidden'"
+        assert create_response.error.error_message == "User must be a student", "Error message must indicate 'forbidden'"
+
 
 if __name__ == "__main__":
     unittest.main()
