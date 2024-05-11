@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from madissues_backend.core.issues.domain.events.issue_deleted import IssueDeleted, IssueDeletedPayload
+from madissues_backend.core.shared.application.event_bus import EventBus
 from madissues_backend.core.shared.domain.response import Response
 from madissues_backend.core.shared.application.command import Command, students_only
 from madissues_backend.core.shared.application.authentication_service import AuthenticationService
@@ -19,9 +20,12 @@ class DeleteIssueResponse(BaseModel):
 
 @students_only
 class DeleteIssueCommand(Command[DeleteIssueRequest, DeleteIssueResponse]):
-    def __init__(self, authentication_service: AuthenticationService, issue_repository: IssueRepository):
+    def __init__(self, authentication_service: AuthenticationService,
+                 issue_repository: IssueRepository,
+                 event_bus: EventBus):
         self.authentication_service = authentication_service
         self.issue_repository = issue_repository
+        self.event_bus = event_bus
 
     def execute(self, request: DeleteIssueRequest) -> Response[DeleteIssueResponse]:
         issue = self.issue_repository.get_by_id(GenericUUID(request.issue_id))
@@ -44,6 +48,9 @@ class DeleteIssueCommand(Command[DeleteIssueRequest, DeleteIssueResponse]):
                 )
             )
         )
+
+        # Collect and dispatch events
+        self.event_bus.notify_all(issue.collect_events())
 
         return Response.ok(
             DeleteIssueResponse(id=str(issue.id))

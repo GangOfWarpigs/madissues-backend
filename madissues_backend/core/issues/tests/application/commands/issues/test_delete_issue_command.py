@@ -14,6 +14,7 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_service import \
     create_mock_authentication_service
 from madissues_backend.core.shared.domain.response import Response
+from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 
 
 class TestDeleteIssueCommand(unittest.TestCase):
@@ -23,9 +24,11 @@ class TestDeleteIssueCommand(unittest.TestCase):
         self.issue_repository = MockIssueRepository(self.db)
         self.student = self.db.tables['students'][GenericUUID("fa68b53a-8db6-4f5b-9d15-e93cbc163bfa")]
         self.authentication_service = create_mock_authentication_service(self.db)(self.student.token)
+        self.event_bus = MockEventBus()
         self.command = DeleteIssueCommand(
             authentication_service=self.authentication_service,
-            issue_repository=self.issue_repository
+            issue_repository=self.issue_repository,
+            event_bus=self.event_bus
         )
 
         # Create issue created by the student
@@ -44,6 +47,8 @@ class TestDeleteIssueCommand(unittest.TestCase):
         response = self.command.run(request)
         self.assertTrue(response.is_success(), "The response should be successful")
         self.assertEqual(response.success.id, str(self.issue.id))
+        # Assert 1 triggered event
+        self.assertEqual(len(self.event_bus.events), 1)
 
     def test_delete_issue_unauthorized(self):
         unauthorized_user_id = str(GenericUUID.next_id())
@@ -56,6 +61,7 @@ class TestDeleteIssueCommand(unittest.TestCase):
         response = self.command.run(request)
         self.assertFalse(response.is_success(), "The response should not be successful")
         self.assertIn("Unauthorized", response.error.error_message)
+        self.assertEqual(len(self.event_bus.events), 0)
 
     def test_delete_nonexistent_issue(self):
         request = DeleteIssueRequest(
@@ -67,6 +73,7 @@ class TestDeleteIssueCommand(unittest.TestCase):
         response = self.command.run(request)
         self.assertFalse(response.is_success(), "The response should not be successful")
         self.assertIn("Issue not found", response.error.error_message)
+        self.assertEqual(len(self.event_bus.events), 0)
 
     def test_delete_issue_as_site_admin(self):
         # Change the author of the issue
@@ -83,6 +90,7 @@ class TestDeleteIssueCommand(unittest.TestCase):
         response = self.command.run(request)
         self.assertTrue(response.is_success(), "The response should be successful")
         self.assertEqual(response.success.id, str(self.issue.id))
+        self.assertEqual(len(self.event_bus.events), 1)
 
 
 if __name__ == '__main__':
