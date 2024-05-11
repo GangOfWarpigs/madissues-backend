@@ -13,3 +13,7 @@ class StorageService(ABC):
     @abstractmethod
     def delete_image(self, folder: str, image_name: str):
         ...
+
+    @abstractmethod
+    def clear_folder(self, folder: str):
+        ...
