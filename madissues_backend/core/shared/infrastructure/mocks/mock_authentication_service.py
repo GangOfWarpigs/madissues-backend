@@ -31,6 +31,13 @@ def create_mock_authentication_service(database: EntityTable):
                     return str(student.id)
             return ''
 
+        def get_student(self):
+            students = self.database.tables["students"]
+            for student in students.values():
+                if student.token == self.token:
+                    return student
+            return None
+
         def is_student(self) -> bool:
             if self.__token_is_in_owner_table() or not self.__token_is_in_student_table():
                 return False
@@ -77,5 +84,7 @@ def create_mock_authentication_service(database: EntityTable):
                 if student.token == self.token:
                     return True
             return False
+
+
 
     return MockAuthenticationService

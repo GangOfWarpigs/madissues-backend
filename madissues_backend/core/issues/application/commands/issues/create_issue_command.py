@@ -18,11 +18,8 @@ class CreateIssueRequest(BaseModel):
     description: str
     details: str
     proofs: list[str]  # List of image links
-    status: str  # Queued, In progress, Solved, Not Solved
-    date_time: str
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
-    student: str  # GenericUUID
     organization_id: str  # GenericUUID
 
 
@@ -55,6 +52,8 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             - Must create a card in trello
             - Must notify the task manager via email
         """
+
+
         # First upload the images to the storage service
         proof_filenames = []
         for proof in request.proofs:
@@ -62,17 +61,18 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
                                                              image_name=str(GenericUUID.next_id()))
             proof_filenames.append(filename)
 
+        student = self.authentication_service.get_student()
         issue = Issue(
             id=GenericUUID.next_id(),
             title=request.title,
             description=request.description,
             details=request.details,
             proofs=proof_filenames,
-            status=request.status,
-            date_time=datetime.strptime(request.date_time, '%Y-%m-%d'),
+            status="Queued",
+            date_time=datetime.now(),
             course=GenericUUID(request.course),
             teachers=[GenericUUID(teacher) for teacher in request.teachers],
-            student_id=GenericUUID(request.student),
+            student_id=student.id,
             organization_id=GenericUUID(request.organization_id)
         )
 

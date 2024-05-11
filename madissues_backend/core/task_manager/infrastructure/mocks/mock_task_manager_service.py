@@ -1,6 +1,8 @@
+from typing import Any
+
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.task_manager.domain.task_manager_config import TaskManagerConfig
 from madissues_backend.core.task_manager.domain.task_manager_service import TaskManagerService, TaskManagerFactory
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class InMemoryTaskManagerService(TaskManagerService):
@@ -42,6 +44,40 @@ class InMemoryTaskManagerService(TaskManagerService):
 
     def invite_user(self, organization_id: str, email: str):
         self.invited_users.append(email)
+
+    def get_board_lists(self, board_id: str) -> list[str]:
+        return [list_id for list_id, list_data in self.lists.items() if list_data["board_id"] == board_id]
+
+    def get_board_list_by_name(self, board_id: str, list_name: str) -> str | None:
+        for list_id, list_data in self.lists.items():
+            if list_data["board_id"] == board_id and list_data["name"] == list_name:
+                return list_id
+        return None
+
+    def get_list_cards(self, list_id: str) -> list[str]:
+        return []
+
+    def get_board_by_name_in_organization(self, organization_id_or_name: str, board_name: str) -> str | None:
+        for board_id, name in self.boards.items():
+            if name == board_name:
+                return str(board_id)
+        return None
+
+    def get_organization(self, organization_id_or_name: str) -> Any:
+        for organization_id, name in self.boards.items():
+            if organization_id == organization_id_or_name or name == organization_id_or_name:
+                return {"id": str(organization_id), "name": name}
+        return None
+
+    def create_card(self, list_id: str, name: str, description: str) -> str:
+        card_id = GenericUUID.next_id()
+        return str(card_id)
+
+    def get_card(self, card_id: str) -> str:
+        return card_id
+
+    def update_card(self, card_id: str, name: str, description: str) -> str:
+        return card_id
 
 
 class MockTaskManagerFactory(TaskManagerFactory):

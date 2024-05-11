@@ -11,6 +11,10 @@ class AuthenticationService(ABC):
         ...
 
     @abstractmethod
+    def get_student(self):
+        ...
+
+    @abstractmethod
     def is_student(self) -> bool:
         ...
 
