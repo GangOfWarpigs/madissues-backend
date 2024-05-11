@@ -1,7 +1,6 @@
-from email.header import Header
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 from madissues_backend.apps.rest_api.dependencies import authorization_service, issue_comment_repository
 from madissues_backend.core.issues.application.commands.comments.add_comment_to_issue import AddCommentToIssueRequest, \

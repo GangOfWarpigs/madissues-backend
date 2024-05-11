@@ -1,7 +1,6 @@
-from email.header import Header
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 from madissues_backend.apps.rest_api.dependencies import password_hasher, student_repository, authorization_service, \
     event_bus, token_generator, student_query_repository
