@@ -16,12 +16,9 @@ class Params(BaseModel):
 
 class GetSingleOrganizationQuery(Query[Params, OrganizationReadModel]):
     def execute(self, params: Params | None = None) -> Response[OrganizationReadModel]:
-        if not self.authentication_service.is_owner():
-            return Response.fail(code=403, message="User must be a owner")
         if params is not None:
             return Response.ok(self.query_repository.get_by_id(params.id))
         return Response.fail(message="you must send an id")
 
-    def __init__(self, authentication_service: AuthenticationService, query_repository: OrganizationQueryRepository):
-        self.authentication_service = authentication_service
+    def __init__(self, query_repository: OrganizationQueryRepository):
         self.query_repository = query_repository

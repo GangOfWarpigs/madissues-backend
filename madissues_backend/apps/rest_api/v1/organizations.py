@@ -74,9 +74,8 @@ def list_organization(token: Annotated[str, Header()]) -> Response[list[Organiza
 
 
 @router.get("/organizations/{id}", tags=["organizations"])
-def single_organization(token: Annotated[str, Header()], id: str) -> Response[OrganizationReadModel]:
-    authorization = authorization_service(token)
-    query = GetSingleOrganizationQuery(authorization, organization_query_repository)
+def single_organization(id: str) -> Response[OrganizationReadModel]:
+    query = GetSingleOrganizationQuery(organization_query_repository)
     return query.execute(Params(id=id))
 
 
