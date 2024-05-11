@@ -18,4 +18,4 @@ class GetOrganizationDegreesQuery(Query[str, list[OrganizationDegreeReadModel]])
     def execute(self, params: str | None = None) -> Response[list[OrganizationDegreeReadModel]]:
         if params is None:
             return Response.fail(message="You need to pass an id")
-        return Response.ok(self.query_repository.get_all_teachers_degrees_organization(params))
+        return Response.ok(self.query_repository.get_all_courses_from_organization(params))
