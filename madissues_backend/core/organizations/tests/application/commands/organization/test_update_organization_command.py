@@ -42,6 +42,9 @@ class TestUpdateOrganizationCommand(unittest.TestCase):
         ))
         self.organization_id = response.success.id
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_organization_is_updated_without_errors(self):
         # Reset the event bus
         self.event_bus.events = []

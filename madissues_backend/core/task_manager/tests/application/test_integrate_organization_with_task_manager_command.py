@@ -26,7 +26,8 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="valid_api_key"
+            api_key="valid_api_key",
+            api_token="valid_token"
         ))
 
         assert response.is_success() == True, "Must be successful"
@@ -38,7 +39,8 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="looool"
+            api_key="looool",
+            api_token="valid_token"
         ))
 
         print(response)
@@ -51,7 +53,8 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="looool"
+            api_key="looool",
+            api_token="valid_token"
         ))
         assert response.is_error() is True, "Must be error"
         assert response.error.error_code == 403, "Message must have something"
@@ -61,14 +64,16 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="valid_api_key"
+            api_key="valid_api_key",
+            api_token="valid_token"
         ))
         print(self.db.tables)
         command = IntegrateOrganizationWithTaskManagerCommand(self.auth, self.repository, self.factory)
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
-            api_key="valid_api_key"
+            api_key="valid_api_key",
+            api_token="valid_token"
         ))
         assert response.is_error() is True, "Must be error"
         assert response.error.error_code == 3, "Message must have something"

@@ -11,14 +11,14 @@ class TestLocalStorageService(unittest.TestCase):
         self.storage_service = LocalStorageService("../../../../../media")
 
     def test_upload_b64_image(self):
-        test_b64image_path = "cat.b64"
+        test_b64image_path = "./cat.b64"
         with open(test_b64image_path, "rb") as file:
             image = file.read().decode("utf-8")
             path = self.storage_service.upload_b64_image(image, folder="tests", image_name="cat")
-            self.assertEqual(path, "../../../../../media/tests/cat.png")
+            self.assertEqual(path, "cat.png")
 
     def test_get_b64_image(self):
-        test_b64image_path = "cat.b64"
+        test_b64image_path = "./cat.b64"
         with open(test_b64image_path, "rb") as file:
             image = file.read().decode("utf-8")
             path = self.storage_service.upload_b64_image(image, folder="tests", image_name="cat")
@@ -30,7 +30,7 @@ class TestLocalStorageService(unittest.TestCase):
         self.assertEqual(image, encoded_retrieved_image)
 
     def test_delete_image(self):
-        test_b64image_path = "cat.b64"
+        test_b64image_path = "./cat.b64"
         with open(test_b64image_path, "rb") as file:
             image = file.read().decode("utf-8")
             path = self.storage_service.upload_b64_image(image, folder="tests", image_name="cat")

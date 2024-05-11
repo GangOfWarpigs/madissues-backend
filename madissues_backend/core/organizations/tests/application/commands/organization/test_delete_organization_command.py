@@ -23,6 +23,9 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
         self.organization_repository = MockOrganizationRepository(self.db)
         self.storage_service = LocalStorageService("../../../../../../media")
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_organization_is_deleted_without_errors(self):
         # Create organization
         create_command = CreateOrganizationCommand(self.authorization,

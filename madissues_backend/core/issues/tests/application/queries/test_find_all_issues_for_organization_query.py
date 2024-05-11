@@ -26,12 +26,15 @@ class TestFindAllIssuesQuery(unittest.TestCase):
         self.issue_repository = MockIssueRepository(self.db)
         self.issue_query_repository = MockIssueQueryRepository(self.db)
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_find_all_issues_by_organization(self):
         # Create some issues
         create_command = CreateIssueCommand(self.authentication_service,
                                             self.issue_repository,
-                                            self.event_bus,
-                                            self.storage_service)
+                                            self.storage_service,
+                                            self.event_bus)
 
         create_response_1 = create_command.run(CreateIssueRequest(
             title="Test Issue 1",

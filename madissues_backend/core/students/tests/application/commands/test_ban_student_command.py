@@ -27,6 +27,7 @@ class TestBanStudentCommand(unittest.TestCase):
 
         self.unauthorized_student = StudentMother.random_student()
         self.unauthorized_student.is_council_member = False
+        self.unauthorized_student.is_site_admin = False
 
         # Add student to repository
         self.student_repository.add(self.student_getting_banned)

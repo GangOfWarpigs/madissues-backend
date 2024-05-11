@@ -24,6 +24,9 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
         self.owner = self.db.tables['owners'][GenericUUID("83d150fe-84f4-4a22-a109-5704342c589c")]
         self.authentication_service = create_mock_authentication_service(self.db)(self.owner.token)
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_execute_success(self):
         # Arrange
         teacher_request = CreateOrganizationTeacherRequest(
@@ -32,7 +35,7 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
             last_name="Doe",
             email="john.doe@example.com",
             office_link="https://www.dis.ulpgc.es/john-doe",
-            courses=[str(course_id) for course_id in self.organization.courses]
+            courses=[str(course.id) for course in self.organization.courses]
         )
         create_command = CreateOrganizationTeacherCommand(
             authentication_service=self.authentication_service,
@@ -40,7 +43,8 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
             event_bus=self.event_bus
         )
 
-        create_response = create_command.execute(teacher_request)
+        create_response = create_command.run(teacher_request)
+        assert create_response.is_success() is True, "Teacher should be created successfully"
         teacher_id = create_response.success.id
 
         # Reset event bus
@@ -57,7 +61,7 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
         )
 
         # Act
-        response = delete_command.execute(delete_request)
+        response = delete_command.run(delete_request)
 
         # Assert
         self.assertTrue(response.is_success(), "Teacher should be deleted successfully")
@@ -80,7 +84,7 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
         )
 
         # Act
-        response = delete_command.execute(delete_request)
+        response = delete_command.run(delete_request)
 
         # Assert
         self.assertTrue(not response.success, "Teacher ID should be invalid")
@@ -102,7 +106,7 @@ class TestDeleteOrganizationTeacherCommand(unittest.TestCase):
         )
 
         # Act (raises an exception)
-        response = delete_command.execute(delete_request)
+        response = delete_command.run(delete_request)
 
         # Assert
         self.assertTrue(not response.success, "User should not be authorized")

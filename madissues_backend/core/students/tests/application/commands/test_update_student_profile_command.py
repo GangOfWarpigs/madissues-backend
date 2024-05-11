@@ -18,6 +18,9 @@ class TestUpdateStudentProfileCommand(unittest.TestCase):
         self.student = StudentMother.random_student()
         self.student_repository.add(self.student)
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_update_student_profile_successful(self):
         # Reset the event bus (important)
         self.event_bus.events.clear()

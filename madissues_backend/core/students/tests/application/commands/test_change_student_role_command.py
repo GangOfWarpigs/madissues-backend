@@ -27,6 +27,8 @@ class TestChangeStudentRoleCommand(unittest.TestCase):
 
         self.unauthorized_student = StudentMother.random_student()
         self.unauthorized_student.is_council_member = False
+        self.unauthorized_student.is_site_admin = False
+
 
         # Add student to repository
         self.student_repository.add(self.student_getting_roles_changed)
@@ -89,7 +91,7 @@ class TestChangeStudentRoleCommand(unittest.TestCase):
 
         self.assertEqual(len(self.event_bus.events), 1, "Should be triggered an event")
 
-    def test_ban_student_unauthenticated(self):
+    def test_change_student_role_unauthenticated(self):
         # Reset the event bus (important)
         self.event_bus.events.clear()
 

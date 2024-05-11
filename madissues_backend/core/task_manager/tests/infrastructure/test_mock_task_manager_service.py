@@ -46,7 +46,7 @@ class TestInMemoryTaskManagerFactory(unittest.TestCase):
         self.factory = MockTaskManagerFactory()
 
     def test_of(self):
-        service = self.factory.of(TaskManagerConfig(service="trello", api_key="test_key", token="test_token"))
+        service = self.factory.of(TaskManagerConfig(service="trello", api_key="test_key", api_token="test_token"))
         self.assertIsInstance(service, InMemoryTaskManagerService)
 
     def test_of_with_different_configs(self):
@@ -54,7 +54,7 @@ class TestInMemoryTaskManagerFactory(unittest.TestCase):
             TaskManagerConfig(
                 service=f"trello",
                 api_key=f"key{i}",
-                token=f"token{i}"
+                api_token=f"token{i}"
             )) for i in range(5)]
         for service in services:
             self.assertIsInstance(service, InMemoryTaskManagerService)

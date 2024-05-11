@@ -28,6 +28,9 @@ class TestCreateIssueCommand(unittest.TestCase):
         self.authentication_service = create_mock_authentication_service(self.db)(self.student.token)
         self.storage_service = LocalStorageService("../../../../../../media")
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_issue_is_created_without_errors(self):
         # Reset event bus
         self.event_bus.events = []
