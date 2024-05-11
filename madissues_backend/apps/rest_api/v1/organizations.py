@@ -19,6 +19,8 @@ from madissues_backend.core.organizations.application.queries.get_organization_c
     GetOrganizationCoursesQuery
 from madissues_backend.core.organizations.application.queries.get_organization_degrees_query import \
     GetOrganizationDegreesQuery
+from madissues_backend.core.organizations.application.queries.get_organization_task_manager_query import \
+    GetOrganizationTaskManagerQuery, GetOrganizationTaskManagerQueryParams
 from madissues_backend.core.organizations.application.queries.get_organization_teachers_query import \
     GetOrganizationTeachersQuery
 from madissues_backend.core.organizations.application.queries.get_organizations_of_owner_query import \
@@ -30,6 +32,8 @@ from madissues_backend.core.organizations.domain.read_models.organization_course
 from madissues_backend.core.organizations.domain.read_models.organization_degree_read_model import \
     OrganizationDegreeReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_task_manager_read_model import \
+    OrganizationTaskManagerReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_teacher_read_model import \
     OrganizationTeacherReadModel
 from madissues_backend.core.shared.domain.response import Response
@@ -99,10 +103,19 @@ def get_organization_degrees(id: str) -> Response[list[OrganizationDegreeReadMod
     query = GetOrganizationDegreesQuery(organization_query_repository)
     return query.run(id)
 
+
 @router.get("/organizations/{id}/issues/", tags=["organizations"])
 def create_issues(token: Annotated[str, Header()], id: str) -> Response[list[IssueReadModel]]:
     authorization = authorization_service(token)
     command = FindAllIssuesQuery(authorization, issue_query_repository)
     return command.run(FindAllIssuesQueryParams(
+        organization_id=id
+    ))
+
+
+@router.get("/organizations/{id}/task_manager", tags=["organizations"])
+def get_organization_task_manager(id: str) -> Response[OrganizationTaskManagerReadModel]:
+    query = GetOrganizationTaskManagerQuery(organization_query_repository)
+    return query.run(GetOrganizationTaskManagerQueryParams(
         organization_id=id
     ))
