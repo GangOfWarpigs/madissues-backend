@@ -1,3 +1,4 @@
+from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_repository import MockIssueCommentRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_query_repository import MockIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_repository import MockIssueRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_query_repository import \
@@ -41,6 +42,8 @@ organization_repository = MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
 task_manager_repository = MockTaskManagerRepository(database)
 issue_repository = MockIssueRepository(database)
+issue_query_repository = MockIssueQueryRepository(database)
+issue_comment_repository = MockIssueCommentRepository(database)
 
 # query repositories
 organization_query_repository = MockOrganizationQueryRepository(database)
