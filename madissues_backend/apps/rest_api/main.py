@@ -34,7 +34,7 @@ dirname = os.path.dirname(__file__)
 dirname = os.path.abspath(os.path.join(dirname, '../../../'))
 
 app.mount("/media",
-          StaticFiles(directory=os.path.join(dirname, "media")),
+          StaticFiles(directory=os.path.join(dirname, "madissues_backend", "media")),
           name="media")
 app.include_router(owners_router)
 app.include_router(organizations_router)
