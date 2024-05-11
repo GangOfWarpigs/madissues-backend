@@ -39,7 +39,6 @@ Integrate additional functionalities for organizational efficiency. The Task Man
 
 """
 
-
 tags_metadata = [
     {
         "name": "owners",
@@ -67,9 +66,6 @@ tags_metadata = [
     },
 ]
 
-
-
-
 app = FastAPI(
     title="Madissues REST API",
     description=description,
@@ -80,7 +76,7 @@ app = FastAPI(
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
     },
     openapi_tags=tags_metadata,
-openapi_url="/api/v1/openapi.json"
+    openapi_url="/api/v1/openapi.json"
 )
 app.add_middleware(
     CORSMiddleware,
