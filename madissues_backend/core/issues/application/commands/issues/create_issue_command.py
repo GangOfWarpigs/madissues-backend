@@ -43,7 +43,7 @@ class CreateIssueResponse(BaseModel):
 @students_only
 class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
     def __init__(self, authentication_service: AuthenticationService, repository: IssueRepository,
-                  storage_service: StorageService, event_bus: EventBus,):
+                 storage_service: StorageService, event_bus: EventBus,):
         self.authentication_service = authentication_service
         self.repository = repository
         self.storage_service = storage_service
