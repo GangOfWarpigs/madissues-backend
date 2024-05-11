@@ -5,6 +5,8 @@ from madissues_backend.core.organizations.domain.read_models.organization_course
 from madissues_backend.core.organizations.domain.read_models.organization_degree_read_model import \
     OrganizationDegreeReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_read_model import OrganizationReadModel
+from madissues_backend.core.organizations.domain.read_models.organization_task_manager_read_model import \
+    OrganizationTaskManagerReadModel
 from madissues_backend.core.organizations.domain.read_models.organization_teacher_read_model import \
     OrganizationTeacherReadModel
 
@@ -28,4 +30,8 @@ class OrganizationQueryRepository(ABC):
 
     @abstractmethod
     def get_all_teachers_degrees_organization(self, id: str) -> list[OrganizationDegreeReadModel]:
+        ...
+
+    @abstractmethod
+    def get_organization_task_manager(self, id: str) -> OrganizationTaskManagerReadModel:
         ...
