@@ -32,7 +32,7 @@ class TestEndToEnd(unittest.TestCase):
 
         owner_token = response.json()["success"]["token"]
 
-    def test_organizatinos_endpoints(self):
+    def test_organizations_endpoints(self):
         request = {
             "first_name": "Jhon",
             "last_name": "Doe",
@@ -51,13 +51,15 @@ class TestEndToEnd(unittest.TestCase):
 
         response = client.post("/owners/signin", json=request)
 
+        assert response.json()["error"] is None, "There are no errors"
+
         owner_token = response.json()["success"]["token"]
 
         assert owner_token is not None, "Token has been created successfully"
 
         organization = {
             "name": "test",
-            "logo": "test",
+            "logo": "iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             "description": "test",
             "contact_info": "test",
             "primary_color": "#f5f5f5",
@@ -68,7 +70,6 @@ class TestEndToEnd(unittest.TestCase):
             "token": owner_token
         })
 
-        print(response.json())
         organization_id = response.json()["success"]["id"]
 
         assert organization_id is not None, "Organization has been created successfully"

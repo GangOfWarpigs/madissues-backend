@@ -16,8 +16,9 @@ class LocalStorageService(StorageService):
             raise ValueError("Folder and image_name cannot be empty")
 
         # Decode the image
-        image=image.split(",")[1]
-        image_data = base64.b64decode(image)
+        processed_image_data = image.split(",")[-1]
+
+        image_data = base64.b64decode(processed_image_data)
 
         if image_data[:4].startswith(b'\x89\x50\x4e\x47'):
             image_name += '.png'
@@ -33,10 +34,10 @@ class LocalStorageService(StorageService):
         with open(full_path, "wb") as file:
             file.write(image_data)
 
-        if image_name is None:
-            image_name = str(GenericUUID.next_id())
+        # Split the path to get the image name with extension
+        image_name_with_ext = full_path.split("/")[-1]
 
-        return str(full_path)
+        return str(image_name_with_ext)
 
     def get_b64_image(self, folder: str, image_name: str) -> bytes:
         """Returns the image in bytes"""
@@ -51,7 +52,7 @@ class LocalStorageService(StorageService):
         else:
             raise FileNotFoundError(f"Image {image_name} not found")
 
-    def delete_image(self,  folder: str, image_name: str):
+    def delete_image(self, folder: str, image_name: str):
         """Deletes an image from the media folder"""
         if (folder == "") or (image_name == ""):
             raise ValueError("Folder and image_name cannot be empty")
@@ -60,6 +61,7 @@ class LocalStorageService(StorageService):
             raise ValueError("Image name cannot be empty")
 
         # Save the image in media folder
+        image_name = image_name.split(".")[0]
         full_path = f"{self.media_path}/{folder}/{image_name}.png"
 
         if not os.path.exists(full_path):

@@ -4,8 +4,12 @@ from madissues_backend.core.shared.domain.events import DomainEvent
 
 
 class MockEventBus(EventBus):
-    handlers: dict[str, list[EventHandler]] = {}
-    events: list[DomainEvent] = []
+    handlers: dict[str, list[EventHandler]]
+    events: list[DomainEvent]
+
+    def __init__(self):
+        self.handlers = {}
+        self.events = []
 
     def subscribe(self, handler: EventHandler):
         self.handlers.setdefault(handler.event_name, []).append(handler)

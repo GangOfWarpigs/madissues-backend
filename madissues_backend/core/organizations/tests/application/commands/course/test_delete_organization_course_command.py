@@ -18,9 +18,14 @@ class TestDeleteOrganizationCourseCommand(unittest.TestCase):
         self.db.load_snapshot("with_organization_created")
         self.organization_repository = MockOrganizationRepository(self.db)
         self.event_bus = MockEventBus()
+        self.event_bus.events = []
         self.organization_id = GenericUUID("cc164174-07f7-4cd4-8a7e-43c96d9b825a")
         self.owner = self.db.tables['owners'][GenericUUID("83d150fe-84f4-4a22-a109-5704342c589c")]
         self.authentication_service = create_mock_authentication_service(self.db)(self.owner.token)
+
+    # Cleanup function
+    def tearDown(self):
+        self.event_bus.events = []
 
     def test_execute_success(self):
         # Arrange

@@ -60,7 +60,8 @@ class IssueMother:
             date_time=datetime.now() - timedelta(days=random.randint(0, 365)),
             course=GenericUUID.next_id(),
             teachers=IssueMother.random_uuid_list(random.randint(1, 3)),
-            student_id=GenericUUID.next_id()
+            student_id=GenericUUID.next_id(),
+            organization_id=GenericUUID.next_id()
         )
 
     @staticmethod

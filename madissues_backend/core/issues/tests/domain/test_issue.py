@@ -18,6 +18,7 @@ class TestIssue(unittest.TestCase):
             'course': GenericUUID.next_id(),
             'teachers': [GenericUUID.next_id(), GenericUUID.next_id()],
             'student_id': GenericUUID.next_id(),
+            'organization_id': GenericUUID.next_id()
         }
 
     def test_valid_issue(self):
@@ -75,6 +76,12 @@ class TestIssue(unittest.TestCase):
     def test_missing_details(self):
         invalid_issue_data = self.valid_issue_data.copy()
         del invalid_issue_data['details']
+        with self.assertRaises(ValidationError):
+            Issue(**invalid_issue_data)
+
+    def test_missing_organization_id(self):
+        invalid_issue_data = self.valid_issue_data.copy()
+        del invalid_issue_data['organization_id']
         with self.assertRaises(ValidationError):
             Issue(**invalid_issue_data)
 

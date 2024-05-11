@@ -64,11 +64,10 @@ class MyTestCase(unittest.TestCase):
             assert str(e) == "Owner does not exists", "If owner already exists must throw value error"
 
     def test_get_non_existing_owner_by_id(self):
-        try:
-            self.repository.get_by_id(GenericUUID.next_id())
-            assert False, "Remove owner that does not exist should throw exception"
-        except ValueError as e:
-            assert str(e) == "Owner not found", "If owner already exists must throw value error"
+
+        owner= self.repository.get_by_id(GenericUUID.next_id())
+        assert owner is None, "Remove owner that does not exist should throw exception"
+
 
     def test_save_non_existing_owner(self):
         try:

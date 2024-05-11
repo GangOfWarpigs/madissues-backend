@@ -23,6 +23,9 @@ class TestCreateOrganizationCourseCommand(unittest.TestCase):
         self.owner = self.db.tables['owners'][GenericUUID("83d150fe-84f4-4a22-a109-5704342c589c")]
         self.authentication_service = create_mock_authentication_service(self.db)(self.owner.token)
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_execute_success(self):
         # Arrange
         course_request = CreateOrganizationCourseRequest(

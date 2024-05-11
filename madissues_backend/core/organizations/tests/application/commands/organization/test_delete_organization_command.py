@@ -23,6 +23,9 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
         self.organization_repository = MockOrganizationRepository(self.db)
         self.storage_service = LocalStorageService("../../../../../../media")
 
+    def tearDown(self):
+        self.event_bus.events = []
+
     def test_organization_is_deleted_without_errors(self):
         # Create organization
         create_command = CreateOrganizationCommand(self.authorization,
@@ -31,7 +34,7 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
 
         create_response = create_command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            logo=",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -82,7 +85,7 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
 
         create_response = create_command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            logo=",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",

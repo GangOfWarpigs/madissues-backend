@@ -23,9 +23,11 @@ class CreateIssueRequest(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
+    organization_id: str  # GenericUUID
 
 
 class CreateIssueResponse(BaseModel):
+    id: str
     title: str
     description: str
     details: str
@@ -35,12 +37,13 @@ class CreateIssueResponse(BaseModel):
     course: str  # GenericUUID
     teachers: list[str]  # list[GenericUUID]
     student: str  # GenericUUID
+    organization_id: str  # GenericUUID
 
 
 @students_only
 class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
     def __init__(self, authentication_service: AuthenticationService, repository: IssueRepository,
-                 event_bus: EventBus, storage_service: StorageService):
+                  storage_service: StorageService, event_bus: EventBus,):
         self.authentication_service = authentication_service
         self.repository = repository
         self.storage_service = storage_service
@@ -70,6 +73,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             course=GenericUUID(request.course),
             teachers=[GenericUUID(teacher) for teacher in request.teachers],
             student_id=GenericUUID(request.student),
+            organization_id=GenericUUID(request.organization_id)
         )
 
         issue.register_event(IssueCreated(
@@ -83,6 +87,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
                 course=str(issue.course),
                 teachers=[str(teacher) for teacher in issue.teachers],
                 student=str(issue.student_id),
+                organization_id=str(issue.organization_id)
             )
         ))
         self.event_bus.notify_all(issue.collect_events())
@@ -90,6 +95,7 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
         self.repository.add(issue)
 
         return Response.ok(CreateIssueResponse(
+            id=str(issue.id),
             title=issue.title,
             description=issue.description,
             details=issue.details,
@@ -99,4 +105,5 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             course=str(issue.course),
             teachers=[str(teacher) for teacher in issue.teachers],
             student=str(issue.student_id),
+            organization_id=str(issue.organization_id)
         ))

@@ -10,6 +10,8 @@ from madissues_backend.core.organizations.domain.events.organization_degree_adde
     OrganizationDegreeAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_degree_deleted import \
     OrganizationDegreeDeletedPayload, OrganizationDegreeDeleted
+from madissues_backend.core.organizations.domain.events.organization_info_updated import OrganizationInfoUpdated, \
+    OrganizationInfoUpdatedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_added import OrganizationTeacherAdded, \
     OrganizationTeacherAddedPayload
 from madissues_backend.core.organizations.domain.events.organization_teacher_deleted import OrganizationTeacherDeleted, \
@@ -42,10 +44,35 @@ class Organization(AggregateRoot[GenericUUID]):
     courses: list[OrganizationCourse] = Field(default=[], init=False)
     degrees: list[OrganizationDegree] = Field(default=[], init=False)
 
+    def update_info(self, name: str, description: str, contact_info: str,
+                    primary_color: str, secondary_color: str):
+        self.name = name
+        self.description = description
+        self.contact_info = contact_info
+        self.primary_color = primary_color
+        self.secondary_color = secondary_color
+
+        # Validate the fields
+        self.validate_field("name", self.name)
+        self.validate_field("description", self.description)
+        self.validate_field("contact_info", self.contact_info)
+        self.validate_field("primary_color", self.primary_color)
+        self.validate_field("secondary_color", self.secondary_color)
+
+        self.register_event(OrganizationInfoUpdated(
+            payload=OrganizationInfoUpdatedPayload(
+                id=str(self.id),
+                name=self.name,
+                description=self.description,
+                primary_color=self.primary_color,
+                secondary_color=self.secondary_color
+            )
+        ))
+
     def upload_logo(self, image, storage: StorageService):
         logo = storage.upload_b64_image(image, folder="organizations", image_name=str(GenericUUID.next_id()))
         self.validate_field("logo", logo)
-        self.logo = logo # Takes the name of the image without the extension
+        self.logo = logo  # Takes the name of the image without the extension
 
     def delete_logo(self, storage: StorageService):
         storage.delete_image(folder="organizations", image_name=str(self.logo))

@@ -46,7 +46,7 @@ class IntegrateOrganizationWithTaskManagerCommand(
         config = TaskManagerConfig(
             service=request.task_manager,
             api_key=request.api_key,
-            token=request.api_token
+            api_token=request.api_token
         )
 
         task_manager_service = self.task_manager_factory.of(config)

@@ -17,7 +17,7 @@ class TrelloTaskManagerService(TaskManagerService):
     def _make_request(self, method: str, endpoint: str, params: dict) -> Response:
         url = self.base_url + endpoint
         params["key"] = self.config.api_key
-        params["token"] = self.config.token
+        params["token"] = self.config.api_token
 
         response = requests.request(method, url, params=params)
 

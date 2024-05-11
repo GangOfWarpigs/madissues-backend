@@ -62,3 +62,4 @@ class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue]):
 
 
 
+

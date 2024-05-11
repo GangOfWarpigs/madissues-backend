@@ -33,12 +33,12 @@ class CreateOrganizationTeacherCommand(Command[CreateOrganizationTeacherRequest,
     def __init__(self, authentication_service: AuthenticationService, repository: OrganizationRepository,
                  event_bus: EventBus):
         self.authentication_service = authentication_service
-        self.repository = repository
+        self.organization_repository = repository
         self.event_bus = event_bus
 
     def execute(self, request: CreateOrganizationTeacherRequest) -> Response[CreateOrganizationTeacherResponse]:
         try:
-            organization = self.repository.get_by_id(GenericUUID(request.organization_id))
+            organization = self.organization_repository.get_by_id(GenericUUID(request.organization_id))
             assert organization is not None
         except (ValidationError, ValueError, AttributeError) as e:
             return Response.fail(message="Invalid organization ID")
@@ -64,7 +64,7 @@ class CreateOrganizationTeacherCommand(Command[CreateOrganizationTeacherRequest,
         self.event_bus.notify_all(organization.collect_events())
 
         # Save the organization
-        self.repository.save(organization)
+        self.organization_repository.save(organization)
 
         return Response.ok(CreateOrganizationTeacherResponse(
             id=str(teacher.id),

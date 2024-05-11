@@ -27,6 +27,10 @@ class TestCreateOrganizationCommand(unittest.TestCase):
         self.organization_repository = MockOrganizationRepository(self.db)
         self.storage_service = LocalStorageService("../../../../../../media")
 
+    def tearDown(self):
+        self.event_bus.events = []
+
+
     def test_organization_is_created_without_errors(self):
         command = CreateOrganizationCommand(self.authorization,
                                             self.organization_repository, self.storage_service)
