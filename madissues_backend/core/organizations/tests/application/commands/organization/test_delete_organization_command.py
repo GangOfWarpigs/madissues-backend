@@ -31,7 +31,7 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
 
         create_response = create_command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            logo=",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",
@@ -82,7 +82,7 @@ class TestDeleteOrganizationCommand(unittest.TestCase):
 
         create_response = create_command.run(CreateOrganizationRequest(
             name="organization1",
-            logo="iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
+            logo=",iVBORw0KGgoAAAANSUhEUgAAAoMAAAHiCAYAAACTLsbsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUA",
             description="this is my organization",
             contact_info="contact info",
             primary_color="#f5f5f5",

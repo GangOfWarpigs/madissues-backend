@@ -77,5 +77,3 @@ class TestFindAllIssuesQuery(unittest.TestCase):
         assert query_response.is_error() is True, "Query must fail"
         assert query_response.error.error_code == 403, "Error code must indicate 'forbidden'"
         assert query_response.error.error_message == "User must be a student", "Error message must indicate 'forbidden'"
-
-
