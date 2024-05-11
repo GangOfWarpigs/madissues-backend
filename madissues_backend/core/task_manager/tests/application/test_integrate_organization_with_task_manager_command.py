@@ -4,7 +4,8 @@ from unittest.mock import MagicMock
 from madissues_backend.core.shared.application.mock_repository import EntityTable
 from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_service import \
     create_mock_authentication_service
-from madissues_backend.core.task_manager.application.commands.integrate_organization_with_task_manager import IntegrateOrganizationWithTaskManagerCommand, IntegrateOrganizationWithTaskManagerRequest
+from madissues_backend.core.task_manager.application.commands.integrate_organization_with_task_manager import \
+    IntegrateOrganizationWithTaskManagerCommand, IntegrateOrganizationWithTaskManagerRequest
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import \
@@ -49,7 +50,8 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         assert response.error.error_code == 4, "Message must have something"
 
     def test_integration_not_owner(self):
-        command = IntegrateOrganizationWithTaskManagerCommand(self.authentication("invalid_token"), self.repository, self.factory)
+        command = IntegrateOrganizationWithTaskManagerCommand(self.authentication("invalid_token"), self.repository,
+                                                              self.factory)
         response = command.run(IntegrateOrganizationWithTaskManagerRequest(
             organization_id="cc164174-07f7-4cd4-8a7e-43c96d9b825a",
             task_manager="trello",
@@ -78,6 +80,7 @@ class TestIntegrateOrganizationWithTaskManagerCommand(unittest.TestCase):
         assert response.is_error() is True, "Must be error"
         assert response.error.error_code == 3, "Message must have something"
         assert self.repository.is_there_a_task_manager_for_organization("cc164174-07f7-4cd4-8a7e-43c96d9b825a") == True
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -54,11 +54,8 @@ class TestUpdateIssueInfoCommand(unittest.TestCase):
                 description=self.issue.description,
                 details=self.issue.details,
                 proofs=self.issue.proofs,
-                status=self.issue.status,
-                date_time=self.issue.date_time.strftime('%Y-%m-%d'),
                 course=str(self.issue.course),
                 teachers=[str(teacher) for teacher in self.issue.teachers],
-                student=str(self.issue.student_id),
                 organization_id=str(self.organization.id)
             )
         )
