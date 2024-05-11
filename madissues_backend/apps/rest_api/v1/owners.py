@@ -38,4 +38,4 @@ def change_owner_email(request: ChangeOwnerEmailRequest, token: Annotated[str, H
 def get_owner_profile(token: Annotated[str, Header()]) -> Response[OwnerReadModel]:
     authorization = authorization_service(token)
     query = GetOwnerProfileQuery(authorization, owner_query_repository)
-    return query.execute()
+    return query.run()

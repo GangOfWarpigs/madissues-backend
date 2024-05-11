@@ -96,4 +96,4 @@ def student_delete(student_id: str, token: Annotated[str, Header()]) -> Response
 def get_owner_profile(token: Annotated[str, Header()]) -> Response[StudentReadModel]:
     authorization = authorization_service(token)
     query = GetStudentInformationQuery(authorization, student_query_repository)
-    return query.execute()
+    return query.run()

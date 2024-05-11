@@ -10,14 +10,10 @@ from madissues_backend.core.shared.domain.response import Response
 
 
 class GetOrganizationTeachersQuery(Query[str, list[OrganizationTeacherReadModel]]):
-    def __init__(self, authentication_service: AuthenticationService, query_repository: OrganizationQueryRepository):
-        self.authentication_service = authentication_service
+    def __init__(self, query_repository: OrganizationQueryRepository):
         self.query_repository = query_repository
 
     def execute(self, params: str | None = None) -> Response[list[OrganizationTeacherReadModel]]:
-        if not self.authentication_service.is_owner():
-            return Response.fail(code=403, message="User must be a owner")
-
         if params is None:
             return Response.fail(message="You need to pass an id")
         return Response.ok(self.query_repository.get_all_teachers_from_organization(params))

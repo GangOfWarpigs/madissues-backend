@@ -3,7 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Header
 
 from madissues_backend.apps.rest_api.dependencies import authorization_service, organization_repository, \
-    storage_service, organization_query_repository, event_bus
+    storage_service, organization_query_repository, event_bus, issue_query_repository
+from madissues_backend.core.issues.application.queries.find_all_issues_for_organization_query import FindAllIssuesQuery, \
+    FindAllIssuesQueryParams
+from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
 from madissues_backend.core.organizations.application.commands.course.create_organization_course_command import \
     CreateOrganizationCourseRequest, CreateOrganizationCourseResponse, CreateOrganizationCourseCommand
 from madissues_backend.core.organizations.application.commands.degree.create_organization_degree_command import \
@@ -70,31 +73,36 @@ def create_organization_degree(request: CreateOrganizationDegreeRequest,
 def list_organization(token: Annotated[str, Header()]) -> Response[list[OrganizationReadModel]]:
     authorization = authorization_service(token)
     query = GetOrganizationsOfOwnerQuery(authorization, organization_query_repository)
-    return query.execute()
+    return query.run()
 
 
 @router.get("/organizations/{id}", tags=["organizations"])
 def single_organization(id: str) -> Response[OrganizationReadModel]:
     query = GetSingleOrganizationQuery(organization_query_repository)
-    return query.execute(Params(id=id))
+    return query.run(Params(id=id))
 
 
 @router.get("/organizations/{id}/teachers", tags=["organizations"])
-def get_organization_teachers(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationTeacherReadModel]]:
-    authorization = authorization_service(token)
-    query = GetOrganizationTeachersQuery(authorization, organization_query_repository)
-    return query.execute(id)
+def get_organization_teachers(id: str) -> Response[list[OrganizationTeacherReadModel]]:
+    query = GetOrganizationTeachersQuery(organization_query_repository)
+    return query.run(id)
 
 
 @router.get("/organizations/{id}/courses", tags=["organizations"])
-def get_organization_courses(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationCourseReadModel]]:
-    authorization = authorization_service(token)
-    query = GetOrganizationCoursesQuery(authorization, organization_query_repository)
-    return query.execute(id)
+def get_organization_courses(id: str) -> Response[list[OrganizationCourseReadModel]]:
+    query = GetOrganizationCoursesQuery(organization_query_repository)
+    return query.run(id)
 
 
 @router.get("/organizations/{id}/degrees", tags=["organizations"])
-def get_organization_degrees(token: Annotated[str, Header()], id: str) -> Response[list[OrganizationDegreeReadModel]]:
+def get_organization_degrees(id: str) -> Response[list[OrganizationDegreeReadModel]]:
+    query = GetOrganizationDegreesQuery(organization_query_repository)
+    return query.run(id)
+
+@router.get("/organization/{id}/issues/", tags=["organizations"])
+def create_issues(token: Annotated[str, Header()], id: str) -> Response[list[IssueReadModel]]:
     authorization = authorization_service(token)
-    query = GetOrganizationDegreesQuery(authorization, organization_query_repository)
-    return query.execute(id)
+    command = FindAllIssuesQuery(authorization, issue_query_repository)
+    return command.run(FindAllIssuesQueryParams(
+        organization_id=id
+    ))
