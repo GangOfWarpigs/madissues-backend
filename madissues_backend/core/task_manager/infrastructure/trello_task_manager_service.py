@@ -1,4 +1,7 @@
 import os
+from datetime import datetime
+from typing import Any
+
 import requests
 from requests import Response
 
@@ -45,6 +48,11 @@ class TrelloTaskManagerService(TaskManagerService):
         print("Response: ", response.json())
         return str(response.json()["id"])
 
+    def get_organization(self, organization_id_or_name: str) -> Any:
+        query: dict = {}
+        response = self._make_request("GET", f"organizations/{organization_id_or_name}", query)
+        return response.json()
+
     def delete_organization(self, organization_id: str):
         response = self._make_request("DELETE", f"organizations/{organization_id}", {})
         return response.json()
@@ -68,7 +76,16 @@ class TrelloTaskManagerService(TaskManagerService):
     def get_boards_in_organization(self, organization_id_or_name: str) -> list[str]:
         query: dict = {}
         response = self._make_request("GET", f"organizations/{organization_id_or_name}/boards", query)
-        return response.json()
+        return [str(board["id"]) for board in response.json()]
+
+    def get_board_by_name_in_organization(self, organization_id_or_name: str, board_name: str) -> str | None:
+        query: dict = {}
+        response = self._make_request("GET", f"organizations/{organization_id_or_name}/boards", query)
+        for board in response.json():
+            # Compare both in lowercase
+            if board["name"].lower() == board_name.lower():
+                return str(board["id"])
+        return None
 
     def create_empty_list(self, board_id: str, name: str) -> str:
         query = {
@@ -78,6 +95,25 @@ class TrelloTaskManagerService(TaskManagerService):
         response = self._make_request("POST", "lists", query)
         return str(response.json()["id"])
 
+    def get_board_lists(self, board_id: str) -> list[str]:
+        query: dict = {}
+        response = self._make_request("GET", f"boards/{board_id}/lists", query)
+        return [str(list["id"]) for list in response.json()]
+
+    def get_board_list_by_name(self, board_id: str, list_name: str) -> str | None:
+        query: dict = {}
+        response = self._make_request("GET", f"boards/{board_id}/lists", query)
+        for trello_list in response.json():
+            # Compare both in lowercase
+            if trello_list["name"].lower() == list_name.lower():
+                return str(trello_list["id"])
+        return None
+
+    def get_list_cards(self, list_id: str) -> list[str]:
+        query: dict = {}
+        response = self._make_request("GET", f"lists/{list_id}/cards", query)
+        return [str(card["id"]) for card in response.json()]
+
     def invite_user(self, organization_id: str, email: str):
         query = {
             "email": email,
@@ -85,6 +121,29 @@ class TrelloTaskManagerService(TaskManagerService):
         }
         response = self._make_request("PUT", f"organizations/{organization_id}/members", query)
         return response.json()
+
+    def create_card(self, list_id: str, name: str, description: str) -> str:
+        query = {
+            "idList": list_id,
+            "name": name,
+            "start": datetime.now().isoformat(),
+            "desc": description,
+        }
+        response = self._make_request("POST", "cards", query)
+        return str(response.json()["id"])
+
+    def get_card(self, card_id: str) -> str:
+        query: dict = {}
+        response = self._make_request("GET", f"cards/{card_id}", query)
+        return response.json()
+
+    def update_card(self, card_id: str, name: str, description: str) -> str:
+        query = {
+            "name": name,
+            "desc": description
+        }
+        response = self._make_request("PUT", f"cards/{card_id}", query)
+        return str(response.json()["id"])
 
 
 class TrelloTaskManagerFactory(TaskManagerFactory):
@@ -94,16 +153,40 @@ class TrelloTaskManagerFactory(TaskManagerFactory):
 
 if __name__ == "__main__":
     pass
-    # load_dotenv()
-    # config = TaskManagerConfig(
-    #     service="trello",
-    #     api_key=str(os.getenv("TRELLO_API_KEY")),
-    #     token=str(os.getenv("TRELLO_TOKEN"))
-    # )
-    # service = TrelloTaskManagerFactory().of(config)
-    # print("Requesting Trello API to check if the key is valid...")
-    # result = service.is_api_key_valid()
-    # print("Is API Key Valid: ", result)
+    load_dotenv()
+    config = TaskManagerConfig(
+        service="trello",
+        api_key=str(os.getenv("TRELLO_API_KEY")),
+        api_token=str(os.getenv("TRELLO_TOKEN"))
+    )
+    service = TrelloTaskManagerFactory().of(config)
+    print("Requesting Trello API to check if the key is valid...")
+    result = service.is_api_key_valid()
+    print("Is API Key Valid: ", result)
+
+    organization_id = service.get_organization("deii6")["id"]
+    print("Organization: ", organization_id)
+
+    boards = service.get_boards_in_organization(organization_id)
+    print("Boards: ", boards)
+
+    board_id = service.get_board_by_name_in_organization(organization_id, "Faqs")
+    print("Board: ", board_id)
+
+    list_id = service.get_board_list_by_name(board_id, "Queued")
+    print("List: ", list_id)
+
+    cards = service.get_list_cards(list_id)
+    print("Cards: ", cards)
+
+    card_creation = service.create_card(list_id, "Test Card", "This is a test card")
+    print("Create Card: ", card_creation)
+
+    cards = service.get_list_cards(list_id)
+    print("Updated Cards: ", cards)
+
+
+    # ------------------------------------
     #
     # organization_id = service.create_organization("DEII")
     # print("Create Organization: ", organization_id)
@@ -135,4 +218,3 @@ if __name__ == "__main__":
 
     # result = service.delete_organization("663e92bdadda338704418d23")
     # print("Delete Organization: ", result)
-
