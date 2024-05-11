@@ -69,6 +69,19 @@ class LocalStorageService(StorageService):
 
         os.remove(full_path)
 
+    def clear_folder(self, folder: str):
+        """Deletes all images in a folder"""
+        if folder == "":
+            raise ValueError("Folder cannot be empty")
+
+        full_path = f"{self.media_path}/{folder}"
+
+        if not os.path.exists(full_path):
+            raise FileNotFoundError(f"Folder {folder} not found")
+
+        for file in os.listdir(full_path):
+            os.remove(f"{full_path}/{file}")
+
 
 if __name__ == '__main__':
     service = LocalStorageService("../../../../media")

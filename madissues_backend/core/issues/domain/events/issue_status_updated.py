@@ -9,4 +9,4 @@ class IssueStatusUpdatedPayload(BaseModel):
 
 
 class IssueStatusUpdated(DomainEvent[IssueStatusUpdatedPayload]):
-    name: str = "@owner/issue_created"
+    name: str = "@owner/issue_status_updated"

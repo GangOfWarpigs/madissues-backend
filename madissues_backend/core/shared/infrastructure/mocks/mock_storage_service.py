@@ -12,3 +12,6 @@ class MockStorageService(StorageService):
 
     def delete_image(self, folder: str, image_name: str):
         return "delete_image_was_called"
+
+    def clear_folder(self, folder: str):
+        return "clear_folder_was_called"
