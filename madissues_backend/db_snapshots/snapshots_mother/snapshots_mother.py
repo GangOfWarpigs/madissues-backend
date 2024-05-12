@@ -69,6 +69,11 @@ class SnapshotsMother:
         student.password = "ValidPassword123!"
         student.generate_auth_token(UUIDTokenGenerator())
         self.student_repository.add(student)
+
+        organization = OrganizationMother.generate_organization()
+        organization.id = student.organization_id
+        self.organization_repository.add(organization)
+
         self.db.save_snapshot("with_student_created")
 
     def load_with_student_created(self):
@@ -79,9 +84,9 @@ class SnapshotsMother:
 if __name__ == '__main__':
     db = EntityTable()
     snapshots = SnapshotsMother()
-    snapshots.create_organization()
-    snapshots.load_with_organization_created()
-    # snapshots.create_with_student_created()
-    # snapshots.load_with_student_created()
+    # snapshots.create_organization()
+    # snapshots.load_with_organization_created()
+    snapshots.create_with_student_created()
+    snapshots.load_with_student_created()
 
     print("Snapshots created")

@@ -46,8 +46,10 @@ class TestFindAllIssuesQuery(unittest.TestCase):
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
             student="1d372590-a034-4e05-b1e8-02a9e91068f3",
-            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
+            organization_id="c7879caa-a769-42f0-acf6-d340f3e833d6"
         ))
+
+        assert create_response_1.is_success() is True, "First issue must be created successfully"
 
         create_response_2 = create_command.run(CreateIssueRequest(
             title="Test Issue 2",
@@ -59,12 +61,14 @@ class TestFindAllIssuesQuery(unittest.TestCase):
             course="c0517ecb-24e5-4d5e-841c-48b7001e5f94",
             teachers=["d93ab3a5-7cb0-4a23-9327-ae15c2481675"],
             student="1d372590-a034-4e05-b1e8-02a9e91068f3",
-            organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"
+            organization_id="c7879caa-a769-42f0-acf6-d340f3e833d6"
         ))
+
+        assert create_response_2.is_success() is True, "Second issue must be created successfully"
 
         # Find issues by organization
         query = FindAllIssuesQuery(self.authentication_service, self.issue_query_repository)
-        params = FindAllIssuesQueryParams(organization_id="fa68b53a-8db6-4f5b-9d15-e93cbc163bfa")
+        params = FindAllIssuesQueryParams(organization_id="c7879caa-a769-42f0-acf6-d340f3e833d6")
         query_response = query.execute(params)
 
         assert query_response.is_success() is True, "Query must be successful"
