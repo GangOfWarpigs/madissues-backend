@@ -14,6 +14,7 @@ class UpdateOrganizationCourseRequest(BaseModel):
     organization_id: str
     name: str
     code: str
+    year: int
     icon: str
     primary_color: str
     secondary_color: str
@@ -24,6 +25,7 @@ class UpdateOrganizationCourseResponse(BaseModel):
     organization_id: str
     name: str
     code: str
+    year: int
     icon: str
     primary_color: str
     secondary_color: str
@@ -63,6 +65,7 @@ class UpdateOrganizationCourseCommand(Command[UpdateOrganizationCourseRequest, U
             id=course.id,
             name=request.name,
             code=request.code,
+            year=request.year,
             icon=request.icon,
             primary_color=request.primary_color,
             secondary_color=request.secondary_color
@@ -82,6 +85,7 @@ class UpdateOrganizationCourseCommand(Command[UpdateOrganizationCourseRequest, U
             organization_id=str(organization.id),
             name=updated_course.name,
             code=updated_course.code,
+            year=updated_course.year,
             icon=updated_course.icon,
             primary_color=updated_course.primary_color,
             secondary_color=updated_course.secondary_color

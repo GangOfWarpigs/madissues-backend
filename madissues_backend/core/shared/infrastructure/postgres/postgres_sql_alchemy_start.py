@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_repository import PostgresIssueRepository
+from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgress_issue_repository import PostgresIssueRepository
 
 # Cargar las variables de entorno
 load_dotenv()

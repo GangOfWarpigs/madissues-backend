@@ -33,6 +33,7 @@ class OrganizationMother:
             name=OrganizationMother.generate_course_name(),
             code=OrganizationMother.generate_course_code(),
             icon=OrganizationMother.generate_image_link(),
+            year=random.randint(1, 4),
             primary_color=OrganizationMother.generate_hex_color(),
             secondary_color=OrganizationMother.generate_hex_color()
         )

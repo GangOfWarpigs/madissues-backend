@@ -79,6 +79,7 @@ class TestEndToEnd(unittest.TestCase):
             "organization_id": organization_id,
             "name": "string",
             "code": "string",
+            "year": 4,
             "icon": "string",
             "primary_color": "#f5f5f5",
             "secondary_color": "#f5f5f5"
@@ -171,6 +172,7 @@ class TestEndToEnd(unittest.TestCase):
             "organization_id": organization_id,
             "name": "string",
             "code": "string",
+            "year": 2,
             "icon": "string",
             "primary_color": "#f5f5f5",
             "secondary_color": "#f5f5f5"

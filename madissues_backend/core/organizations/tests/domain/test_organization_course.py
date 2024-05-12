@@ -9,6 +9,7 @@ class TestOrganizationCourse(unittest.TestCase):
             'id': GenericUUID.next_id(),
             'name': 'Test Course',
             'code': 'TEST1234',
+            'year': 1,
             'icon': 'ion-home',
             'primary_color': '#e400ff',
             'secondary_color': '#0049ff',
@@ -46,6 +47,12 @@ class TestOrganizationCourse(unittest.TestCase):
     def test_invalid_secondary_color_format(self):
         invalid_course_data = self.valid_course_data.copy()
         invalid_course_data['secondary_color'] = '#invalid'
+        with self.assertRaises(ValidationError):
+            OrganizationCourse(**invalid_course_data)
+
+    def test_invalid_year(self):
+        invalid_course_data = self.valid_course_data.copy()
+        invalid_course_data['year'] = 0
         with self.assertRaises(ValidationError):
             OrganizationCourse(**invalid_course_data)
 

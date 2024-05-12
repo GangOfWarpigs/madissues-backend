@@ -13,24 +13,6 @@ class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[U
         super().__init__(entity_table)
         self._issues: Dict[UUID, IssueComment] = self.entity_table.tables["issue_comments"]
 
-    def get_all(self) -> list[IssueComment]:
-        return list(self._issues.values())
-
-    def get_all_by_author(self, author_id: GenericUUID) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.author == author_id]
-
-    def get_all_by_issue(self, issue_id: GenericUUID) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.issue_id == issue_id]
-
-    def get_all_by_response_to(self, response_to_id: GenericUUID) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.response_to == response_to_id]
-
-    def get_all_by_date_greater_than(self, date: datetime) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.date_time > date]
-
-    def get_all_by_date_less_than(self, date: datetime) -> list[IssueComment]:
-        return [issue for issue in self._issues.values() if issue.date_time < date]
-
     def add(self, issue: IssueComment):
         # Check if the issue already exists
         if issue.id in self._issues:

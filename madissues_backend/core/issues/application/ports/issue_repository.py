@@ -6,4 +6,18 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class IssueRepository(GenericRepository[GenericUUID, Issue], ABC):
-    pass
+    @abstractmethod
+    def add(self, organization: Issue):
+        pass
+
+    @abstractmethod
+    def remove(self, organization_id: GenericUUID):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, organization_id: GenericUUID) -> Issue:
+        pass
+
+    @abstractmethod
+    def save(self, entity: Issue):
+        pass

@@ -13,6 +13,7 @@ class CreateOrganizationCourseRequest(BaseModel):
     organization_id: str
     name: str
     code: str
+    year: int
     icon: str
     primary_color: str
     secondary_color: str
@@ -23,6 +24,7 @@ class CreateOrganizationCourseResponse(BaseModel):
     organization_id: str
     name: str
     code: str
+    year: int
     icon: str
     primary_color: str
     secondary_color: str
@@ -51,6 +53,7 @@ class CreateOrganizationCourseCommand(Command[CreateOrganizationCourseRequest, C
             id=GenericUUID.next_id(),
             name=request.name,
             code=request.code,
+            year=request.year,
             icon=request.icon,
             primary_color=request.primary_color,
             secondary_color=request.secondary_color
@@ -71,6 +74,7 @@ class CreateOrganizationCourseCommand(Command[CreateOrganizationCourseRequest, C
             organization_id=str(organization.id),
             name=course.name,
             code=course.code,
+            year=course.year,
             icon=course.icon,
             primary_color=course.primary_color,
             secondary_color=course.secondary_color

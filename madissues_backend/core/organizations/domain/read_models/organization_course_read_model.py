@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 from madissues_backend.core.organizations.domain.organization_course import OrganizationCourse
 
+
 class OrganizationCourseReadModel(BaseModel):
     id: str
     name: str
+    year: int
     code: str
     icon: str
     primary_color: str
@@ -14,6 +16,7 @@ class OrganizationCourseReadModel(BaseModel):
         return OrganizationCourseReadModel(
             id=str(course.id),
             name=course.name,
+            year=course.year,
             code=course.code,
             icon=course.icon,
             primary_color=course.primary_color,

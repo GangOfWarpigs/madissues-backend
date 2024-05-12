@@ -1,10 +1,9 @@
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_query_repository import \
     MockIssueCommentQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_repository import MockIssueCommentRepository
-from madissues_backend.core.issues.infrastructure.mocks.mock_issue_query_repository import MockIssueQueryRepository
-from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_query_repository import \
+from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgress_issue_query_repository import \
     PostgresIssueQueryRepository
-from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_repository import PostgresIssueRepository
+from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgress_issue_repository import PostgresIssueRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_query_repository import \
     MockOrganizationQueryRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \

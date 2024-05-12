@@ -57,6 +57,7 @@ class TestEndToEnd(unittest.TestCase):
             "organization_id": organization_id,
             "name": "string",
             "code": "string",
+            "year": 3,
             "icon": "string",
             "primary_color": "#f5f5f5",
             "secondary_color": "#f5f5f5"

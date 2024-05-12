@@ -32,6 +32,7 @@ class TestCreateOrganizationCourseCommand(unittest.TestCase):
             organization_id=str(self.organization.id),
             name="Mathematics",
             code="MATHS101",
+            year=1,
             icon="math_icon.png",
             primary_color="#ffffff",
             secondary_color="#000000"
@@ -70,6 +71,7 @@ class TestCreateOrganizationCourseCommand(unittest.TestCase):
             organization_id="invalid_id",
             name="Mathematics",
             code="MATH101",
+            year=1,
             icon="math_icon.png",
             primary_color="#ffffff",
             secondary_color="#000000"
@@ -96,6 +98,7 @@ class TestCreateOrganizationCourseCommand(unittest.TestCase):
             organization_id=str(self.organization.id),
             name="Mathematics",
             code="MATH101",
+            year=1,
             icon="math_icon.png",
             primary_color="#ffffff",
             secondary_color="#000000"

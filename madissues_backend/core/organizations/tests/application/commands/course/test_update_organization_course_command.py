@@ -36,12 +36,14 @@ class TestUpdateOrganizationCourseCommand(unittest.TestCase):
         updated_icon = "updated-icon.png"
         updated_primary_color = "#FFFFFF"
         updated_secondary_color = "#000000"
+        updated_year = 4
 
         course_request = UpdateOrganizationCourseRequest(
             course_id=str(course.id),
             organization_id=str(self.organization.id),
             name=updated_name,
             code=updated_code,
+            year=updated_year,
             icon=updated_icon,
             primary_color=updated_primary_color,
             secondary_color=updated_secondary_color
@@ -76,12 +78,14 @@ class TestUpdateOrganizationCourseCommand(unittest.TestCase):
         updated_icon = "updated-icon.png"
         updated_primary_color = "#FFFFFF"
         updated_secondary_color = "#000000"
+        updated_year = 3
 
         course_request = UpdateOrganizationCourseRequest(
             course_id=str(course.id),
             organization_id="invalid_id",
             name=updated_name,
             code=updated_code,
+            year=updated_year,
             icon=updated_icon,
             primary_color=updated_primary_color,
             secondary_color=updated_secondary_color
@@ -116,6 +120,7 @@ class TestUpdateOrganizationCourseCommand(unittest.TestCase):
         updated_icon = "updated-icon.png"
         updated_primary_color = "#FFFFFF"
         updated_secondary_color = "#000000"
+        updated_year = 2
 
         course_request = UpdateOrganizationCourseRequest(
             course_id=str(course.id),
@@ -123,6 +128,7 @@ class TestUpdateOrganizationCourseCommand(unittest.TestCase):
             name=updated_name,
             code=updated_code,
             icon=updated_icon,
+            year=updated_year,
             primary_color=updated_primary_color,
             secondary_color=updated_secondary_color
         )
