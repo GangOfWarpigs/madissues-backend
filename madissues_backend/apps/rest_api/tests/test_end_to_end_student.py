@@ -89,6 +89,8 @@ class TestEndToEnd(unittest.TestCase):
             "token": owner_token
         })
 
+        teacher_id = response.json()["success"]["id"]
+
         assert response.json()["success"] is not None, "is succeded"
 
         degree = {
@@ -180,3 +182,39 @@ class TestEndToEnd(unittest.TestCase):
         student_token = query.json()["success"]["token"]
 
         assert student_token is not None, "Student token is not none"
+
+        issue = {
+            "title": "string",
+            "description": "string",
+            "details": "string",
+            "proofs": [
+            ],
+            "course": course_id,
+            "teachers": [
+                teacher_id
+            ],
+            "organization_id": organization_id
+        }
+
+        query = client.post("/issues", json=issue, headers={
+            "token": student_token
+        })
+
+        assert query.json()["error"] is None, "Not error here my boyz"
+
+        print(query.json()["success"]["id"])
+
+        query = client.get("organizations/" + organization_id + "/issues", headers={
+                           "token": owner_token
+        })
+
+
+        assert query.json()["error"] is None, "Not error here my boyz"
+        assert len(query.json()["success"]) == 1, "Just the two of us"
+        #check that student field is there and with name and year of student created
+        assert query.json()["success"][0]["student"]["name"] == "Test Test", "Just the two of us"
+        assert query.json()["success"][0]["student"]["year"] == "1999", "Stand by me"
+        #check that the teacher is the name of the teacher
+        assert query.json()["success"][0]["teachers"][0] == "string string", "Hound dog"
+
+

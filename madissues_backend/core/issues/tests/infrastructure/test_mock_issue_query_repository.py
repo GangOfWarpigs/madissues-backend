@@ -30,10 +30,6 @@ class TestMockIssueQueryRepository(unittest.TestCase):
         for issue in self.added_issues:
             self.repo.db.tables["issues"][issue.id] = issue
 
-    def test_get_all_by_organization(self):
-        organization_id = str(self.added_issues[0].organization_id)
-        result = self.repo.get_all_by_organization(organization_id)
-        self.assertEqual(len(result), len(self.added_issues))
 
     def test_get_by_id(self):
         issue_id = str(self.added_issues[0].id)
