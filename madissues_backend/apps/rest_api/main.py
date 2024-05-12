@@ -11,6 +11,7 @@ from madissues_backend.apps.rest_api.v1.organizations import router as organizat
 from madissues_backend.apps.rest_api.v1.students import router as students_router
 from madissues_backend.apps.rest_api.v1.task_manager import router as task_manager_router
 from madissues_backend.apps.rest_api.v1.issues import router as issues_manager_router
+from madissues_backend.apps.rest_api.v1.issue_comments import router as issues_comments_manager_router
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
@@ -97,3 +98,4 @@ app.include_router(organizations_router)
 app.include_router(students_router)
 app.include_router(task_manager_router)
 app.include_router(issues_manager_router)
+app.include_router(issues_comments_manager_router)
