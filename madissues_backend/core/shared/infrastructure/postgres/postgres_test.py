@@ -6,6 +6,12 @@ from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgres
     PostgresIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgres_issue_repository import \
     PostgresIssueRepository
+from madissues_backend.core.organizations.domain.organization_mother import OrganizationMother
+from madissues_backend.core.organizations.infrastructure.ports.postgres_organization_repository import \
+    PostgresOrganizationRepository
+from madissues_backend.core.owners.domain.owner_mother import OwnerMother
+from madissues_backend.core.owners.infrastructure.postgres.ports.postgres_owner_repository import \
+    PostgresOwnerRepository
 from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
 
@@ -44,6 +50,8 @@ if __name__ == "__main__":
     issue_repository = PostgresIssueRepository(session)
     issue_query_repository = PostgresIssueQueryRepository(session)
     student_repository = PostgresStudentRepository(session)
+    organization_repository = PostgresOrganizationRepository(session)
+    owner_repository = PostgresOwnerRepository(session)
 
     # # Crear un student
     student = StudentMother.random_student()
@@ -52,10 +60,42 @@ if __name__ == "__main__":
     student_repository.add(student)
 
     # Obtener el estudiante
-    student = student_repository.get_by_id(GenericUUID("7eb20012-1f74-4907-b322-81f45b8c2d62"))
+    student = student_repository.get_by_id(student.id)
+    print("------------------------------------------------------------")
     if student:
         print(student)
     else:
         print("Student not found")
+    print("------------------------------------------------------------")
 
-    session.close()  # No olvides cerrar la sesión
+    owner = OwnerMother.generate_owner()
+    print(owner)
+
+    # Agregar el owner a la base de datos
+    owner_repository.add(owner)
+
+    # Obtener el owner
+    owner = owner_repository.get_by_id(owner.id)
+    print("------------------------------------------------------------")
+    if owner:
+        print(owner)
+    else:
+        print("Owner not found")
+    print("------------------------------------------------------------")
+
+    # # Crear una instancia de Issue para probar el repositorio
+    # organization = OrganizationMother.generate_organization()
+    # print(organization)
+    #
+    # # Agregar la organization a la base de datos
+    # organization_repository.add(organization)
+    #
+    # # Obtener todas las organizations y mostrarlas
+    # organization = organization_repository.get_by_id(organization.id)
+    #
+    # if organization:
+    #     print(organization)
+    # else:
+    #     print("Organization not found")
+    #
+    # session.close()  # No olvides cerrar la sesión
