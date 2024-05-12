@@ -56,7 +56,7 @@ def toggle_like_issue_comment(request: ToggleLikeCommentRequest,
     return command.run(request)
 
 
-@router.get("issues/{id}/issue_comments/", tags=["issue_comments"])
+@router.get("/issues/{id}/issue_comments/", tags=["issue_comments"])
 def get_all_issue_comments_for_issue(id: str, token: Annotated[str, Header()]) -> Response[list[IssueCommentReadModel]]:
     authorization = authorization_service(token)
     query = FindAllCommentsOfIssueQuery(authentication_service=authorization, 
