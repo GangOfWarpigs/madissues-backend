@@ -12,7 +12,6 @@ from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 class AddCommentToIssueRequest(BaseModel):
     issue_id: str  # GenericUUID of the issue
-    author_id: str  # GenericUUID of the author (must be a valid student or teacher)
     content: str  # Content of the comment
     response_to_id: str | None = None  # Optional GenericUUID of the comment being responded to
 
@@ -38,7 +37,7 @@ class AddCommentToIssueCommand(Command[AddCommentToIssueRequest, AddCommentToIss
         new_comment = IssueComment(
             id=GenericUUID.next_id(),
             issue_id=GenericUUID(request.issue_id),
-            author=GenericUUID(request.author_id),
+            author=GenericUUID(self.authentication_service.get_user_id()),
             content=request.content,
             date_time=datetime.now(),
             response_to=GenericUUID(request.response_to_id) if request.response_to_id else None,
@@ -54,7 +53,7 @@ class AddCommentToIssueCommand(Command[AddCommentToIssueRequest, AddCommentToIss
         return Response.ok(AddCommentToIssueResponse(
             id=str(new_comment.id),
             issue_id=request.issue_id,
-            author_id=request.author_id,
+            author_id=str(new_comment.author),
             content=request.content,
             date_time=new_comment.date_time.strftime('%Y-%m-%d %H:%M:%S'),
             response_to_id=request.response_to_id
