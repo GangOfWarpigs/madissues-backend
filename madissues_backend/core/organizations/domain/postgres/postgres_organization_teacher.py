@@ -1,7 +1,17 @@
-from sqlalchemy import Column, String, UUID, ARRAY, ForeignKey
+from sqlalchemy import Column, String, UUID, ARRAY, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
 from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
+
+
+# Tabla de asociación para profesores y cursos
+teacher_course_association = Table(
+    'teacher_course_association',
+    Base.metadata,
+    Column('teacher_id', ForeignKey('backend.organization_teachers.id'), primary_key=True),
+    Column('course_id',  ForeignKey('backend.organization_courses.id'), primary_key=True),
+    schema='backend'
+)
 
 
 class PostgresOrganizationTeacher(Base):
@@ -17,5 +27,7 @@ class PostgresOrganizationTeacher(Base):
 
     # Relación inversa
     organization = relationship("PostgresOrganization", back_populates="teachers")
-    courses = Column(ARRAY(UUID(as_uuid=True)))
+    courses = relationship("PostgresOrganizationCourse",
+                           secondary=teacher_course_association,
+                           back_populates="teachers")
 

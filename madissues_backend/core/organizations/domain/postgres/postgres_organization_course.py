@@ -1,7 +1,10 @@
 from sqlalchemy import Column, String, UUID, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
+from madissues_backend.core.organizations.domain.postgres.postgres_organization_teacher import \
+    teacher_course_association
 from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
+from madissues_backend.core.students.domain.postgres.student_profile_model import student_course_association
 
 
 class PostgresOrganizationCourse(Base):
@@ -19,3 +22,12 @@ class PostgresOrganizationCourse(Base):
 
     # Relación inversa
     organization = relationship("PostgresOrganization", back_populates="courses")
+
+    students = relationship("PostgresStudentProfile",
+                            secondary=student_course_association,
+                            back_populates="joined_courses")
+    teachers = relationship("PostgresOrganizationTeacher",
+                            secondary=teacher_course_association,
+                            back_populates="courses")
+
+

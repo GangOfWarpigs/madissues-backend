@@ -4,7 +4,6 @@ from sqlalchemy.orm import sessionmaker
 from madissues_backend.core.issues.domain.postgres.issue_comment_model import PostgresIssueCommentModel
 from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
 from madissues_backend.core.organizations.domain.postgres.postgres_organization import PostgresOrganization
-from madissues_backend.core.organizations.domain.postgres.postgres_organization_course import PostgresOrganizationCourse
 from madissues_backend.core.organizations.domain.postgres.postgres_organization_degree import PostgresOrganizationDegree
 from madissues_backend.core.organizations.domain.postgres.postgres_organization_teacher import \
     PostgresOrganizationTeacher
@@ -14,6 +13,7 @@ from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies
 from madissues_backend.core.students.domain.postgres.student_model import PostgresStudent
 from madissues_backend.core.students.domain.postgres.student_preferences_model import PostgresStudentPreferences
 from madissues_backend.core.students.domain.postgres.student_profile_model import PostgresStudentProfile
+from madissues_backend.core.organizations.domain.postgres.postgres_organization_course import PostgresOrganizationCourse
 from madissues_backend.core.task_manager.domain.postgres.postgres_board import PostgresBoard
 from madissues_backend.core.task_manager.domain.postgres.postgres_member import PostgresMember
 from madissues_backend.core.task_manager.domain.postgres.postgres_task_manager import PostgresTaskManager
