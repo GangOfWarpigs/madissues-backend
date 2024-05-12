@@ -20,7 +20,7 @@ from madissues_backend.core.shared.domain.response import Response
 router = APIRouter()
 
 
-@router.post("/issue_comments/", tags=["issue_comments"])
+@router.post("/issues/{id}/comments/", tags=["issues"])
 def add_issue_comment(request: AddCommentToIssueRequest,
                       token: Annotated[str, Header()]) -> Response[AddCommentToIssueResponse]:
     authorization = authorization_service(token)
@@ -29,7 +29,7 @@ def add_issue_comment(request: AddCommentToIssueRequest,
     return command.run(request)
 
 
-@router.delete("/issue_comments/", tags=["issue_comments"])
+@router.delete("/issues/{id}/comments/", tags=["issues"])
 def delete_issue_comment(request: DeleteCommentRequest,
                          token: Annotated[str, Header()]) -> Response[DeleteCommentResponse]:
     authorization = authorization_service(token)
@@ -38,7 +38,7 @@ def delete_issue_comment(request: DeleteCommentRequest,
     return command.run(request)
 
 
-@router.put("/issue_comments/", tags=["issue_comments"])
+@router.put("/issues/{id}/comments/", tags=["issues"])
 def change_issue_comment(request: ChangeCommentRequest,
                          token: Annotated[str, Header()]) -> Response[ChangeCommentResponse]:
     authorization = authorization_service(token)
@@ -47,7 +47,7 @@ def change_issue_comment(request: ChangeCommentRequest,
     return command.run(request)
 
 
-@router.put("/issue_comments/toggle_like", tags=["issue_comments"])
+@router.put("/issues/{id}/toggle_like", tags=["issues"])
 def toggle_like_issue_comment(request: ToggleLikeCommentRequest,
                               token: Annotated[str, Header()]) -> Response[ToggleLikeCommentResponse]:
     authorization = authorization_service(token)
