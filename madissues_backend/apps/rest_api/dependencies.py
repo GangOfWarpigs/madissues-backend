@@ -1,6 +1,7 @@
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_query_repository import \
     MockIssueCommentQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_repository import MockIssueCommentRepository
+from madissues_backend.core.issues.infrastructure.mocks.mock_issue_repository import MockIssueRepository
 from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgress_issue_query_repository import \
     PostgresIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgress_issue_repository import PostgresIssueRepository
@@ -45,7 +46,7 @@ owner_repository = MockOwnerRepository(database)
 organization_repository = MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
 task_manager_repository = MockTaskManagerRepository(database)
-issue_repository = PostgresIssueRepository(get_session())
+issue_repository = MockIssueRepository(database)
 issue_comment_repository = MockIssueCommentRepository(database)
 issue_comment_query_repository = MockIssueCommentQueryRepository(database)
 
@@ -53,7 +54,7 @@ issue_comment_query_repository = MockIssueCommentQueryRepository(database)
 organization_query_repository = MockOrganizationQueryRepository(database)
 owner_query_repository = MockOwnerQueryRepository(database)
 student_query_repository = MockStudentQueryRepository(database)
-issue_query_repository = PostgresIssueQueryRepository(get_session())
+issue_query_repository = MockIssueCommentQueryRepository(database)
 
 # Event handlers
 issue_created_event_handler = IssueCreatedHandler(task_manager_factory, task_manager_repository)
