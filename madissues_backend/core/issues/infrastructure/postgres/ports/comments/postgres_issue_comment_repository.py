@@ -3,7 +3,8 @@ from sqlalchemy.exc import IntegrityError
 
 from madissues_backend.core.issues.application.ports.issue_comment_repository import IssueCommentRepository
 from madissues_backend.core.issues.domain.issue_comment import IssueComment
-from madissues_backend.core.issues.domain.postgres import PostgresIssueCommentModel
+from madissues_backend.core.issues.domain.postgres.issue_comment_model import PostgresIssueCommentModel
+
 from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
 # Import the sqlalchemy model
 

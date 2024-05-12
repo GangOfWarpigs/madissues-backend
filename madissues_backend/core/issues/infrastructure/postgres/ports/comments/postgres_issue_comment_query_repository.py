@@ -3,8 +3,9 @@ from typing import Optional, List, Type
 
 from madissues_backend.core.issues.application.ports.issue_query_repository import IssueQueryRepository
 from madissues_backend.core.issues.domain.issue import Issue
+from madissues_backend.core.issues.domain.postgres.issue_comment_model import PostgresIssueCommentModel
 from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
-from madissues_backend.core.issues.domain.postgres import PostgresIssueCommentModel
+
 
 # Import the sqlalchemy model
 

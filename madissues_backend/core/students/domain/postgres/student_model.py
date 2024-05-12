@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, UUID, Boolean
+from sqlalchemy import Column, String, DateTime, UUID, Boolean, ForeignKey
 
 from sqlalchemy.orm import relationship
 
@@ -10,7 +10,7 @@ class PostgresStudent(Base):
     __table_args__ = {'schema': 'backend'}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
-    organization_id = Column(UUID(as_uuid=True), nullable=False)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey('backend.organizations.id'), nullable=False)
     email = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
@@ -24,3 +24,7 @@ class PostgresStudent(Base):
     preferences = relationship("PostgresStudentPreferences", back_populates="student", uselist=False)
     # Relationship to IssueComments
     comments = relationship("PostgresIssueCommentModel", foreign_keys="PostgresIssueCommentModel.author")
+
+    # Relación con Organization
+    organization = relationship("PostgresOrganization", back_populates="students")
+

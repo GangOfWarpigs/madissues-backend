@@ -5,6 +5,8 @@ from madissues_backend.core.issues.application.ports.issue_query_repository impo
 from madissues_backend.core.issues.domain.issue import Issue
 from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
 from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
+
+
 # Import the sqlalchemy model
 
 
@@ -31,7 +33,7 @@ class PostgresIssueQueryRepository(IssueQueryRepository):
     @staticmethod
     def map_to_entity(model: Type[PostgresIssueModel]) -> IssueReadModel:
         print("CALL TO MAP TO ENTITY ------------------------->")
-        read_model =  IssueReadModel(
+        read_model = IssueReadModel(
             title=str(model.title),
             description=str(model.description),
             details=str(model.details),
@@ -84,10 +86,14 @@ class PostgresIssueQueryRepository(IssueQueryRepository):
                     PostgresIssueModel.organization_id == organization_id).all()]
 
     def get_all_by_title(self, title: str) -> list[IssueReadModel]:
-        pass
+        return [self.map_to_entity(model) for model in self._session.query(PostgresIssueModel).filter(
+            PostgresIssueModel.title == title).all()]
 
     def get_all_by_date_greater_than(self, date: str) -> list[IssueReadModel]:
-        pass
+        return [self.map_to_entity(model) for model in self._session.query(PostgresIssueModel).filter(
+            PostgresIssueModel.date_time > date).all()]
 
     def get_all_by_date_less_than(self, date: str) -> list[IssueReadModel]:
-        pass
+        return [self.map_to_entity(model) for model in self._session.query(PostgresIssueModel).filter(
+            PostgresIssueModel.date_time < date).all()]
+

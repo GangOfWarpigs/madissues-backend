@@ -24,3 +24,6 @@ class PostgresOrganization(Base):
 
     # Relación inversa: una organización tiene un único propietario
     owner = relationship("PostgresOwner", back_populates="organizations")
+
+    # Relaciones con estudiantes
+    students = relationship("PostgresStudent", back_populates="organization")
