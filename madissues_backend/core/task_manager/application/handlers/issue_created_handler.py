@@ -40,7 +40,7 @@ class IssueCreatedHandler(EventHandler[IssueCreatedPayload]):
 
         task_manager_service: TaskManagerService = self.task_manager_factory.of(task_manager.config)
 
-        board_id = task_manager_service.get_board_by_name_in_organization(payload.organization_id, "issues")
+        board_id = task_manager_service.get_board_by_name_in_organization(task_manager.task_manager_project_id, "issues")
         if not board_id:
             print("No board found")
             return
