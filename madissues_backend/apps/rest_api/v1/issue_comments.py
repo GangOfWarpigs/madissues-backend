@@ -2,7 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Header
 
-from madissues_backend.apps.rest_api.dependencies import authorization_service, issue_comment_repository
+from madissues_backend.apps.rest_api.dependencies import authorization_service, issue_comment_repository, \
+    issue_comment_query_repository
 from madissues_backend.core.issues.application.commands.comments.add_comment_to_issue import AddCommentToIssueRequest, \
     AddCommentToIssueResponse, AddCommentToIssueCommand
 from madissues_backend.core.issues.application.commands.comments.change_issue_comment_command import \
@@ -11,6 +12,9 @@ from madissues_backend.core.issues.application.commands.comments.delete_issue_co
     DeleteCommentRequest, DeleteCommentResponse, DeleteCommentCommand
 from madissues_backend.core.issues.application.commands.comments.toggle_like_issue_comment_command import \
     ToggleLikeIssueCommentCommand, ToggleLikeCommentRequest, ToggleLikeCommentResponse
+from madissues_backend.core.issues.application.queries.find_all_comments_of_issue_query import \
+    FindAllCommentsOfIssueQuery
+from madissues_backend.core.issues.domain.read_models.issue_comment_read_model import IssueCommentReadModel
 from madissues_backend.core.shared.domain.response import Response
 
 router = APIRouter()
@@ -52,3 +56,9 @@ def toggle_like_issue_comment(request: ToggleLikeCommentRequest,
     return command.run(request)
 
 
+@router.get("/issue_comments/", tags=["issue_comments"])
+def get_all_issue_comments_for_issue(token: Annotated[str, Header()]) -> Response[list[IssueCommentReadModel]]:
+    authorization = authorization_service(token)
+    query = FindAllCommentsOfIssueQuery(authentication_service=authorization, 
+                                        query_repository=issue_comment_query_repository)
+    return query.run()
