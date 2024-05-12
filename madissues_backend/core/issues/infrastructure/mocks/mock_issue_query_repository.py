@@ -42,15 +42,14 @@ class MockIssueQueryRepository(IssueQueryRepository):
             if issue.student_id in self._students:
                 student = self._students[issue.student_id]
                 student = IssueStudentReadModel(name=student.first_name + " " + student.last_name,
-                                                               year=student.started_studies_date.strftime('%Y'))
+                                                year=student.started_studies_date.strftime('%Y'))
 
-            #look for course that issue is related to
+            # look for course that issue is related to
             course = None
             for course in organization.courses:
                 if course.id == issue.course:
                     course = course.name
                     break
-
 
             read_model = IssueReadModel.of(issue)
             read_model.course = course
@@ -116,4 +115,3 @@ class MockIssueQueryRepository(IssueQueryRepository):
                 issues.append(issue)
 
         return list(IssueReadModel.of(x) for x in issues)
-

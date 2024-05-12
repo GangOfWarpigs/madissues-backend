@@ -106,7 +106,7 @@ def get_organization_degrees(id: str) -> Response[list[OrganizationDegreeReadMod
 
 
 @router.get("/organizations/{id}/issues/", tags=["organizations"])
-def create_issues(token: Annotated[str, Header()], id: str) -> Response[list[IssueReadModel]]:
+def get_issues(token: Annotated[str, Header()], id: str) -> Response[list[IssueReadModel]]:
     authorization = authorization_service(token)
     command = FindAllIssuesQuery(authorization, issue_query_repository)
     return command.run(FindAllIssuesQueryParams(

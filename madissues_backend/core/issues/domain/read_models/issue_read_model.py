@@ -5,10 +5,12 @@ from madissues_backend.core.issues.domain.issue import Issue
 
 
 class IssueStudentReadModel(BaseModel):
-    name : str
+    name: str
     year: str
 
+
 class IssueReadModel(BaseModel):
+    id: str
     title: str
     description: str
     details: str
@@ -18,11 +20,12 @@ class IssueReadModel(BaseModel):
     course: str
     teachers: list[str]
     student_id: str
-    student : IssueStudentReadModel | None
+    student: IssueStudentReadModel | None
 
     @staticmethod
     def of(issue: Issue) -> 'IssueReadModel':
         return IssueReadModel(
+            id=str(issue.id),
             title=issue.title,
             description=issue.description,
             details=issue.details,
