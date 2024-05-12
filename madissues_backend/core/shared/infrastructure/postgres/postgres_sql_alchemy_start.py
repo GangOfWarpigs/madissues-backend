@@ -1,8 +1,14 @@
 import os
+from datetime import datetime
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, Column, String, DateTime, ARRAY, UUID
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+from madissues_backend.core.issues.domain.issue import Issue
+from madissues_backend.core.issues.infrastructure.postgres.models.issue_model import PostgresIssueModel
+from madissues_backend.core.issues.infrastructure.postgres.postgress_issue_repository import PostgresIssueRepository
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 # Cargar las variables de entorno
 load_dotenv()
@@ -23,6 +29,9 @@ engine = create_engine(DATABASE_URL, echo=True)
 # Crear una clase de SessionFactory
 SessionFactory = sessionmaker(bind=engine)
 
+Base = declarative_base()
+
+
 
 # Función para obtener una sesión
 def get_session():
@@ -34,6 +43,54 @@ if __name__ == "__main__":
     session = get_session()
     # Aquí puedes realizar operaciones de base de datos, como session.add() o session.query()
     print("Conexión establecida con éxito.")
-    # Obtener las tablas del esquema "backend"
-    tables = engine.connect().execute("SELECT table_name FROM information_schema.tables WHERE table_schema='backend'")
+
+    # Crear la tabla en la base de datos
+    Base.metadata.create_all(engine)
+
+    # Instanciar el repositorio
+    issue_repository = PostgresIssueRepository(session)
+
+    # Crear una instancia de Issue para probar el repositorio
+    # issue = Issue(
+    #     id=GenericUUID.next_id(),
+    #     title="Test Issue",
+    #     description="This is a test issue",
+    #     details="Some details about the test issue",
+    #     proofs=["proof1.jpg", "proof2.jpg"],
+    #     status="Queued",
+    #     date_time=datetime.utcnow(),
+    #     course=GenericUUID.next_id(),
+    #     teachers=[GenericUUID.next_id(), GenericUUID.next_id()],
+    #     student_id=GenericUUID.next_id(),
+    #     organization_id=GenericUUID.next_id()
+    # )
+    #
+    # # Agregar la issue a la base de datos
+    # issue_repository.add(issue)
+    #
+    # # Obtener todas las issues y mostrarlas
+    issues = issue_repository.get_all()
+    print("Todas las issues en la base de datos:")
+    for issue in issues:
+        print(issue.title)
+
+    # Obtener una issue por su ID y mostrar sus detalles
+    issue_id = issues[0].id
+    retrieved_issue = issue_repository.get_by_id(issue_id)
+    if retrieved_issue:
+        print("\nDetalles de la primera issue:")
+        print(f"Título: {retrieved_issue.title}")
+        print(f"Descripción: {retrieved_issue.description}")
+        print(f"Estado: {retrieved_issue.status}")
+    else:
+        print("No se encontró ninguna issue con ese ID.")
+
+    issues = issue_repository.get_all_by_status("Queued")
+    print("\nIssues en estado 'Queued':")
+    for issue in issues:
+        print(issue)
+
+    issues = issue_repository.get_all_by_student(GenericUUID("fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"))
+
+
     session.close()  # No olvides cerrar la sesión
