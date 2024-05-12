@@ -12,8 +12,8 @@ from madissues_backend.core.issues.application.commands.comments.delete_issue_co
     DeleteCommentRequest, DeleteCommentResponse, DeleteCommentCommand
 from madissues_backend.core.issues.application.commands.comments.toggle_like_issue_comment_command import \
     ToggleLikeIssueCommentCommand, ToggleLikeCommentRequest, ToggleLikeCommentResponse
-from madissues_backend.core.issues.application.queries.find_all_comments_of_issue_query import \
-    FindAllCommentsOfIssueQuery
+from madissues_backend.core.issues.application.queries.comments.find_all_comments_of_issue_query import \
+    FindAllCommentsOfIssueQuery, FindAllCommentsOfIssueQueryParams
 from madissues_backend.core.issues.domain.read_models.issue_comment_read_model import IssueCommentReadModel
 from madissues_backend.core.shared.domain.response import Response
 
@@ -56,9 +56,12 @@ def toggle_like_issue_comment(request: ToggleLikeCommentRequest,
     return command.run(request)
 
 
-@router.get("/issue_comments/", tags=["issue_comments"])
-def get_all_issue_comments_for_issue(token: Annotated[str, Header()]) -> Response[list[IssueCommentReadModel]]:
+@router.get("issues/{id}/issue_comments/", tags=["issue_comments"])
+def get_all_issue_comments_for_issue(id: str, token: Annotated[str, Header()]) -> Response[list[IssueCommentReadModel]]:
     authorization = authorization_service(token)
     query = FindAllCommentsOfIssueQuery(authentication_service=authorization, 
                                         query_repository=issue_comment_query_repository)
-    return query.run()
+    return query.run(
+        FindAllCommentsOfIssueQueryParams(
+            issue_id=id)
+    )
