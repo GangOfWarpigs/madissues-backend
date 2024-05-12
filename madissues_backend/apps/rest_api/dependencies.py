@@ -34,7 +34,7 @@ event_bus = MockEventBus()
 task_manager_factory = TrelloTaskManagerFactory()
 
 # services
-storage_service = LocalStorageService(media_path="media")
+storage_service = LocalStorageService(media_path="./madissues_backend/media")
 authorization_service = create_mock_authentication_service(database)
 
 
