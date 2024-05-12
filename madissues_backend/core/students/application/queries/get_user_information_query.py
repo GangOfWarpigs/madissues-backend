@@ -11,6 +11,6 @@ class GetStudentInformationQuery(Query[None, StudentReadModel]):
         self.query_repository = query_repository
 
     def execute(self, params: QueryParams | None = None) -> Response[StudentReadModel]:
-        student = self.query_repository.get_by_token(self.authentication_service.get_user_id())
+        student = self.query_repository.get_by_id(self.authentication_service.get_user_id())
         if student is None: return Response.fail("There is not student with that token")
         return Response.ok(student)

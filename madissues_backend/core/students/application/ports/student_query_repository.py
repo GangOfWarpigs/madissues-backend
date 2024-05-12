@@ -8,3 +8,7 @@ class StudentQueryRepository(ABC):
     @abstractmethod
     def get_by_token(self, token: str) -> StudentReadModel | None:
         ...
+
+    @abstractmethod
+    def get_by_id(self, token: str) -> StudentReadModel | None:
+        ...

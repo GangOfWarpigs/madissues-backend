@@ -22,10 +22,20 @@ class StudentReadModel(BaseModel):
     @staticmethod
     def of(student: Student):
         return StudentReadModel(
-            **student.dict(),
-            **student.preferences.dict(),
-            **student.profile.dict(),
-            id=str(student.id)
+            id=str(student.id),
+            organization_id=str(student.organization_id),
+            email=student.email,
+            first_name=student.first_name,
+            last_name=student.last_name,
+            password=student.password,
+            started_studies_date=student.started_studies_date.isoformat(),
+            is_site_admin=student.is_site_admin,
+            is_council_member=student.is_council_member,
+            is_banned=student.is_banned,
+            degree=str(student.profile.degree),
+            joined_courses=student.profile.joined_courses,
+            theme=student.preferences.theme,
+            language=student.preferences.language
         )
 
 

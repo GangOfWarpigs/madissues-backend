@@ -22,3 +22,10 @@ class MockStudentQueryRepository(StudentQueryRepository):
             if student.token == token:
                 return StudentReadModel.of(student)
         return None
+
+    def get_by_id(self, user_id: str) -> StudentReadModel:
+        for student in self.students.values():
+            if str(student.id) == user_id:
+                return StudentReadModel.of(student)
+        return None
+

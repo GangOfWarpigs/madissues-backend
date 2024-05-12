@@ -226,6 +226,10 @@ class TestEndToEnd(unittest.TestCase):
                            "token": student_token
         })
 
+        assert query.json()["error"] is None, "Not error here my boyz"
+        assert query.json()["success"]["first_name"] == "Test", "Just the two of us"
+        assert query.json()["success"]["last_name"] == "Test", "Just the two of us"
+
         print(query.json())
 
 
