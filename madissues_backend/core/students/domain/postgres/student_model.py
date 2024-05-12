@@ -28,3 +28,5 @@ class PostgresStudent(Base):
     # Relación con Organization
     organization = relationship("PostgresOrganization", back_populates="students")
 
+    # New relationship with Member linking to TaskManager
+    memberships = relationship("PostgresMember", back_populates="student")

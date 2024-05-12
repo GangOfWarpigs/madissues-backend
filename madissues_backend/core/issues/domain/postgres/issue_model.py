@@ -21,7 +21,11 @@ class PostgresIssueModel(Base):
     course = Column(UUID(as_uuid=True), nullable=False)
     teachers = Column(ARRAY(UUID(as_uuid=True)))
     student_id = Column(UUID(as_uuid=True), ForeignKey('backend.students.id'), nullable=False)  # Author is a student
-    organization_id = Column(UUID(as_uuid=True), nullable=False)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey('backend.organizations.id'),
+                             nullable=False)  # Organization foreign key
 
     # Relación con los comentarios
     comments = relationship("PostgresIssueCommentModel", back_populates="issue")
+
+    # Relación inversa con la organización
+    organization = relationship("PostgresOrganization", back_populates="issues")

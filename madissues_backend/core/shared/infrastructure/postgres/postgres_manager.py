@@ -14,6 +14,10 @@ from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies
 from madissues_backend.core.students.domain.postgres.student_model import PostgresStudent
 from madissues_backend.core.students.domain.postgres.student_preferences_model import PostgresStudentPreferences
 from madissues_backend.core.students.domain.postgres.student_profile_model import PostgresStudentProfile
+from madissues_backend.core.task_manager.domain.postgres.postgres_board import PostgresBoard
+from madissues_backend.core.task_manager.domain.postgres.postgres_member import PostgresMember
+from madissues_backend.core.task_manager.domain.postgres.postgres_task_manager import PostgresTaskManager
+from madissues_backend.core.task_manager.domain.postgres.postgres_task_manager_config import PostgresTaskManagerConfig
 
 PostgresIssueCommentModel()
 PostgresIssueModel()
@@ -25,6 +29,10 @@ PostgresOrganizationCourse()
 PostgresOrganizationDegree()
 PostgresOrganizationTeacher()
 PostgresOwner()
+PostgresTaskManager()
+PostgresMember()
+PostgresBoard()
+PostgresTaskManagerConfig()
 
 
 class PostgresManager:
@@ -49,5 +57,3 @@ class PostgresManager:
     # Función para obtener una sesión
     def get_session(self):
         return self.SessionFactory()
-
-
