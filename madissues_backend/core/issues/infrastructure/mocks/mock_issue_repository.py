@@ -30,36 +30,4 @@ class MockIssueRepository(IssueRepository, GenericMockRepository[UUID, Issue]):
 
     def get_by_id(self, issue_id: GenericUUID) -> Optional[Issue]:
         return self._issues.get(issue_id)
-
-    def get_by_name(self, name: str) -> Optional[Issue]:
-        for issue in self._issues.values():
-            if issue.name == name:
-                return issue
-        return None
-
-    def exists_with_name(self, name: str) -> bool:
-        for issue in self._issues.values():
-            if issue.name == name:
-                return True
-        return False
-
-    def get_all(self) -> list[Issue]:
-        return list(self._issues.values())
-
-    def get_all_by_course(self, course_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.course == course_id]
-
-    def get_all_by_student(self, student_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.student_id == student_id]
-
-    def get_all_by_teacher(self, teacher_id: GenericUUID) -> list[Issue]:
-        return [issue for issue in self._issues.values() if teacher_id in issue.teachers]
-
-    def get_all_by_status(self, status: str) -> list[Issue]:
-        return [issue for issue in self._issues.values() if issue.status == status]
-
-
-
-
-
-
+ 

@@ -47,31 +47,5 @@ class TestMockIssueRepository(unittest.TestCase):
         fetched_issue = self.repo.get_by_id(issue.id)
         self.assertEqual(fetched_issue, issue)
 
-    def test_get_by_non_existing_id(self):
-        non_existing_id = GenericUUID.next_id()
-        fetched_issue = self.repo.get_by_id(non_existing_id)
-        self.assertIsNone(fetched_issue)
-
-    def test_get_all(self):
-        all_issues = self.repo.get_all()
-        self.assertEqual(len(all_issues), len(self.repo._issues))
-
-    def test_get_all_by_status(self):
-        status = "In progress"
-        issues_by_status = self.repo.get_all_by_status(status)
-        self.assertTrue(all(issue.status == status for issue in issues_by_status))
-
-    def test_get_all_by_course(self):
-        course_id = next(iter(self.added_issues)).course
-        issues_by_course = self.repo.get_all_by_course(course_id)
-        self.assertTrue(all(issue.course == course_id for issue in issues_by_course))
-
-    def test_get_all_by_teacher(self):
-        teacher_id = next(iter(self.added_issues)).teachers[0]
-        issues_by_teacher = self.repo.get_all_by_teacher(teacher_id)
-        self.assertTrue(all(teacher_id in issue.teachers for issue in issues_by_teacher))
-
-
-
 if __name__ == '__main__':
     unittest.main()

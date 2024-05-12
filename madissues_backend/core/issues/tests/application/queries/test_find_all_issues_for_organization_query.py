@@ -3,7 +3,7 @@ from datetime import datetime
 
 from madissues_backend.core.issues.application.commands.issues.create_issue_command import \
     CreateIssueCommand, CreateIssueRequest
-from madissues_backend.core.issues.application.queries.find_all_issues_for_organization_query import FindAllIssuesQuery, \
+from madissues_backend.core.issues.application.queries.issues.find_all_issues_for_organization_query import FindAllIssuesQuery, \
     FindAllIssuesQueryParams
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_query_repository import MockIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_repository import MockIssueRepository

@@ -3,8 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Header
 
 from madissues_backend.apps.rest_api.dependencies import authorization_service, organization_repository, \
-    storage_service, organization_query_repository, event_bus, issue_query_repository
-from madissues_backend.core.issues.application.queries.find_all_issues_for_organization_query import FindAllIssuesQuery, \
+    storage_service, organization_query_repository, event_bus, issue_query_repository, issue_repository
+from madissues_backend.core.issues.application.queries.issues.find_all_issues_for_organization_query import \
+    FindAllIssuesQuery, \
     FindAllIssuesQueryParams
 from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
 from madissues_backend.core.organizations.application.commands.course.create_organization_course_command import \

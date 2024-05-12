@@ -32,5 +32,5 @@ class IssueReadModel(BaseModel):
             course=str(issue.course),
             teachers=[str(teacher) for teacher in issue.teachers],
             student_id=str(issue.student_id),
-            student =None
+            student=None
         )

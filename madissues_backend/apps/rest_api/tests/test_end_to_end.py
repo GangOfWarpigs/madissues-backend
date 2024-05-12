@@ -124,7 +124,7 @@ class TestEndToEnd(unittest.TestCase):
         print(response.json())
         assert response.json()["success"] is not None, "is succeded"
 
-    def test_student_organization_endpoints(self):
+    def test_organization_endpoints(self):
         request = {
             "first_name": "Jhon",
             "last_name": "Doe",

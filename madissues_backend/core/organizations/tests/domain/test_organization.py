@@ -37,7 +37,7 @@ class TestOrganization(unittest.TestCase):
 
     def test_invalid_description_max_length(self):
         invalid_organization_data = self.valid_organization_data.copy()
-        invalid_organization_data['description'] = 'A' * 281
+        invalid_organization_data['description'] = 'A' * 4501
         with self.assertRaises(ValidationError):
             Organization(**invalid_organization_data)
 

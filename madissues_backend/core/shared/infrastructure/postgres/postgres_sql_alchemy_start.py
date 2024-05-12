@@ -1,14 +1,10 @@
 import os
-from datetime import datetime
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, String, DateTime, ARRAY, UUID
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from madissues_backend.core.issues.domain.issue import Issue
-from madissues_backend.core.issues.infrastructure.postgres.models.issue_model import PostgresIssueModel
-from madissues_backend.core.issues.infrastructure.postgres.postgress_issue_repository import PostgresIssueRepository
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
+from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_repository import PostgresIssueRepository
 
 # Cargar las variables de entorno
 load_dotenv()
@@ -33,6 +29,7 @@ Base = declarative_base()
 
 
 
+
 # Función para obtener una sesión
 def get_session():
     return SessionFactory()
@@ -49,6 +46,9 @@ if __name__ == "__main__":
 
     # Instanciar el repositorio
     issue_repository = PostgresIssueRepository(session)
+
+    # Instanciar el repositorio de comentarios
+    #issue_comment_repository = PostgresIssueCommentRepository(session)
 
     # Crear una instancia de Issue para probar el repositorio
     # issue = Issue(
@@ -90,7 +90,13 @@ if __name__ == "__main__":
     for issue in issues:
         print(issue)
 
-    issues = issue_repository.get_all_by_student(GenericUUID("fa68b53a-8db6-4f5b-9d15-e93cbc163bfa"))
+    # Add comments for each queued issue
+    # for issue in issues:
+    #     issue_repository.add_comment_to_issue(issue.id, "This is a test comment", datetime.utcnow())
+
+
+
+    # Create comments
 
 
     session.close()  # No olvides cerrar la sesión

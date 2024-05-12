@@ -2,7 +2,9 @@ from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_query
     MockIssueCommentQueryRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_comment_repository import MockIssueCommentRepository
 from madissues_backend.core.issues.infrastructure.mocks.mock_issue_query_repository import MockIssueQueryRepository
-from madissues_backend.core.issues.infrastructure.mocks.mock_issue_repository import MockIssueRepository
+from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_query_repository import \
+    PostgresIssueQueryRepository
+from madissues_backend.core.issues.infrastructure.postgres.ports.postgress_issue_repository import PostgresIssueRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_query_repository import \
     MockOrganizationQueryRepository
 from madissues_backend.core.organizations.infrastructure.mocks.mock_organization_repository import \
@@ -13,8 +15,8 @@ from madissues_backend.core.shared.application.mock_repository import EntityTabl
 from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_service import \
     create_mock_authentication_service
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
-from madissues_backend.core.shared.infrastructure.mocks.mock_storage_service import MockStorageService
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
+from madissues_backend.core.shared.infrastructure.postgres.postgres_sql_alchemy_start import get_session
 from madissues_backend.core.shared.infrastructure.storage.local_storage_service import LocalStorageService
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
 from madissues_backend.core.students.infrastructure.mocks.mock_student_query_repository import \
@@ -23,7 +25,6 @@ from madissues_backend.core.students.infrastructure.mocks.mock_student_repositor
 from madissues_backend.core.task_manager.application.handlers.issue_created_handler import IssueCreatedHandler
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
-from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_service import MockTaskManagerFactory
 from madissues_backend.core.task_manager.infrastructure.trello_task_manager_service import TrelloTaskManagerFactory
 
 database = EntityTable()
@@ -45,7 +46,7 @@ owner_repository = MockOwnerRepository(database)
 organization_repository = MockOrganizationRepository(database)
 student_repository = MockStudentRepository(database)
 task_manager_repository = MockTaskManagerRepository(database)
-issue_repository = MockIssueRepository(database)
+issue_repository = PostgresIssueRepository(get_session())
 issue_comment_repository = MockIssueCommentRepository(database)
 issue_comment_query_repository = MockIssueCommentQueryRepository(database)
 
@@ -53,7 +54,7 @@ issue_comment_query_repository = MockIssueCommentQueryRepository(database)
 organization_query_repository = MockOrganizationQueryRepository(database)
 owner_query_repository = MockOwnerQueryRepository(database)
 student_query_repository = MockStudentQueryRepository(database)
-issue_query_repository = MockIssueQueryRepository(database)
+issue_query_repository = PostgresIssueQueryRepository(get_session())
 
 # Event handlers
 issue_created_event_handler = IssueCreatedHandler(task_manager_factory, task_manager_repository)
