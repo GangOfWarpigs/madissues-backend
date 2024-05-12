@@ -31,20 +31,6 @@ class IssueReadModel(BaseModel):
             date_time=issue.date_time.strftime('%Y-%m-%d'),
             course=str(issue.course),
             teachers=[str(teacher) for teacher in issue.teachers],
-            student_id=str(issue.student_id)
-        )
-
-    @staticmethod
-    def with_teachers(issue: Issue, teacher_names, student) -> 'IssueReadModel':
-        return IssueReadModel(
-            title=issue.title,
-            description=issue.description,
-            details=issue.details,
-            proofs=issue.proofs,
-            status=issue.status,
-            date_time=issue.date_time.strftime('%Y-%m-%d'),
-            course=str(issue.course),
-            teachers=teacher_names,
             student_id=str(issue.student_id),
-            student=student
+            student =None
         )

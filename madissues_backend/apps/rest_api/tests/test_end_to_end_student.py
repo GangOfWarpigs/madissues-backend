@@ -216,5 +216,16 @@ class TestEndToEnd(unittest.TestCase):
         assert query.json()["success"][0]["student"]["year"] == "1999", "Stand by me"
         #check that the teacher is the name of the teacher
         assert query.json()["success"][0]["teachers"][0] == "string string", "Hound dog"
+        #check that the name of the course is the same as the course created
+        assert query.json()["success"][0]["course"] == "string", "What a wonderful world"
+
+        #TEST CASES MUST EXCEPT WITH NAMES OF SONGS FROM 60s, 80s and 70s
+
+        #check studet me
+        query = client.get("students/me", headers={
+                           "token": student_token
+        })
+
+        print(query.json())
 
 
