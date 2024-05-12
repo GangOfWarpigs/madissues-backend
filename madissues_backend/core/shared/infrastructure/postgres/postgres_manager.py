@@ -1,8 +1,30 @@
-import os
-
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
+
+from madissues_backend.core.issues.domain.postgres.issue_comment_model import PostgresIssueCommentModel
+from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
+from madissues_backend.core.organizations.domain.postgres.postgres_organization import PostgresOrganization
+from madissues_backend.core.organizations.domain.postgres.postgres_organization_course import PostgresOrganizationCourse
+from madissues_backend.core.organizations.domain.postgres.postgres_organization_degree import PostgresOrganizationDegree
+from madissues_backend.core.organizations.domain.postgres.postgres_organization_teacher import \
+    PostgresOrganizationTeacher
+from madissues_backend.core.owners.domain.postgres.postgres_owner_model import PostgresOwner
+from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
+
+from madissues_backend.core.students.domain.postgres.student_model import PostgresStudent
+from madissues_backend.core.students.domain.postgres.student_preferences_model import PostgresStudentPreferences
+from madissues_backend.core.students.domain.postgres.student_profile_model import PostgresStudentProfile
+
+PostgresIssueCommentModel()
+PostgresIssueModel()
+PostgresStudent()
+PostgresStudentPreferences()
+PostgresStudentProfile()
+PostgresOrganization()
+PostgresOrganizationCourse()
+PostgresOrganizationDegree()
+PostgresOrganizationTeacher()
+PostgresOwner()
 
 
 class PostgresManager:
@@ -22,33 +44,10 @@ class PostgresManager:
         # Crear una clase de SessionFactory
         self.SessionFactory = sessionmaker(bind=self.engine)
 
-        # Crear una clase base para las tablas
-        self.base = declarative_base()
-
-    def getBase(self):
-        return self.base
+        self.base = Base
 
     # Función para obtener una sesión
     def get_session(self):
         return self.SessionFactory()
 
-# Instantiate the PostgresManager class if dotenv variables are set
-load_dotenv()
 
-# Obtener valores de las variables de entorno o proporcionar valores predeterminados
-POSTGRES_USER = os.getenv('POSTGRES_USER', 'default_user')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'default_password')
-POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
-POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
-POSTGRES_DB = os.getenv('POSTGRES_DB', 'default_db')
-
-postgres_manager = None
-# Only instantiate the PostgresManager if all the environment variables are set
-if all([POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB]):
-    postgres_manager = PostgresManager(
-        user=POSTGRES_USER,
-        password=POSTGRES_PASSWORD,
-        host=POSTGRES_HOST,
-        port=POSTGRES_PORT,
-        db=POSTGRES_DB
-    )

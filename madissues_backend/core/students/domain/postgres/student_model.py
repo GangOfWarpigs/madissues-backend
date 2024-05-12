@@ -1,12 +1,11 @@
 from sqlalchemy import Column, String, DateTime, UUID, Boolean
-from sqlalchemy.orm import relationship, Mapped
 
-from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import postgres_manager
-from madissues_backend.core.students.infrastructure.postgres.models.student_preferences_model import StudentPreferences
-from madissues_backend.core.students.infrastructure.postgres.models.student_profile_model import StudentProfile
+from sqlalchemy.orm import relationship
+
+from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
 
 
-class Student(postgres_manager.getBase()):
+class PostgresStudent(Base):
     __tablename__ = 'students'
     __table_args__ = {'schema': 'backend'}
 
@@ -21,7 +20,7 @@ class Student(postgres_manager.getBase()):
     is_council_member = Column(Boolean, nullable=False, default=False)
     is_banned = Column(Boolean, nullable=False, default=False)
     token = Column(String, nullable=False, default="")
-
-    # Relaciones
-    # profile: Mapped["StudentProfile"] = relationship("StudentProfile", back_populates="student", uselist=False)
-    # preferences: Mapped["StudentPreferences"] = relationship("StudentPreferences", back_populates="student", uselist=False)
+    profile = relationship("PostgresStudentProfile", back_populates="student", uselist=False)
+    preferences = relationship("PostgresStudentPreferences", back_populates="student", uselist=False)
+    # Relationship to IssueComments
+    comments = relationship("PostgresIssueCommentModel", foreign_keys="PostgresIssueCommentModel.author")

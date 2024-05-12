@@ -6,8 +6,13 @@ from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgres
     PostgresIssueQueryRepository
 from madissues_backend.core.issues.infrastructure.postgres.ports.issues.postgres_issue_repository import \
     PostgresIssueRepository
+from madissues_backend.core.shared.domain.value_objects import GenericUUID
+from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
+
 from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import PostgresManager
-from madissues_backend.core.students.infrastructure.postgres.models.student_model import Student
+from madissues_backend.core.students.domain.student_mother import StudentMother
+from madissues_backend.core.students.infrastructure.postgres.ports.postgres_student_repository import \
+    PostgresStudentRepository
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -31,43 +36,26 @@ if __name__ == "__main__":
 
     session = postgres_manager.get_session()
 
-    # Aquí puedes realizar operaciones de base de datos, como session.add() o session.query()
-    print("Conexión establecida con éxito.")
-    student = Student()
-
-
-    # Crear la tabla en la base de datos
-    print("metadata. ", postgres_manager.base.metadata.tables)
-    postgres_manager.getBase().metadata.create_all(
+    Base.metadata.create_all(
         postgres_manager.engine
     )
 
     # Instanciar el repositorio
     issue_repository = PostgresIssueRepository(session)
     issue_query_repository = PostgresIssueQueryRepository(session)
+    student_repository = PostgresStudentRepository(session)
 
-
-    # Instanciar el repositorio de comentarios
-    # issue_comment_repository = PostgresIssueCommentRepository(session)
-
-    # Crear una instancia de Issue para probar el repositorio
-    # issue = Issue(
-    #     id=GenericUUID.next_id(),
-    #     title="Test Issue",
-    #     description="This is a test issue",
-    #     details="Some details about the test issue",
-    #     proofs=["proof1.jpg", "proof2.jpg"],
-    #     status="Queued",
-    #     date_time=datetime.utcnow(),
-    #     course=GenericUUID.next_id(),
-    #     teachers=[GenericUUID.next_id(), GenericUUID.next_id()],
-    #     student_id=GenericUUID.next_id(),
-    #     organization_id=GenericUUID.next_id()
-    # )
+    # # Crear un student
+    student = StudentMother.random_student()
     #
-    # # Agregar la issue a la base de datos
-    # issue_repository.add(issue)
-    #
-    # # Obtener todas las issues y mostrarlas
+    # # Agregar el student a la base de datos
+    student_repository.add(student)
+
+    # Obtener el estudiante
+    student = student_repository.get_by_id(GenericUUID("7eb20012-1f74-4907-b322-81f45b8c2d62"))
+    if student:
+        print(student)
+    else:
+        print("Student not found")
 
     session.close()  # No olvides cerrar la sesión

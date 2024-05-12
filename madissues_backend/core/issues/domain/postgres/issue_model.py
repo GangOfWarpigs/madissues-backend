@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, ARRAY, UUID
+from sqlalchemy import Column, String, DateTime, ARRAY, UUID, ForeignKey
+from sqlalchemy.orm import relationship
 
-from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import postgres_manager
+from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
 
 
 # Definir la clase para la tabla Issue
-class PostgresIssueModel(postgres_manager.getBase()):
+class PostgresIssueModel(Base):
     __tablename__ = 'issues'
     __table_args__ = {'schema': 'backend'}
 
@@ -19,5 +20,8 @@ class PostgresIssueModel(postgres_manager.getBase()):
     date_time = Column(DateTime, default=datetime.utcnow)
     course = Column(UUID(as_uuid=True), nullable=False)
     teachers = Column(ARRAY(UUID(as_uuid=True)))
-    student_id = Column(UUID(as_uuid=True), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey('backend.students.id'), nullable=False)  # Author is a student
     organization_id = Column(UUID(as_uuid=True), nullable=False)
+
+    # Relación con los comentarios
+    comments = relationship("PostgresIssueCommentModel", back_populates="issue")

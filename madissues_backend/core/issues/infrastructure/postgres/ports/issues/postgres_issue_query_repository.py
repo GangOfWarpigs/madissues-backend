@@ -1,18 +1,11 @@
-from datetime import datetime
-
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from typing import Optional, List, Type
 
 from madissues_backend.core.issues.application.ports.issue_query_repository import IssueQueryRepository
-from madissues_backend.core.issues.application.ports.issue_repository import IssueRepository
 from madissues_backend.core.issues.domain.issue import Issue
 from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
-from madissues_backend.core.issues.infrastructure.postgres.models.issue_model import PostgresIssueModel
+from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
 # Import the sqlalchemy model
-
-
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
 
 
 class PostgresIssueQueryRepository(IssueQueryRepository):

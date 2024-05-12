@@ -18,3 +18,5 @@ class StudentPreferences(ValueObject):
             theme="Dark",
             language="es"
         )
+
+
