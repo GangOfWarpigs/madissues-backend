@@ -41,7 +41,7 @@ class IssueCommentRepository(GenericRepository[GenericUUID, IssueComment], ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, issue_id: GenericUUID) -> IssueComment:
+    def get_by_id(self, issue_id: GenericUUID) -> IssueComment | None:
         pass
 
     @abstractmethod

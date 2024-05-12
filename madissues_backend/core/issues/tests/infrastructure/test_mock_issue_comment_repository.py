@@ -110,16 +110,16 @@ class TestMockIssueCommentRepository(unittest.TestCase):
     def test_get_all_by_date_greater_than_nonexistent(self):
         retrieved_comments = self.repo.get_all_by_date_greater_than(self.added_comments[-1].date_time)
         # Find number of comments with date greater than the last comment's date
-        num_comments = len([comment for comment in self.added_comments if comment.date_time > self.added_comments[-1].date_time])
+        num_comments = len(
+            [comment for comment in self.added_comments if comment.date_time > self.added_comments[-1].date_time])
         self.assertEqual(len(retrieved_comments), num_comments)
 
     def test_get_all_by_date_less_than_nonexistent(self):
         retrieved_comments = self.repo.get_all_by_date_less_than(self.added_comments[-1].date_time)
         # Find number of comments with date less than the last comment's date
-        num_comments = len([comment for comment in self.added_comments if comment.date_time < self.added_comments[-1].date_time])
+        num_comments = len(
+            [comment for comment in self.added_comments if comment.date_time < self.added_comments[-1].date_time])
         self.assertEqual(len(retrieved_comments), num_comments)
-
-
 
 
 if __name__ == '__main__':

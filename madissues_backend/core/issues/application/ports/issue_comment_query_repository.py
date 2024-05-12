@@ -12,6 +12,10 @@ class IssueCommentQueryRepository(ABC):
         self.entity_table = entity_table
 
     @abstractmethod
+    def get_by_id(self, issue_id: GenericUUID) -> IssueCommentReadModel | None:
+        pass
+
+    @abstractmethod
     def get_all(self) -> list[IssueCommentReadModel]:
         pass
 

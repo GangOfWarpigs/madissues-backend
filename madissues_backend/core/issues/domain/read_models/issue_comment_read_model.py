@@ -15,7 +15,7 @@ class IssueCommentReadModel(BaseModel):
     @staticmethod
     def of(issue_comment: IssueComment) -> 'IssueCommentReadModel':
         return IssueCommentReadModel(
-            issue_id=str(issue_comment.id),
+            issue_id=str(issue_comment.issue_id),
             author=str(issue_comment.author),
             likes=[str(like) for like in issue_comment.likes],
             content=issue_comment.content,

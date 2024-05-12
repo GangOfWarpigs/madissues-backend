@@ -42,7 +42,7 @@ class MockIssueCommentRepository(IssueCommentRepository, GenericMockRepository[U
             raise ValueError(f"Issue with id {issue_id} does not exist")
         del self._issues[issue_id]
 
-    def get_by_id(self, issue_id: GenericUUID) -> IssueComment:
+    def get_by_id(self, issue_id: GenericUUID) -> IssueComment | None:
         return self._issues.get(issue_id)
 
     def save(self, issue_comment: IssueComment):

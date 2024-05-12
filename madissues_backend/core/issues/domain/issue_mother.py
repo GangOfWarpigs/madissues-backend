@@ -74,7 +74,8 @@ class IssueMother:
         return random.choice(contents)
 
     @staticmethod
-    def random_issue_comment(issue_id: GenericUUID = GenericUUID.next_id(), author: GenericUUID = GenericUUID.next_id()) -> IssueComment:
+    def random_issue_comment(issue_id: GenericUUID = GenericUUID.next_id(), author: GenericUUID = GenericUUID.next_id(),
+                             response_to: GenericUUID = GenericUUID.next_id()) -> IssueComment:
         return IssueComment(
             id=GenericUUID.next_id(),
             issue_id=issue_id,
@@ -82,7 +83,7 @@ class IssueMother:
             likes=IssueMother.random_uuid_list(random.randint(0, 10)),
             content=IssueMother.random_content(),
             date_time=datetime.now(),
-            response_to=None if random.choice([True, False]) else GenericUUID.next_id()
+            response_to=response_to if response_to else (None if random.choice([True, False]) else response_to)
         )
 
 
