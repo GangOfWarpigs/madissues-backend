@@ -8,6 +8,7 @@ from madissues_backend.core.issues.application.commands.issues.create_issue_comm
     CreateIssueResponse, CreateIssueCommand
 from madissues_backend.core.issues.application.queries.issues.get_detailed_issue_query import GetDetailedIssueQuery, \
     FindIssueDetailedQueryParam
+from madissues_backend.core.issues.domain.read_models.issue_read_model import IssueReadModel
 from madissues_backend.core.shared.domain.response import Response
 
 router = APIRouter()
@@ -22,7 +23,7 @@ def create_issues(request: CreateIssueRequest,
 
 
 @router.get("/issues/{issue_id}", tags=["issues"])
-def get_issue(issue_id: str, token: Annotated[str, Header()]) -> Response:
+def get_issue(issue_id: str, token: Annotated[str, Header()]) -> Response[IssueReadModel]:
     authorization = authorization_service(token)
     command = GetDetailedIssueQuery(authorization, issue_query_repository)
     return command.run(

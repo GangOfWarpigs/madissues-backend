@@ -1,13 +1,12 @@
 from datetime import datetime
 
 from sqlalchemy import Column, String, DateTime, ARRAY, UUID
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import postgres_manager
 
 
 # Definir la clase para la tabla IssueComment en el esquema "backend"
-class PostgresIssueCommentModel(Base):
+class PostgresIssueCommentModel(postgres_manager.getBase()):
     __tablename__ = 'issue_comments'
     __table_args__ = {'schema': 'backend'}
 

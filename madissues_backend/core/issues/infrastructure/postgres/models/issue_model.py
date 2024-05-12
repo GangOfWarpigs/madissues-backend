@@ -1,13 +1,12 @@
 from datetime import datetime
 
 from sqlalchemy import Column, String, DateTime, ARRAY, UUID
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import postgres_manager
 
 
 # Definir la clase para la tabla Issue
-class PostgresIssueModel(Base):
+class PostgresIssueModel(postgres_manager.getBase()):
     __tablename__ = 'issues'
     __table_args__ = {'schema': 'backend'}
 
@@ -22,4 +21,3 @@ class PostgresIssueModel(Base):
     teachers = Column(ARRAY(UUID(as_uuid=True)))
     student_id = Column(UUID(as_uuid=True), nullable=False)
     organization_id = Column(UUID(as_uuid=True), nullable=False)
-
