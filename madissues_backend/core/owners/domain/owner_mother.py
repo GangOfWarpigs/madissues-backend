@@ -26,7 +26,9 @@ class OwnerMother:
             email=f"{name}_{last_name}@email.com",
             first_name=name,
             last_name=last_name,
-            phone_number="922922922"
+            phone_number="922922922",
+            password="student_mother_hashed_password",
+            token="student_mother_token"
         )
 
     @staticmethod

@@ -12,9 +12,7 @@ from madissues_backend.core.organizations.infrastructure.ports.postgres_organiza
 from madissues_backend.core.owners.domain.owner_mother import OwnerMother
 from madissues_backend.core.owners.infrastructure.postgres.ports.postgres_owner_repository import \
     PostgresOwnerRepository
-from madissues_backend.core.shared.domain.value_objects import GenericUUID
 from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
-
 from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import PostgresManager
 from madissues_backend.core.students.domain.student_mother import StudentMother
 from madissues_backend.core.students.infrastructure.postgres.ports.postgres_student_repository import \
@@ -55,12 +53,16 @@ if __name__ == "__main__":
 
     # # Crear un student
     student = StudentMother.random_student()
-    #
-    # # Agregar el student a la base de datos
+    print("============================================================")
+    print(student)
+    print("============================================================")
+
+    # Agregar el student a la base de datos
     student_repository.add(student)
 
     # Obtener el estudiante
     student = student_repository.get_by_id(student.id)
+
     print("------------------------------------------------------------")
     if student:
         print(student)
@@ -69,7 +71,9 @@ if __name__ == "__main__":
     print("------------------------------------------------------------")
 
     owner = OwnerMother.generate_owner()
+    print("============================================================")
     print(owner)
+    print("============================================================")
 
     # Agregar el owner a la base de datos
     owner_repository.add(owner)
@@ -84,18 +88,19 @@ if __name__ == "__main__":
     print("------------------------------------------------------------")
 
     # # Crear una instancia de Issue para probar el repositorio
-    # organization = OrganizationMother.generate_organization()
-    # print(organization)
-    #
-    # # Agregar la organization a la base de datos
-    # organization_repository.add(organization)
-    #
-    # # Obtener todas las organizations y mostrarlas
-    # organization = organization_repository.get_by_id(organization.id)
-    #
-    # if organization:
-    #     print(organization)
-    # else:
-    #     print("Organization not found")
+    organization = OrganizationMother.generate_organization()
+    organization.owner_id = owner.id
+    print(organization)
+
+    # Agregar la organization a la base de datos
+    organization_repository.add(organization)
+
+    # Obtener todas las organizations y mostrarlas
+    organization = organization_repository.get_by_id(organization.id)
+
+    if organization:
+        print(organization)
+    else:
+        print("Organization not found")
     #
     # session.close()  # No olvides cerrar la sesión
