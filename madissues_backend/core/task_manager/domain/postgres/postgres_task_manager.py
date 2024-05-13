@@ -20,5 +20,8 @@ class PostgresTaskManager(Base):
     config = relationship("PostgresTaskManagerConfig", back_populates="task_manager", uselist=False)
     members = relationship("PostgresMember", back_populates="task_manager")
 
+    faqs_board = relationship("PostgresBoard", foreign_keys=[faqs_board_id], uselist=False)
+    issue_board = relationship("PostgresBoard", foreign_keys=[issue_board_id], uselist=False)
+
     # Relación con Organization
     organization = relationship("PostgresOrganization", foreign_keys=[organization_id])

@@ -38,6 +38,7 @@ class IssueCreatedHandler(EventHandler[IssueCreatedPayload]):
             print("No task manager found")
             return
 
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>GOT TASK MANAGER: ", task_manager)
         task_manager_service: TaskManagerService = self.task_manager_factory.of(task_manager.config)
 
         board_id = task_manager_service.get_board_by_name_in_organization(task_manager.task_manager_project_id, "issues")

@@ -18,11 +18,6 @@ class PostgresStudentRepository(StudentRepository):
     def __init__(self, session: Session):
         self._session = session
 
-    def add(self, student: Student):
-        student_model = self._map_to_model(student)
-        self._session.add(student_model)
-        self._session.commit()
-
     def remove(self, student_id: GenericUUID):
         student_model = self._session.query(PostgresStudent).filter_by(id=student_id).one()
         self._session.delete(student_model)
@@ -71,30 +66,56 @@ class PostgresStudentRepository(StudentRepository):
             self._session.query(PostgresStudent).filter_by(organization_id=organization_id, is_banned=True).exists()
         ).scalar()
 
+    def add(self, student: Student):
+        # Mapeamos y añadimos las entidades relacionadas primero
+        student_profile = self._map_profile_to_model(student.profile, student.id)
+        student_preferences = self._map_preferences_to_model(student.preferences, student.id)
+
+        student_model = self._map_to_model(student)
+        self._session.add(student_model)
+        self._session.flush()  # Esto asegura que las entidades se guarden en la base de datos y se asignen los IDs
+
+        # Añadimos y guardamos las dependencias
+        self._session.add(student_profile)
+        self._session.add(student_preferences)
+
+        # Ahora mapeamos y añadimos el estudiante principal
+
+        self._session.commit()
+
     @staticmethod
     def _map_to_model(student: Student) -> PostgresStudent:
+        print("MAPPING TO MODEL ------------------------->")
+        print(student)
         return PostgresStudent(
-            id=student.id,
-            organization_id=student.organization_id,
+            id=str(student.id),
+            organization_id=str(student.organization_id),
             email=student.email,
             first_name=student.first_name,
             last_name=student.last_name,
-            password=student.password,  # Asumimos que la contraseña ya está encriptada si es necesario
+            password=student.password,
             started_studies_date=student.started_studies_date,
             is_site_admin=student.is_site_admin,
             is_council_member=student.is_council_member,
             is_banned=student.is_banned,
-            token=student.token,
-            profile=PostgresStudentProfile(
-                student_id=student.id,
-                degree=student.profile.degree,
-                joined_courses=student.profile.joined_courses
-            ),
-            preferences=PostgresStudentPreferences(
-                student_id=student.id,
-                theme=student.preferences.theme,
-                language=student.preferences.language
-            )
+            token=student.token
+            # Nota: Las relaciones de `profile` y `preferences` son manejadas por SQLAlchemy
+        )
+
+    @staticmethod
+    def _map_profile_to_model(profile: StudentProfile, student_id: GenericUUID) -> PostgresStudentProfile:
+        return PostgresStudentProfile(
+            student_id=student_id,
+            degree_id=profile.degree,
+        )
+
+    @staticmethod
+    def _map_preferences_to_model(preferences: StudentPreferences,
+                                  student_id: GenericUUID) -> PostgresStudentPreferences:
+        return PostgresStudentPreferences(
+            student_id=str(student_id),
+            theme=preferences.theme,
+            language=preferences.language
         )
 
     @staticmethod
@@ -120,4 +141,3 @@ class PostgresStudentRepository(StudentRepository):
                 language=student_model.preferences.language
             )
         )
-

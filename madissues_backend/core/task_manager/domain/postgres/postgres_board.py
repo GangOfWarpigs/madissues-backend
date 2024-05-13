@@ -17,13 +17,8 @@ class PostgresBoard(Base):
     board_id = Column(String, nullable=False)
 
     # Correct relationship specifications
-    faqs_task_manager_id = Column(UUID(as_uuid=True), ForeignKey('backend.task_managers.id'), nullable=True)
-    issue_task_manager_id = Column(UUID(as_uuid=True), ForeignKey('backend.task_managers.id'), nullable=True)
+    task_manager_id = Column(UUID(as_uuid=True), ForeignKey('backend.task_managers.id'), nullable=True)
 
     # Relationship with TaskManager for FAQs
-    faqs_task_manager = relationship("PostgresTaskManager", foreign_keys=[faqs_task_manager_id],
-                                      uselist=False)
-
-    # Relationship with TaskManager for Issues
-    issue_task_manager = relationship("PostgresTaskManager", foreign_keys=[issue_task_manager_id],
-                                     uselist=False)
+    task_manager = relationship("PostgresTaskManager", foreign_keys=[task_manager_id],
+                                uselist=False)

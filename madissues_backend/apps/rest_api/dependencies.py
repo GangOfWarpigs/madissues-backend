@@ -87,7 +87,6 @@ task_manager_factory = TrelloTaskManagerFactory()
 # services
 storage_service = LocalStorageService(media_path="./madissues_backend/media")
 # authorization_service = create_mock_authentication_service(database)
-authorization_service = None
 
 # Postgres authorization service
 if postgres_manager is not None:
@@ -107,7 +106,6 @@ if postgres_manager is not None:
     owner_repository = PostgresOwnerRepository(postgres_manager.get_session())
     organization_repository = PostgresOrganizationRepository(postgres_manager.get_session())
     student_repository = PostgresStudentRepository(postgres_manager.get_session())
-
     issue_repository = PostgresIssueRepository(postgres_manager.get_session())
     issue_comment_repository = PostgresIssueCommentRepository(postgres_manager.get_session())
     issue_comment_query_repository = PostgresIssueCommentQueryRepository(postgres_manager.get_session())

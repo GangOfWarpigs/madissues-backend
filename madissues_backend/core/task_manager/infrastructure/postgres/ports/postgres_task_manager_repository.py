@@ -27,11 +27,10 @@ class PostgresTaskManagerRepository(TaskManagerRepository):
             id=task_manager.id,
             organization_id=task_manager.organization_id,
             task_manager_project_id=str(task_manager.task_manager_project_id),
-            faqs_board_id=faqs_board.id if faqs_board else None,
-            issue_board_id=issue_board.id if issue_board else None,
         )
 
-    def _map_config_to_model(self, config: TaskManagerConfig, task_manager_id: GenericUUID) -> PostgresTaskManagerConfig:
+    def _map_config_to_model(self, config: TaskManagerConfig,
+                             task_manager_id: GenericUUID) -> PostgresTaskManagerConfig:
         return PostgresTaskManagerConfig(
             id=GenericUUID.next_id(),
             service=config.service,
@@ -40,7 +39,7 @@ class PostgresTaskManagerRepository(TaskManagerRepository):
             task_manager_id=task_manager_id
         )
 
-    def _map_board_to_model(self, board: Board, board_type: str) -> PostgresBoard:
+    def _map_board_to_model(self, board: Board, board_type: str, task_manager_id: GenericUUID) -> PostgresBoard:
         if board is None:
             return None
         return PostgresBoard(
@@ -51,8 +50,7 @@ class PostgresTaskManagerRepository(TaskManagerRepository):
             not_solved_list_id=board.not_solved_list_id,
             board_id=board.board_id,
             # Dynamically assign the relationship based on type
-            faqs_task_manager_id=board.id if board_type == 'faqs' else None,
-            issue_task_manager_id=board.id if board_type == 'issues' else None
+            task_manager_id=task_manager_id,
         )
 
     def _map_members_to_model(self, members: List[Member], task_manager_id: GenericUUID) -> List[PostgresMember]:
@@ -66,32 +64,43 @@ class PostgresTaskManagerRepository(TaskManagerRepository):
         ]
 
     def add(self, task_manager: TaskManager):
-        # Primero mapeamos y añadimos las dependencias requeridas
+        # Iniciamos una transacción manual
+        print("################# TASK MANAGER: ", task_manager)
+
         postgres_config = self._map_config_to_model(task_manager.config, task_manager.id)
-        self.session.add(postgres_config)
-        self.session.commit()  # Garantizamos que la config está guardada para obtener el ID generado
+        postgres_faqs_board = self._map_board_to_model(task_manager.faqs_board, 'faqs',
+                                                       task_manager.id) if task_manager.faqs_board else None
 
-        # Mapeamos y añadimos los boards si existen
-        if task_manager.faqs_board:
-            postgres_faqs_board = self._map_board_to_model(task_manager.faqs_board, 'faqs')
-            self.session.add(postgres_faqs_board)
-            self.session.commit()  # Aseguramos su creación para obtener el ID
-
-        if task_manager.issue_board:
-            postgres_issue_board = self._map_board_to_model(task_manager.issue_board, 'issues')
-            self.session.add(postgres_issue_board)
-            self.session.commit()  # Aseguramos su creación para obtener el ID
+        postgres_issue_board = self._map_board_to_model(task_manager.issue_board, 'issues',
+                                                        task_manager.id) if task_manager.issue_board else None
 
         # Mapeamos los miembros y los añadimos
         postgres_members = self._map_members_to_model(task_manager.members, task_manager.id)
-        for member in postgres_members:
-            self.session.add(member)
-        self.session.commit()  # Guardamos los miembros para asegurar sus IDs
 
-        # Finalmente, mapeamos y añadimos el TaskManager
         postgres_task_manager = self._map_to_model(task_manager, postgres_config, postgres_faqs_board,
                                                    postgres_issue_board, postgres_members)
+
+        print("################# FAQS BOARD TMID: ", postgres_faqs_board.task_manager_id)
+        print("################# FAQS BOARD ID: ", postgres_faqs_board.id)
+
+        print("################# POSTGRES ISSUE BOARD TMID: ", postgres_issue_board.task_manager_id)
+        print("################# POSTGRES ISSUE BOARD ID: ", postgres_issue_board.id)
+
+        print("################# POSTGRES TASK MANAGER: ", postgres_task_manager.id)
+        print("################# POSTGRES FAQS ID: ", postgres_task_manager.faqs_board_id)
+        print("################# POSTGRES ISSUES ID: ", postgres_task_manager.issue_board_id)
+
+        # Añadimos las entidades a la sesión
         self.session.add(postgres_task_manager)
+        self.session.flush()  # Esto asegura que las entidades se guarden en la base de datos y se asignen los IDs
+        self.session.add(postgres_config)
+        self.session.add(postgres_faqs_board)
+        self.session.commit()
+        self.session.add(postgres_issue_board)
+        for member in postgres_members:
+            self.session.add(member)
+
+        # Cometer la transacción principal solo si todas las inserciones fueron exitosas
         self.session.commit()
 
     def check_can_integrate_organization(self, organization_id, user_id) -> bool:
@@ -152,8 +161,8 @@ class PostgresTaskManagerRepository(TaskManagerRepository):
                 api_key=str(task_manager_record.config.api_key),
                 api_token=str(task_manager_record.config.api_token)
             ),
-            faqs_board=self._create_board_model(task_manager_record.faqs_board),
-            issue_board=self._create_board_model(task_manager_record.issue_board),
+            faqs_board=self._create_board_model(task_manager_record.faqs_board).board_id,
+            issue_board=self._create_board_model(task_manager_record.issue_board).board_id,
             members=[
                 Member(
                     id=GenericUUID(str(member.id)),

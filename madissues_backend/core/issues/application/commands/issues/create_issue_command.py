@@ -53,7 +53,6 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
             - Must notify the task manager via email
         """
 
-
         # First upload the images to the storage service
         proof_filenames = []
         for proof in request.proofs:
@@ -90,6 +89,8 @@ class CreateIssueCommand(Command[CreateIssueRequest, CreateIssueResponse]):
                 organization_id=str(issue.organization_id)
             )
         ))
+
+
         self.event_bus.notify_all(issue.collect_events())
 
         self.repository.add(issue)
