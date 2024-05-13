@@ -86,43 +86,43 @@ task_manager_factory = TrelloTaskManagerFactory()
 
 # services
 storage_service = LocalStorageService(media_path="./madissues_backend/media")
-# authorization_service = create_mock_authentication_service(database)
+authorization_service = create_mock_authentication_service(database)
 
 # Postgres authorization service
-if postgres_manager is not None:
-    authorization_service = create_postgres_authentication_service(postgres_manager.get_session())
+# if postgres_manager is not None:
+#     authorization_service = create_postgres_authentication_service(postgres_manager.get_session())
 
 # mock repositories
-# owner_repository = MockOwnerRepository(database)
-# organization_repository = MockOrganizationRepository(database)
-# student_repository = MockStudentRepository(database)
-# task_manager_repository = MockTaskManagerRepository(database)
-# issue_repository = MockIssueRepository(database)
-# issue_comment_repository = MockIssueCommentRepository(database)
-# issue_comment_query_repository = MockIssueCommentQueryRepository(database)
+owner_repository = MockOwnerRepository(database)
+organization_repository = MockOrganizationRepository(database)
+student_repository = MockStudentRepository(database)
+task_manager_repository = MockTaskManagerRepository(database)
+issue_repository = MockIssueRepository(database)
+issue_comment_repository = MockIssueCommentRepository(database)
+issue_comment_query_repository = MockIssueCommentQueryRepository(database)
 
 # postgres repositories
-if postgres_manager is not None:
-    owner_repository = PostgresOwnerRepository(postgres_manager.get_session())
-    organization_repository = PostgresOrganizationRepository(postgres_manager.get_session())
-    student_repository = PostgresStudentRepository(postgres_manager.get_session())
-    issue_repository = PostgresIssueRepository(postgres_manager.get_session())
-    issue_comment_repository = PostgresIssueCommentRepository(postgres_manager.get_session())
-    issue_comment_query_repository = PostgresIssueCommentQueryRepository(postgres_manager.get_session())
-    task_manager_repository = PostgresTaskManagerRepository(postgres_manager.get_session())
+# if postgres_manager is not None:
+#     owner_repository = PostgresOwnerRepository(postgres_manager.get_session())
+#     organization_repository = PostgresOrganizationRepository(postgres_manager.get_session())
+#     student_repository = PostgresStudentRepository(postgres_manager.get_session())
+#     issue_repository = PostgresIssueRepository(postgres_manager.get_session())
+#     issue_comment_repository = PostgresIssueCommentRepository(postgres_manager.get_session())
+#     issue_comment_query_repository = PostgresIssueCommentQueryRepository(postgres_manager.get_session())
+#     task_manager_repository = PostgresTaskManagerRepository(postgres_manager.get_session())
 
 # query repositories
-# organization_query_repository = MockOrganizationQueryRepository(database)
-# owner_query_repository = MockOwnerQueryRepository(database)
-# student_query_repository = MockStudentQueryRepository(database)
-# issue_query_repository = MockIssueQueryRepository(database)
+organization_query_repository = MockOrganizationQueryRepository(database)
+owner_query_repository = MockOwnerQueryRepository(database)
+student_query_repository = MockStudentQueryRepository(database)
+issue_query_repository = MockIssueQueryRepository(database)
 
 # postgres query repositories
-if postgres_manager is not None:
-    organization_query_repository = PostgresOrganizationQueryRepository(postgres_manager.get_session())
-    owner_query_repository = PostgresOwnerQueryRepository(postgres_manager.get_session())
-    student_query_repository = PostgresStudentQueryRepository(postgres_manager.get_session())
-    issue_query_repository = PostgresIssueQueryRepository(postgres_manager.get_session())
+# if postgres_manager is not None:
+#     organization_query_repository = PostgresOrganizationQueryRepository(postgres_manager.get_session())
+#     owner_query_repository = PostgresOwnerQueryRepository(postgres_manager.get_session())
+#     student_query_repository = PostgresStudentQueryRepository(postgres_manager.get_session())
+#     issue_query_repository = PostgresIssueQueryRepository(postgres_manager.get_session())
 
 
 # Event handlers
