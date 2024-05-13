@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional, Type
 
 from sqlalchemy.exc import NoResultFound
@@ -120,24 +121,28 @@ class PostgresStudentRepository(StudentRepository):
 
     @staticmethod
     def _map_to_entity(student_model: Type[PostgresStudent]) -> Student:
+        print("StudentModelProfile")
+        print("StudentModelProfileDegree: ", str(student_model.profile.degree))
+        print("StudentModelProfile")
+
         return Student(
-            id=student_model.id,
-            organization_id=student_model.organization_id,
-            email=student_model.email,
-            first_name=student_model.first_name,
-            last_name=student_model.last_name,
+            id=GenericUUID(str(student_model.id)),
+            organization_id=GenericUUID(str(student_model.organization_id)),
+            email=str(student_model.email),
+            first_name=str(student_model.first_name),
+            last_name=str(student_model.last_name),
             password="",  # No devolvemos la contraseña
-            started_studies_date=student_model.started_studies_date,
-            is_site_admin=student_model.is_site_admin,
-            is_council_member=student_model.is_council_member,
-            is_banned=student_model.is_banned,
-            token=student_model.token,
+            started_studies_date=datetime.fromisoformat(str(student_model.started_studies_date)),  # Conversión aquí,
+            is_site_admin=bool(student_model.is_site_admin),
+            is_council_member=bool(student_model.is_council_member),
+            is_banned=bool(student_model.is_banned),
+            token=str(student_model.token),
             profile=StudentProfile(
-                degree=student_model.profile.degree,
-                joined_courses=student_model.profile.joined_courses
+                degree=GenericUUID(str(student_model.profile.degree_id)),
+                joined_courses=[GenericUUID(str(course.id)) for course in student_model.profile.joined_courses]
             ),
             preferences=StudentPreferences(
-                theme=student_model.preferences.theme,
-                language=student_model.preferences.language
+                theme=str(student_model.preferences.theme),
+                language=str(student_model.preferences.language)
             )
         )
