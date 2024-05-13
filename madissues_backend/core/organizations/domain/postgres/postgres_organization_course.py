@@ -30,4 +30,6 @@ class PostgresOrganizationCourse(Base):
                             secondary=teacher_course_association,
                             back_populates="courses")
 
+    issues = relationship("PostgresIssueModel", back_populates="course")
+
 

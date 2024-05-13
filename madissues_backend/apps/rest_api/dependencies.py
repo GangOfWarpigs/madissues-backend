@@ -34,6 +34,8 @@ from madissues_backend.core.shared.infrastructure.mocks.mock_authentication_serv
     create_mock_authentication_service
 from madissues_backend.core.shared.infrastructure.mocks.mock_event_bus import MockEventBus
 from madissues_backend.core.shared.infrastructure.openssl.sha256_password_hasher import SHA256PasswordHasher
+from madissues_backend.core.shared.infrastructure.postgres.postgres_authentication_service import \
+    create_postgres_authentication_service
 from madissues_backend.core.shared.infrastructure.postgres.postgres_manager import PostgresManager
 from madissues_backend.core.shared.infrastructure.storage.local_storage_service import LocalStorageService
 from madissues_backend.core.shared.infrastructure.uuid.uuid_token_generator import UUIDTokenGenerator
@@ -47,6 +49,8 @@ from madissues_backend.core.students.infrastructure.postgres.ports.postgres_stud
 from madissues_backend.core.task_manager.application.handlers.issue_created_handler import IssueCreatedHandler
 from madissues_backend.core.task_manager.infrastructure.mocks.mock_task_manager_repository import \
     MockTaskManagerRepository
+from madissues_backend.core.task_manager.infrastructure.postgres.ports.postgres_task_manager_repository import \
+    PostgresTaskManagerRepository
 from madissues_backend.core.task_manager.infrastructure.trello_task_manager_service import TrelloTaskManagerFactory
 
 # Postgres
@@ -82,7 +86,12 @@ task_manager_factory = TrelloTaskManagerFactory()
 
 # services
 storage_service = LocalStorageService(media_path="./madissues_backend/media")
-authorization_service = create_mock_authentication_service(database)
+# authorization_service = create_mock_authentication_service(database)
+authorization_service = None
+
+# Postgres authorization service
+if postgres_manager is not None:
+    authorization_service = create_postgres_authentication_service(postgres_manager.get_session())
 
 # mock repositories
 # owner_repository = MockOwnerRepository(database)
@@ -102,7 +111,7 @@ if postgres_manager is not None:
     issue_repository = PostgresIssueRepository(postgres_manager.get_session())
     issue_comment_repository = PostgresIssueCommentRepository(postgres_manager.get_session())
     issue_comment_query_repository = PostgresIssueCommentQueryRepository(postgres_manager.get_session())
-task_manager_repository = MockTaskManagerRepository(database)
+    task_manager_repository = PostgresTaskManagerRepository(postgres_manager.get_session())
 
 # query repositories
 # organization_query_repository = MockOrganizationQueryRepository(database)

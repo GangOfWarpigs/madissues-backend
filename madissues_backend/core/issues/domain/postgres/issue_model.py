@@ -1,9 +1,17 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, ARRAY, UUID, ForeignKey
+from sqlalchemy import Column, String, DateTime, ARRAY, UUID, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
 from madissues_backend.core.shared.infrastructure.postgres.postgres_dependencies import Base
+
+issue_teacher_association = Table(
+    'issue_teacher_association',
+    Base.metadata,
+    Column('issue_id', ForeignKey('backend.issues.id'), primary_key=True),
+    Column('teacher_id', ForeignKey('backend.organization_teachers.id'), primary_key=True),
+    schema='backend'
+)
 
 
 # Definir la clase para la tabla Issue
@@ -18,8 +26,7 @@ class PostgresIssueModel(Base):
     proofs = Column(ARRAY(String))
     status = Column(String(length=20), nullable=False)
     date_time = Column(DateTime, default=datetime.utcnow)
-    course = Column(UUID(as_uuid=True), nullable=False)
-    teachers = Column(ARRAY(UUID(as_uuid=True)))
+    course_id = Column(UUID(as_uuid=True), ForeignKey('backend.organization_courses.id'), nullable=False)  # Course foreign key
     student_id = Column(UUID(as_uuid=True), ForeignKey('backend.students.id'), nullable=False)  # Author is a student
     organization_id = Column(UUID(as_uuid=True), ForeignKey('backend.organizations.id'),
                              nullable=False)  # Organization foreign key
@@ -29,3 +36,10 @@ class PostgresIssueModel(Base):
 
     # Relación inversa con la organización
     organization = relationship("PostgresOrganization", back_populates="issues")
+
+    teachers = relationship("PostgresOrganizationTeacher",
+                            secondary=issue_teacher_association,
+                            back_populates="issues")
+
+    # Relación con los cursos
+    course = relationship("PostgresOrganizationCourse", back_populates="issues")

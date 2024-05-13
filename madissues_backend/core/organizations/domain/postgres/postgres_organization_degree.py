@@ -14,3 +14,5 @@ class PostgresOrganizationDegree(Base):
 
     # Relación inversa
     organization = relationship("PostgresOrganization", back_populates="degrees")
+
+    students = relationship("PostgresStudentProfile", back_populates="degree")

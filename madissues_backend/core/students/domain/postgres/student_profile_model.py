@@ -17,8 +17,10 @@ class PostgresStudentProfile(Base):
     __table_args__ = {'schema': 'backend'}
 
     student_id = Column(UUID(as_uuid=True), ForeignKey('backend.students.id'), primary_key=True)
-    degree = Column(UUID(as_uuid=True), nullable=False)
+    degree_id = Column(UUID(as_uuid=True), ForeignKey('backend.organization_degrees.id'), nullable=False)
     student = relationship("PostgresStudent", back_populates="profile")
     joined_courses = relationship("PostgresOrganizationCourse",
                                   secondary=student_course_association,
                                   back_populates="students")
+
+    degree = relationship("PostgresOrganizationDegree", back_populates="students")

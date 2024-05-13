@@ -53,6 +53,7 @@ class IntegrateOrganizationWithTaskManagerCommand(
         if not task_manager_service.is_api_key_valid():
             return Response.fail(code=4, message="Api key proportioned to us is not valid")
 
+        print("@@@@@@@@@@@@@@@@@@@@@@@ API KEY VALID @@@@@@@@@@@@@@@@@@@@@@@")
         # Get the organization from the repository
         organization = self.task_manager_repository.get_organization(organization_id)
         project_id = task_manager_service.create_organization(name=organization.name)
