@@ -32,12 +32,14 @@ class PostgresOrganizationQueryRepository(OrganizationQueryRepository):
         return [self._map_to_read_model(org) for org in organizations]
 
     def get_by_id(self, id: str) -> OrganizationReadModel:
-        organization = self._session.query(PostgresOrganization) \
-            .options(joinedload(PostgresOrganization.teachers),
-                     joinedload(PostgresOrganization.courses),
-                     joinedload(PostgresOrganization.degrees)) \
-            .filter(PostgresOrganization.id == id).one_or_none()
-        return self._map_to_read_model(organization) if organization else None
+        organization = (self._session.query(PostgresOrganization)
+                        .filter(PostgresOrganization.id == id)
+                        .one_or_none()
+                        )
+        if not organization:
+            raise ValueError(f"Organization with id {id} not found")
+        else:
+            return self._map_to_read_model(organization)
 
     def get_all_teachers_from_organization(self, id: str) -> List[OrganizationTeacherReadModel]:
         organization = self._session.query(PostgresOrganization) \

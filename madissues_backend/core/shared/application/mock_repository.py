@@ -23,6 +23,7 @@ class EntityTable:
         self.tables = {
             'owners': {},
             'organizations': {},
+            'faqs': {},
             'students': {},
             'issues': {},
             'issue_comments': {},

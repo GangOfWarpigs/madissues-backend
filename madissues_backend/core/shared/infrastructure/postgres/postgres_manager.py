@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from madissues_backend.core.faqs.domain.postgres.faq_model import PostgresFaq
 from madissues_backend.core.issues.domain.postgres.issue_comment_model import PostgresIssueCommentModel
 from madissues_backend.core.issues.domain.postgres.issue_model import PostgresIssueModel
 from madissues_backend.core.organizations.domain.postgres.postgres_organization import PostgresOrganization
@@ -29,6 +30,7 @@ PostgresOrganizationCourse()
 PostgresOrganizationDegree()
 PostgresOrganizationTeacher()
 PostgresOwner()
+PostgresFaq()
 PostgresTaskManager()
 PostgresMember()
 PostgresBoard()
@@ -54,6 +56,10 @@ class PostgresManager:
 
         self.base = Base
 
+        """Uncomment this line to create new tables"""
+        # self.base.metadata.create_all(bind=self.engine)
+
     # Función para obtener una sesión
     def get_session(self):
         return self.SessionFactory()
+

@@ -8,6 +8,7 @@ from starlette.staticfiles import StaticFiles
 
 from madissues_backend.apps.rest_api.v1.owners import router as owners_router
 from madissues_backend.apps.rest_api.v1.organizations import router as organizations_router
+from madissues_backend.apps.rest_api.v1.faqs import router as faqs_router
 from madissues_backend.apps.rest_api.v1.students import router as students_router
 from madissues_backend.apps.rest_api.v1.task_manager import router as task_manager_router
 from madissues_backend.apps.rest_api.v1.issues import router as issues_manager_router
@@ -95,7 +96,11 @@ app.mount("/media",
           name="media")
 app.include_router(owners_router)
 app.include_router(organizations_router)
+app.include_router(faqs_router)
 app.include_router(students_router)
 app.include_router(task_manager_router)
 app.include_router(issues_manager_router)
 app.include_router(issues_comments_manager_router)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

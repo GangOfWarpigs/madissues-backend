@@ -33,3 +33,6 @@ class PostgresOrganization(Base):
 
     # Relación con las issues
     issues = relationship("PostgresIssueModel", back_populates="organization")
+
+    # Relación con FAQs
+    faqs = relationship("PostgresFaq", back_populates="organization")
